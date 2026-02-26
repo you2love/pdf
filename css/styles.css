@@ -12,29 +12,30 @@
    CSS 变量（支持深色模式）
    =================================== */
 :root {
-  /* 主色调 */
+  /* 主色调 - 提高饱和度 */
   --primary-color: #2563eb;
   --primary-light: #3b82f6;
   --primary-dark: #1d4ed8;
   --secondary-color: #1e40af;
-  --accent-color: #f59e0b;
-  --accent-light: #fbbf24;
-  
-  /* 文本颜色 */
-  --text-primary: #1f2937;
-  --text-secondary: #4b5563;
-  --text-tertiary: #6b7280;
+  --accent-color: #d97706;
+  --accent-light: #f59e0b;
+
+  /* 文本颜色 - 加深对比度 */
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-tertiary: #4b5563;
   --text-inverse: #ffffff;
-  
-  /* 背景颜色 */
+
+  /* 背景颜色 - 增加对比度 */
   --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
-  --bg-alt: #f3f4f6;
+  --bg-secondary: #f3f4f6;
+  --bg-alt: #e5e7eb;
   --bg-elevated: #ffffff;
-  
-  /* 边框颜色 */
-  --border-color: #e5e7eb;
-  --border-color-dark: #d1d5db;
+  --bg-code: #1f2937;
+
+  /* 边框颜色 - 加深 */
+  --border-color: #9ca3af;
+  --border-color-dark: #6b7280;
   
   /* 阴影 */
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -74,25 +75,26 @@
 /* 深色模式变量 */
 @media (prefers-color-scheme: dark) {
   :root {
-    --primary-color: #3b82f6;
-    --primary-light: #60a5fa;
-    --primary-dark: #2563eb;
-    --secondary-color: #60a5fa;
+    --primary-color: #60a5fa;
+    --primary-light: #93c5fd;
+    --primary-dark: #3b82f6;
+    --secondary-color: #93c5fd;
     --accent-color: #fbbf24;
     --accent-light: #fcd34d;
-    
+
     --text-primary: #f9fafb;
-    --text-secondary: #d1d5db;
-    --text-tertiary: #9ca3af;
-    
+    --text-secondary: #e5e7eb;
+    --text-tertiary: #d1d5db;
+
     --bg-primary: #0f172a;
     --bg-secondary: #1e293b;
     --bg-alt: #334155;
     --bg-elevated: #1e293b;
-    
-    --border-color: #374151;
-    --border-color-dark: #4b5563;
-    
+    --bg-code: #111827;
+
+    --border-color: #4b5563;
+    --border-color-dark: #6b7280;
+
     --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
     --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
@@ -103,24 +105,25 @@
 
 /* 深色模式类（手动切换） */
 [data-theme="dark"] {
-  --primary-color: #3b82f6;
-  --primary-light: #60a5fa;
-  --primary-dark: #2563eb;
-  --secondary-color: #60a5fa;
+  --primary-color: #60a5fa;
+  --primary-light: #93c5fd;
+  --primary-dark: #3b82f6;
+  --secondary-color: #93c5fd;
   --accent-color: #fbbf24;
   --accent-light: #fcd34d;
-  
+
   --text-primary: #f9fafb;
-  --text-secondary: #d1d5db;
-  --text-tertiary: #9ca3af;
-  
+  --text-secondary: #e5e7eb;
+  --text-tertiary: #d1d5db;
+
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
   --bg-alt: #334155;
   --bg-elevated: #1e293b;
-  
-  --border-color: #374151;
-  --border-color-dark: #4b5563;
+  --bg-code: #111827;
+
+  --border-color: #4b5563;
+  --border-color-dark: #6b7280;
 }
 
 /* ===================================
@@ -221,18 +224,21 @@
     padding: 0.125rem 0.375rem;
     border-radius: var(--radius-sm);
     font-size: 0.875em;
+    color: var(--text-primary);
   }
-  
+
   pre {
-    background-color: var(--bg-alt);
+    background-color: var(--bg-code);
     padding: 1rem;
     border-radius: var(--radius-md);
     overflow-x: auto;
+    color: #f3f4f6;
   }
-  
+
   pre code {
     background: none;
     padding: 0;
+    color: inherit;
   }
   
   table {
@@ -244,14 +250,19 @@
   th, td {
     padding: 0.75rem 1rem;
     text-align: left;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border-color-dark);
   }
-  
+
   th {
     background-color: var(--bg-alt);
     font-weight: 600;
+    color: var(--text-primary);
   }
-  
+
+  td {
+    color: var(--text-secondary);
+  }
+
   tr:nth-child(even) {
     background-color: var(--bg-secondary);
   }
@@ -535,12 +546,13 @@
     transition: all var(--transition-base);
     opacity: 0;
     transform: translateY(30px);
-    
+    border: 1px solid var(--border-color);
+
     &.visible {
       opacity: 1;
       transform: translateY(0);
     }
-    
+
     &:hover {
       transform: translateY(-8px);
       box-shadow: var(--shadow-xl);
@@ -578,18 +590,20 @@
   
   /* ========== 信息框 ========== */
   .info-box {
-    background-color: var(--bg-elevated);
+    background-color: var(--bg-secondary);
     border-left: 4px solid var(--primary-color);
     padding: 1.5rem 2rem;
     border-radius: 0 var(--radius-md) var(--radius-md) 0;
     box-shadow: var(--shadow-sm);
     margin: 2rem 0;
-    
+    border: 1px solid var(--border-color);
+
     h3 {
       font-size: 1.25rem;
       margin-bottom: 1rem;
+      color: var(--text-primary);
     }
-    
+
     p {
       color: var(--text-secondary);
     }
@@ -632,7 +646,7 @@
   }
   
   .box {
-    background-color: var(--bg-elevated);
+    background-color: var(--bg-secondary);
     border: 2px solid var(--primary-color);
     border-radius: var(--radius-md);
     padding: 1rem 2rem;
@@ -640,29 +654,30 @@
     width: 100%;
     max-width: 300px;
     transition: all var(--transition-base);
-    
+
     &:hover {
       transform: scale(1.05);
       box-shadow: var(--shadow-lg);
     }
-    
+
     strong {
       display: block;
-      color: var(--primary-color);
+      color: var(--primary-dark);
       font-size: 1.1rem;
       margin-bottom: 0.25rem;
     }
-    
+
     p {
-      color: var(--text-tertiary);
+      color: var(--text-secondary);
       font-family: var(--font-mono);
       font-size: 0.875rem;
     }
   }
-  
+
   .arrow {
     font-size: 2rem;
     color: var(--primary-color);
+    font-weight: 700;
   }
   
   /* ========== Mermaid 图表包装器 ========== */
@@ -673,18 +688,19 @@
     margin: 2rem 0;
     box-shadow: var(--shadow-md);
     overflow-x: auto;
-    
+    border: 1px solid var(--border-color);
+
     .mermaid {
       display: flex;
       justify-content: center;
-      
+
       svg {
         max-width: 100%;
         height: auto;
       }
     }
   }
-  
+
   .diagram-title {
     font-size: 1.1rem;
     font-weight: 600;
@@ -695,27 +711,29 @@
   
   /* ========== 代码块 ========== */
   .code-block {
-    background-color: var(--bg-alt);
-    border: 1px solid var(--border-color);
+    background-color: var(--bg-code);
+    border: 1px solid var(--border-color-dark);
     border-radius: var(--radius-lg);
     margin: 2rem 0;
     overflow: hidden;
-    
+
     h3, h4 {
       padding: 1rem 1.5rem;
-      background-color: var(--bg-secondary);
-      border-bottom: 1px solid var(--border-color);
+      background-color: var(--bg-alt);
+      border-bottom: 1px solid var(--border-color-dark);
       font-size: 1rem;
       font-weight: 600;
+      color: var(--text-primary);
     }
-    
+
     pre {
       margin: 0;
       padding: 1.5rem;
       overflow-x: auto;
-      
+      background-color: transparent;
+
       code {
-        color: var(--text-primary);
+        color: #f3f4f6;
         background: none;
         padding: 0;
         font-size: 0.875rem;
@@ -730,45 +748,47 @@
     overflow-x: auto;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color-dark);
   }
-  
+
   .table-title {
     font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 1rem;
     color: var(--text-primary);
   }
-  
+
   .comparison-table,
   .detail-table,
   .decision-table {
     width: 100%;
     border-collapse: collapse;
     background-color: var(--bg-elevated);
-    
+
     th {
       background-color: var(--bg-alt);
       padding: 1rem 1.5rem;
       font-weight: 600;
       border-bottom: 2px solid var(--border-color-dark);
+      color: var(--text-primary);
     }
-    
+
     td {
       padding: 1rem 1.5rem;
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--border-color-dark);
       color: var(--text-secondary);
     }
-    
+
     tr {
       transition: background-color var(--transition-fast);
-      
+
       &:hover {
         background-color: var(--bg-secondary);
       }
     }
-    
+
     .highlight-cell {
-      background-color: rgba(37, 99, 235, 0.1);
+      background-color: rgba(37, 99, 235, 0.15);
       font-weight: 600;
       color: var(--primary-color);
     }
@@ -797,7 +817,7 @@
     gap: 1.5rem;
     margin: 2rem 0;
   }
-  
+
   .security-item {
     text-align: center;
     padding: 2rem;
@@ -805,7 +825,8 @@
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-md);
     transition: all var(--transition-base);
-    
+    border: 1px solid var(--border-color);
+
     &:hover {
       transform: translateY(-5px);
       box-shadow: var(--shadow-xl);
@@ -825,16 +846,18 @@
     gap: 2rem;
     margin: 2rem 0;
   }
-  
+
   .ai-feature {
     background-color: var(--bg-elevated);
     padding: 2rem;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-md);
-    
+    border: 1px solid var(--border-color);
+
     h3 {
       font-size: 1.25rem;
       margin-bottom: 1rem;
+      color: var(--text-primary);
     }
   }
   
@@ -845,21 +868,23 @@
     gap: 1.5rem;
     margin: 2rem 0;
   }
-  
+
   .tool-card {
     background-color: var(--bg-elevated);
     padding: 1.5rem;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     transition: all var(--transition-base);
-    
+    border: 1px solid var(--border-color);
+
     &:hover {
       box-shadow: var(--shadow-md);
     }
-    
+
     h3 {
       font-size: 1.1rem;
       margin-bottom: 1rem;
+      color: var(--text-primary);
     }
   }
   
@@ -870,23 +895,24 @@
     margin: 2rem 0;
     flex-wrap: wrap;
   }
-  
+
   .lang-btn {
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-full);
     font-weight: 600;
     background-color: var(--bg-alt);
-    color: var(--text-secondary);
-    border: 2px solid transparent;
+    color: var(--text-primary);
+    border: 2px solid var(--border-color-dark);
     transition: all var(--transition-base);
-    
+
     &:hover {
       background-color: var(--bg-secondary);
     }
-    
+
     &.active {
       background-color: var(--primary-color);
       color: white;
+      border-color: var(--primary-color);
     }
   }
   
@@ -914,8 +940,9 @@
     padding: 2rem;
     margin: 2rem 0;
     box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
   }
-  
+
   .flowchart-steps {
     display: flex;
     align-items: center;
@@ -923,7 +950,7 @@
     flex-wrap: wrap;
     gap: 1rem;
   }
-  
+
   .flowchart-step {
     display: flex;
     align-items: center;
@@ -935,16 +962,17 @@
     transition: all var(--transition-base);
     flex: 1;
     min-width: 150px;
-    
+    border: 1px solid var(--border-color);
+
     &:hover, &.active {
       background-color: var(--primary-color);
       transform: scale(1.05);
-      
+
       .step-number {
         background-color: white;
         color: var(--primary-color);
       }
-      
+
       .step-content h4,
       .step-content p {
         color: white;
@@ -999,14 +1027,15 @@
   .instance-analysis {
     margin: 2rem 0;
   }
-  
+
   .analysis-section {
     background-color: var(--bg-elevated);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
     margin: 1.5rem 0;
     box-shadow: var(--shadow-sm);
-    
+    border: 1px solid var(--border-color);
+
     h4 {
       font-size: 1.1rem;
       margin-bottom: 1rem;
@@ -1023,6 +1052,7 @@
     box-shadow: var(--shadow-md);
     position: relative;
     height: 400px;
+    border: 1px solid var(--border-color);
   }
   
   /* ========== 页脚 ========== */
