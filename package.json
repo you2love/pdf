@@ -1,0 +1,24 @@
+{
+  "name": "pdf-tutorial",
+  "version": "1.0.0",
+  "description": "这是一个关于 PDF 文件格式的纯静态学习网站，采用 **2026 年最新 Web 技术**构建，包含丰富的图表展示和交互功能。",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-you2love:you2love/pdf.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "chart.js": "^4.5.1",
+    "mermaid": "^10.9.5"
+  }
+}
