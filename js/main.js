@@ -10,30 +10,34 @@ class ThemeManager {
   constructor() {
     this.themeToggle = document.getElementById('themeToggle');
     this.themeIcon = this.themeToggle?.querySelector('.theme-icon');
-    this.currentTheme = this.getPreferredTheme();
-    
+    // 强制默认浅色模式
+    this.currentTheme = 'light';
+
     this.init();
   }
-  
+
   init() {
-    this.applyTheme(this.currentTheme);
+    // 清除 localStorage 中的深色模式
+    localStorage.setItem('theme', 'light');
+    this.applyTheme('light');
     this.themeToggle?.addEventListener('click', () => this.toggleTheme());
   }
-  
+
   getPreferredTheme() {
     const stored = localStorage.getItem('theme');
     if (stored) return stored;
-    
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+    // 默认使用浅色模式
+    return 'light';
   }
   
   applyTheme(theme) {
     if (theme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
-      this.themeIcon.textContent = '☀️';
+      if (this.themeIcon) this.themeIcon.textContent = '☀️';
     } else {
       document.documentElement.removeAttribute('data-theme');
-      this.themeIcon.textContent = '🌙';
+      if (this.themeIcon) this.themeIcon.textContent = '🌙';
     }
 
     this.currentTheme = theme;

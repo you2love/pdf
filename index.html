@@ -7,6 +7,32 @@
     <title>PDF 格式完全指南</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+      /* 强制浅色模式 - 覆盖所有 CSS 变量 */
+      :root {
+        --bg-primary: #ffffff !important;
+        --bg-secondary: #f6f8fa !important;
+        --bg-alt: #eaecef !important;
+        --bg-elevated: #ffffff !important;
+        --bg-code: #1d1f23 !important;
+        --text-primary: #24292e !important;
+        --text-secondary: #586069 !important;
+        --border-color: #e1e4e8 !important;
+      }
+      html, body {
+        background-color: #ffffff !important;
+      }
+      .navbar {
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        border-bottom: 1px solid #e1e4e8 !important;
+      }
+      .navbar .logo, .nav-menu a {
+        color: #24292e !important;
+      }
+      .section-alt {
+        background-color: #f6f8fa !important;
+      }
+    </style>
     <!-- Mermaid 图表库 -->
     <script src="lib/mermaid.min.js"></script>
     <script type="module">
@@ -39,11 +65,6 @@
                 <li><a href="#code-examples">代码</a></li>
                 <li><a href="#tools">工具</a></li>
             </ul>
-            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
         </div>
     </nav>
 
@@ -1080,20 +1101,6 @@ def merge_pdfs(input_files, output_file):
 input_pdfs = ["file1.pdf", "file2.pdf", "file3.pdf"]
 merge_pdfs(input_pdfs, "merged_output.pdf")</code></pre>
                 </div>
-
-                <div class="info-box">
-                    <h4>Python PDF 库推荐</h4>
-                    <ul class="feature-list">
-                        <li><strong>pypdf</strong> - 最流行的 PDF 库，支持读写、合并、分割等基本操作</li>
-                        <li><strong>PyPDF2</strong> - pypdf 的前身，功能相似</li>
-                        <li><strong>pdfplumber</strong> - 专注于表格提取，支持精细的页面布局分析</li>
-                        <li><strong>camelot</strong> - 专业的 PDF 表格提取工具</li>
-                        <li><strong>pdf2image</strong> - 将 PDF 页面转换为图像（使用 poppler）</li>
-                        <li><strong>PyMuPDF (fitz)</strong> - 高性能 PDF 解析器，支持渲染和编辑</li>
-                        <li><strong>reportlab</strong> - 从零创建 PDF 文件</li>
-                        <li><strong>WeasyPrint</strong> - 将 HTML/CSS 转换为 PDF</li>
-                    </ul>
-                </div>
             </div>
 
             <!-- Golang 示例 -->
@@ -1327,93 +1334,6 @@ createPdf();</code></pre>
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- 工具部分 -->
-    <section id="tools" class="section section-alt">
-        <div class="container">
-            <h2 class="section-title">PDF 工具和资源</h2>
-            
-            <!-- Mermaid 生态系统图 -->
-            <div class="mermaid-wrapper">
-                <h3 class="diagram-title">PDF 工具生态系统</h3>
-                <div class="mermaid">
-graph TB
-    subgraph S1[开源工具]
-        O1[PyPDF2]
-        O2[PDFBox]
-        O3[Poppler]
-        O4[MuPDF]
-        O5[pdf.js]
-    end
-    subgraph S2[商业工具]
-        C1[Adobe Acrobat DC]
-        C2[Foxit PhantomPDF]
-        C3[Nitro PDF]
-        C4[Soda PDF]
-    end
-    subgraph S3[云服务]
-        S1a[Adobe PDF Services]
-        S2a[Google Document AI]
-        S3a[AWS Textract]
-        S4a[Azure Form Recognizer]
-    end
-    subgraph S4[学习资源]
-        L1[ISO 32000 标准]
-        L2[PDF Association]
-        L3[Adobe 开发者中心]
-        L4[GitHub 项目]
-    end
-    S1 --> Apps[应用场景]
-    S2 --> Apps
-    S3 --> Apps
-    S4 --> Devs[开发者]
-                </div>
-            </div>
-
-            <div class="tools-grid">
-                <div class="tool-card">
-                    <h3>🛠️ 开源库</h3>
-                    <ul class="list">
-                        <li><strong>PyPDF2</strong> - Python PDF 操作库</li>
-                        <li><strong>PDFBox</strong> - Java PDF 工具箱</li>
-                        <li><strong>Poppler</strong> - PDF 渲染引擎</li>
-                        <li><strong>MuPDF</strong> - 高性能 PDF 解析器</li>
-                        <li><strong>pdf.js</strong> - JavaScript PDF 渲染</li>
-                    </ul>
-                </div>
-                <div class="tool-card">
-                    <h3>💼 商业工具</h3>
-                    <ul class="list">
-                        <li><strong>Adobe Acrobat DC</strong> - 专业 PDF 编辑器</li>
-                        <li><strong>Foxit PhantomPDF</strong> - 企业级 PDF 解决方案</li>
-                        <li><strong>Nitro PDF</strong> - PDF 创建和编辑</li>
-                        <li><strong>Soda PDF</strong> - 在线 PDF 工具</li>
-                        <li><strong>Smallpdf</strong> - 在线 PDF 处理</li>
-                    </ul>
-                </div>
-                <div class="tool-card">
-                    <h3>📚 学习资源</h3>
-                    <ul class="list">
-                        <li><strong>ISO 32000 标准</strong> - PDF 官方规范</li>
-                        <li><strong>PDF Association</strong> - 行业组织</li>
-                        <li><strong>Adobe 开发者中心</strong> - 技术文档</li>
-                        <li><strong>PDF 技术博客</strong> - 最新动态</li>
-                        <li><strong>GitHub 开源项目</strong> - 代码示例</li>
-                    </ul>
-                </div>
-                <div class="tool-card">
-                    <h3>🔧 API 服务</h3>
-                    <ul class="feature-list">
-                        <li><strong>Adobe PDF Services API</strong> - 云服务</li>
-                        <li><strong>Google Cloud Document AI</strong> - 文档理解</li>
-                        <li><strong>AWS Textract</strong> - 文本提取</li>
-                        <li><strong>Azure Form Recognizer</strong> - 表单处理</li>
-                        <li><strong>PDF.co API</strong> - PDF 操作 API</li>
-                    </ul>
-                </div>
             </div>
         </div>
     </section>
