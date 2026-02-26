@@ -23,11 +23,6 @@
     <script src="lib/chart.umd.min.js"></script>
 </head>
 <body>
-    <!-- 主题切换按钮 -->
-    <button class="theme-toggle" id="themeToggle" aria-label="切换深色模式">
-        <span class="theme-icon">🌙</span>
-    </button>
-
     <!-- 导航栏 -->
     <nav class="navbar">
         <div class="container">
@@ -53,33 +48,6 @@
         </div>
     </nav>
 
-    <!-- Hero 区域 -->
-    <section class="hero">
-        <div class="container">
-            <h1 class="hero-title">PDF 格式完全指南</h1>
-            <p class="hero-subtitle">从基础到高级 · 2026 年最新技术</p>
-            <p class="hero-description">深入解析 PDF 内部结构、安全机制、AI 集成与现代化应用</p>
-            <div class="hero-buttons">
-                <a href="#intro" class="btn btn-primary">开始学习</a>
-                <a href="#code-examples" class="btn btn-secondary">代码示例</a>
-            </div>
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-number">8</span>
-                    <span class="stat-label">核心章节</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">50+</span>
-                    <span class="stat-label">代码示例</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">20+</span>
-                    <span class="stat-label">图表解析</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- 简介部分 -->
     <section id="intro" class="section">
         <div class="container">
@@ -88,131 +56,27 @@
             <!-- Mermaid 流程图：PDF 生态系统 -->
             <div class="mermaid-wrapper">
                 <div class="mermaid">
-graph TB
-    subgraph A[PDF 生态系统]
-        A1[Adobe Acrobat] --> A2[PDF 阅读器]
-        A3[第三方工具] --> A2
-        A4[在线服务] --> A2
-    end
-    subgraph B[应用场景]
-        B1[文档分发]
-        B2[电子表单]
-        B3[数字签名]
-        B4[报告生成]
-        B5[电子出版]
-    end
-    subgraph C[技术栈]
-        C1[ISO 32000 标准]
-        C2[PDF 2.0 规范]
-        C3[PDF/A 归档]
-        C4[PDF/X 印刷]
-        C5[PDF/UA 无障碍]
-    end
-    A --> B
-    A --> C
+                graph TB
+                    subgraph A[PDF 生态系统]
+                        A1[Adobe Acrobat] --> A2[PDF 阅读器]
+                        A3[第三方工具] --> A2
+                        A4[在线服务] --> A2
+                    end
+                    subgraph B[应用场景]
+                        B1[文档分发]
+                        B2[电子表单]
+                        B3[数字签名]
+                        B4[报告生成]
+                        B5[电子出版]
+                    end
+                    subgraph C[技术栈]
+                        C1[ISO 32000 标准]
+                        C2[PDF 2.0 规范]
+                        C3[PDF/A 归档]
+                        C4[PDF/X 印刷]
+                        C5[PDF/UA 无障碍]
+                    end
                 </div>
-            </div>
-
-            <div class="content-grid">
-                <div class="card">
-                    <div class="card-icon">📄</div>
-                    <h3>便携式文档格式</h3>
-                    <p>PDF（Portable Document Format）是由 Adobe 公司于 1993 年创建的文件格式，现为 ISO 32000 国际标准。</p>
-                </div>
-                <div class="card">
-                    <div class="card-icon">🌐</div>
-                    <h3>跨平台兼容</h3>
-                    <p>PDF 文件在任何操作系统和设备上都能保持一致的显示效果，确保文档的可靠性和专业性。</p>
-                </div>
-                <div class="card">
-                    <div class="card-icon">🔒</div>
-                    <h3>安全性</h3>
-                    <p>支持密码保护、数字签名和权限控制，保护敏感文档不被未授权访问或修改。</p>
-                </div>
-                <div class="card">
-                    <div class="card-icon">🎯</div>
-                    <h3>精确控制</h3>
-                    <p>提供精确的排版控制，包括字体、颜色、图像位置和页面布局，适合专业出版。</p>
-                </div>
-            </div>
-
-            <!-- 对比表格 -->
-            <div class="table-wrapper">
-                <h3 class="table-title">PDF 与其他文档格式对比</h3>
-                <table class="comparison-table">
-                    <thead>
-                        <tr>
-                            <th>特性</th>
-                            <th>PDF</th>
-                            <th>Word</th>
-                            <th>HTML</th>
-                            <th>图片</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>跨平台一致性</strong></td>
-                            <td class="highlight-cell">✅ 完美</td>
-                            <td>⚠️ 可能变化</td>
-                            <td>⚠️ 依赖浏览器</td>
-                            <td>✅ 完美</td>
-                        </tr>
-                        <tr>
-                            <td><strong>可编辑性</strong></td>
-                            <td>⚠️ 需专用工具</td>
-                            <td class="highlight-cell">✅ 容易</td>
-                            <td>✅ 容易</td>
-                            <td>❌ 困难</td>
-                        </tr>
-                        <tr>
-                            <td><strong>文件大小</strong></td>
-                            <td class="highlight-cell">✅ 小</td>
-                            <td>⚠️ 中等</td>
-                            <td>✅ 小</td>
-                            <td>❌ 大</td>
-                        </tr>
-                        <tr>
-                            <td><strong>搜索能力</strong></td>
-                            <td class="highlight-cell">✅ 支持</td>
-                            <td>✅ 支持</td>
-                            <td>✅ 支持</td>
-                            <td>❌ 不支持</td>
-                        </tr>
-                        <tr>
-                            <td><strong>安全性</strong></td>
-                            <td class="highlight-cell">✅ 强</td>
-                            <td>⚠️ 中等</td>
-                            <td>⚠️ 低</td>
-                            <td>⚠️ 低</td>
-                        </tr>
-                        <tr>
-                            <td><strong>可访问性</strong></td>
-                            <td>✅ 支持</td>
-                            <td>✅ 支持</td>
-                            <td class="highlight-cell">✅ 最佳</td>
-                            <td>❌ 差</td>
-                        </tr>
-                        <tr>
-                            <td><strong>交互性</strong></td>
-                            <td>✅ 支持</td>
-                            <td>⚠️ 有限</td>
-                            <td class="highlight-cell">✅ 丰富</td>
-                            <td>❌ 无</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="info-box">
-                <h3>PDF 2.0 及后续发展</h3>
-                <p>PDF 2.0（ISO 32000-2:2017）引入了重大改进，最新的 PDF 技术继续演进，包括：</p>
-                <ul class="feature-list">
-                    <li>增强的压缩算法和性能优化</li>
-                    <li>改进的无障碍功能支持</li>
-                    <li>更强大的表单和交互性</li>
-                    <li>云原生 PDF 处理能力</li>
-                    <li>AI 驱动的智能文档分析</li>
-                </ul>
             </div>
         </div>
     </section>
@@ -226,33 +90,33 @@ graph TB
             <div class="mermaid-wrapper">
                 <h3 class="diagram-title">PDF 文件解析序列图</h3>
                 <div class="mermaid">
-sequenceDiagram
-    autonumber
-    participant Reader as PDF 阅读器
-    participant Header as 文件头
-    participant Body as 文档主体
-    participant XRef as 交叉引用表
-    participant Trailer as 文件尾
+                sequenceDiagram
+                    autonumber
+                    participant Reader as PDF 阅读器
+                    participant Header as 文件头
+                    participant Body as 文档主体
+                    participant XRef as 交叉引用表
+                    participant Trailer as 文件尾
 
-    Reader->>Header: 读取版本标识
-    Note over Reader,Header: 确认 PDF 版本
+                    Reader->>Header: 读取版本标识
+                    Note over Reader,Header: 确认 PDF 版本
 
-    Reader->>Trailer: 定位文件尾
-    Note over Reader,Trailer: 回溯查找 startxref
+                    Reader->>Trailer: 定位文件尾
+                    Note over Reader,Trailer: 回溯查找 startxref
 
-    Reader->>XRef: 解析交叉引用表
-    Note over Reader,XRef: 获取所有对象位置
+                    Reader->>XRef: 解析交叉引用表
+                    Note over Reader,XRef: 获取所有对象位置
 
-    Reader->>Body: 读取 Catalog 对象
-    Note over Reader,Body: 文档根对象
+                    Reader->>Body: 读取 Catalog 对象
+                    Note over Reader,Body: 文档根对象
 
-    Reader->>Body: 遍历 Pages 树
-    Note over Reader,Body: 加载所有页面
+                    Reader->>Body: 遍历 Pages 树
+                    Note over Reader,Body: 加载所有页面
 
-    Reader->>Body: 解析页面内容
-    Note over Reader,Body: 渲染文本和图像
+                    Reader->>Body: 解析页面内容
+                    Note over Reader,Body: 渲染文本和图像
 
-    Reader->>Reader: 完成文档显示
+                    Reader->>Reader: 完成文档显示
                 </div>
             </div>
 
@@ -284,13 +148,13 @@ sequenceDiagram
             <div class="mermaid-wrapper">
                 <h3 class="diagram-title">PDF 对象层次结构</h3>
                 <div class="mermaid">
-graph TD
-    Catalog[Catalog<br/>文档根对象] --> Pages[Pages<br/>页面树]
-    Pages --> Page[Page<br/>单页对象]
-    Page --> Content[ContentStream<br/>内容流]
-    Page --> Resources[Resources<br/>资源字典]
-    Resources --> Font[Font<br/>字体]
-    Resources --> XObject[XObject<br/>外部对象]
+                graph TD
+                    Catalog[Catalog<br/>文档根对象] --> Pages[Pages<br/>页面树]
+                    Pages --> Page[Page<br/>单页对象]
+                    Page --> Content[ContentStream<br/>内容流]
+                    Page --> Resources[Resources<br/>资源字典]
+                    Resources --> Font[Font<br/>字体]
+                    Resources --> XObject[XObject<br/>外部对象]
                 </div>
             </div>
 
