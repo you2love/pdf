@@ -6,7 +6,7 @@
     <meta name="description" content="PDF 文件格式完全学习指南">
     <title>PDF 格式完全指南</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=20260226">
     <style>
       /* 强制浅色模式 - 覆盖所有 CSS 变量 */
       :root {
@@ -599,44 +599,44 @@ graph TD
             </div>
 
             <!-- 交互式流程图 -->
-            <div class="interactive-flowchart">
+            <div class="interactive-flowchart" style="overflow-x: auto; width: 100%;">
                 <h3 class="diagram-title">交互式 PDF 操作流程图</h3>
-                <div class="flowchart-steps" style="display:flex;flex-direction:row;gap:0.5rem;overflow-x:auto;padding:0.5rem;min-width:100%">
-                    <div class="flowchart-step" data-step="1" style="display:flex;flex-direction:column;align-items:center;min-width:100px;flex:none">
+                <div class="flowchart-steps" style="display: flex !important; flex-direction: row !important; gap: 0.5rem !important; overflow-x: auto !important; padding: 0.5rem !important; width: max-content !important;">
+                    <div class="flowchart-step" data-step="1" style="display: flex !important; flex-direction: column !important; align-items: center !important; min-width: 100px !important; flex: none !important;">
                         <div class="step-number">1</div>
-                        <div class="step-content" style="text-align:center;margin-top:0.5rem">
+                        <div class="step-content" style="text-align: center; margin-top: 0.5rem;">
                             <h4>读取文件头</h4>
                             <p>验证 PDF 版本标识</p>
                         </div>
                     </div>
-                    <div class="flowchart-connector" style="display:flex;align-items:center;font-size:1.25rem;flex:none">→</div>
-                    <div class="flowchart-step" data-step="2" style="display:flex;flex-direction:column;align-items:center;min-width:100px;flex:none">
+                    <div class="flowchart-connector" style="display: flex !important; align-items: center !important; font-size: 1.25rem !important; flex: none !important;">→</div>
+                    <div class="flowchart-step" data-step="2" style="display: flex !important; flex-direction: column !important; align-items: center !important; min-width: 100px !important; flex: none !important;">
                         <div class="step-number">2</div>
-                        <div class="step-content" style="text-align:center;margin-top:0.5rem">
+                        <div class="step-content" style="text-align: center; margin-top: 0.5rem;">
                             <h4>定位文件尾</h4>
                             <p>查找 startxref 位置</p>
                         </div>
                     </div>
-                    <div class="flowchart-connector" style="display:flex;align-items:center;font-size:1.25rem;flex:none">→</div>
-                    <div class="flowchart-step" data-step="3" style="display:flex;flex-direction:column;align-items:center;min-width:100px;flex:none">
+                    <div class="flowchart-connector" style="display: flex !important; align-items: center !important; font-size: 1.25rem !important; flex: none !important;">→</div>
+                    <div class="flowchart-step" data-step="3" style="display: flex !important; flex-direction: column !important; align-items: center !important; min-width: 100px !important; flex: none !important;">
                         <div class="step-number">3</div>
-                        <div class="step-content" style="text-align:center;margin-top:0.5rem">
+                        <div class="step-content" style="text-align: center; margin-top: 0.5rem;">
                             <h4>解析 XRef</h4>
                             <p>构建对象位置索引</p>
                         </div>
                     </div>
-                    <div class="flowchart-connector" style="display:flex;align-items:center;font-size:1.25rem;flex:none">→</div>
-                    <div class="flowchart-step" data-step="4" style="display:flex;flex-direction:column;align-items:center;min-width:100px;flex:none">
+                    <div class="flowchart-connector" style="display: flex !important; align-items: center !important; font-size: 1.25rem !important; flex: none !important;">→</div>
+                    <div class="flowchart-step" data-step="4" style="display: flex !important; flex-direction: column !important; align-items: center !important; min-width: 100px !important; flex: none !important;">
                         <div class="step-number">4</div>
-                        <div class="step-content" style="text-align:center;margin-top:0.5rem">
+                        <div class="step-content" style="text-align: center; margin-top: 0.5rem;">
                             <h4>加载 Catalog</h4>
                             <p>获取文档根对象</p>
                         </div>
                     </div>
-                    <div class="flowchart-connector" style="display:flex;align-items:center;font-size:1.25rem;flex:none">→</div>
-                    <div class="flowchart-step" data-step="5" style="display:flex;flex-direction:column;align-items:center;min-width:100px;flex:none">
+                    <div class="flowchart-connector" style="display: flex !important; align-items: center !important; font-size: 1.25rem !important; flex: none !important;">→</div>
+                    <div class="flowchart-step" data-step="5" style="display: flex !important; flex-direction: column !important; align-items: center !important; min-width: 100px !important; flex: none !important;">
                         <div class="step-number">5</div>
-                        <div class="step-content" style="text-align:center;margin-top:0.5rem">
+                        <div class="step-content" style="text-align: center; margin-top: 0.5rem;">
                             <h4>遍历 Pages</h4>
                             <p>加载所有页面内容</p>
                         </div>
