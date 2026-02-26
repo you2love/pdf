@@ -674,6 +674,11 @@
       font-size: 1rem;
       font-weight: 600;
       color: #e6edf3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
     pre {
@@ -681,6 +686,14 @@
       padding: 1.5rem;
       overflow-x: auto;
       background-color: transparent;
+      max-height: 500px;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+
+      &.collapsed {
+        max-height: 0;
+        padding: 0;
+        overflow: hidden;
+      }
 
       code {
         color: #e6edf3;
@@ -688,6 +701,21 @@
         padding: 0;
         font-size: 0.85rem;
         line-height: 1.6;
+      }
+    }
+
+    .collapse-btn {
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #e6edf3;
+      transition: all 0.2s;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
       }
     }
   }

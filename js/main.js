@@ -513,21 +513,50 @@ class LanguageCodeSwitcher {
 }
 
 // ===================================
-// 代码块复制功能
+// 代码块复制和折叠功能
 // ===================================
 class CodeBlockCopy {
   constructor() {
-    this.codeBlocks = document.querySelectorAll('.code-block pre');
-    
+    this.codeBlocks = document.querySelectorAll('.code-block');
+
     this.init();
   }
-  
+
   init() {
-    this.codeBlocks.forEach(pre => {
-      const button = document.createElement('button');
-      button.className = 'copy-btn';
-      button.textContent = '复制';
-      button.style.cssText = `
+    this.codeBlocks.forEach(block => {
+      const pre = block.querySelector('pre');
+      if (!pre) return;
+
+      // 添加折叠按钮到标题
+      const header = block.querySelector('h3, h4');
+      if (header) {
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'collapse-btn';
+        toggleBtn.textContent = '▼ 折叠';
+        toggleBtn.style.cssText = `
+          float: right;
+          padding: 4px 8px;
+          font-size: 12px;
+          cursor: pointer;
+          border: 1px solid #e1e4e8;
+          border-radius: 4px;
+          background: #f6f8fa;
+          color: #586069;
+        `;
+        
+        toggleBtn.addEventListener('click', () => {
+          pre.classList.toggle('collapsed');
+          toggleBtn.textContent = pre.classList.contains('collapsed') ? '▶ 展开' : '▼ 折叠';
+        });
+
+        header.appendChild(toggleBtn);
+      }
+
+      // 添加复制按钮
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'copy-btn';
+      copyBtn.textContent = '复制';
+      copyBtn.style.cssText = `
         position: absolute;
         top: 10px;
         right: 10px;
@@ -540,30 +569,31 @@ class CodeBlockCopy {
         font-size: 12px;
         transition: all 0.2s;
       `;
-      
-      button.addEventListener('click', () => this.copyCode(pre, button));
-      
+
+      copyBtn.addEventListener('click', () => this.copyCode(pre, copyBtn));
+
       pre.style.position = 'relative';
-      pre.appendChild(button);
-      
-      button.addEventListener('mouseenter', () => {
-        button.style.background = 'rgba(255,255,255,0.3)';
+      pre.appendChild(copyBtn);
+
+      // 鼠标悬停效果
+      copyBtn.addEventListener('mouseenter', () => {
+        copyBtn.style.background = 'rgba(255,255,255,0.3)';
       });
-      
-      button.addEventListener('mouseleave', () => {
-        button.style.background = 'rgba(255,255,255,0.2)';
+
+      copyBtn.addEventListener('mouseleave', () => {
+        copyBtn.style.background = 'rgba(255,255,255,0.2)';
       });
     });
   }
-  
+
   async copyCode(pre, button) {
     const code = pre.querySelector('code')?.textContent || pre.textContent;
-    
+
     try {
       await navigator.clipboard.writeText(code);
       button.textContent = '已复制!';
       button.style.background = 'rgba(16, 185, 129, 0.3)';
-      
+
       setTimeout(() => {
         button.textContent = '复制';
         button.style.background = 'rgba(255,255,255,0.2)';
