@@ -25,8 +25,12 @@
       .language-section { display: none; }
       .language-section.active { display: block; }
       .code-block { background: #1d1f23; border-radius: var(--radius-md); margin: 1.5rem 0; overflow: hidden; border: 1px solid var(--border-color); }
-      .code-block h4 { padding: 0.75rem 1.25rem; background: #2d3136; font-size: 0.9rem; font-weight: 600; color: #e2e8f0; margin: 0; }
-      .code-block pre { margin: 0; padding: 1.25rem; overflow-x: auto; }
+      .code-block h4 { padding: 0.75rem 1.25rem; background: #2d3136; font-size: 0.9rem; font-weight: 600; color: #e2e8f0; margin: 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+      .code-block h4:hover { background: #343a40; }
+      .code-block h4::after { content: '−'; font-size: 1.2rem; margin-left: 0.5rem; transition: transform 0.3s; }
+      .code-block h4.collapsed::after { content: '+'; transform: rotate(0deg); }
+      .code-block pre { margin: 0; padding: 1.25rem; overflow-x: auto; max-height: 500px; transition: max-height 0.3s ease, padding 0.3s ease; }
+      .code-block pre.collapsed { max-height: 0; padding: 0; overflow: hidden; }
       .code-block code { color: #e2e8f0; background: none; padding: 0; font-size: 0.8rem; line-height: 1.6; font-family: 'SF Mono', monospace; }
       .info-box { background: var(--bg-secondary); border-left: 4px solid var(--primary-color); padding: 1.25rem 1.5rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 2rem 0; }
       .table-wrapper { margin: 2rem 0; overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
@@ -375,10 +379,11 @@ output = pypandoc.convert_file('input.md', 'pdf',
                         <thead>
                             <tr>
                                 <th width="20%">工具</th>
-                                <th width="20%">语言</th>
-                                <th width="20%">CSS 支持</th>
-                                <th width="20%">JS 支持</th>
-                                <th width="20%">维护状态</th>
+                                <th width="15%">语言</th>
+                                <th width="15%">CSS 支持</th>
+                                <th width="15%">JS 支持</th>
+                                <th width="15%">维护状态</th>
+                                <th width="20%">推荐度</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -388,6 +393,7 @@ output = pypandoc.convert_file('input.md', 'pdf',
                                 <td>中等</td>
                                 <td>✅</td>
                                 <td>⚠️ 已停止</td>
+                                <td>⭐⭐</td>
                             </tr>
                             <tr>
                                 <td><strong>WeasyPrint</strong></td>
@@ -395,6 +401,7 @@ output = pypandoc.convert_file('input.md', 'pdf',
                                 <td>良好</td>
                                 <td>❌</td>
                                 <td>✅ 活跃</td>
+                                <td>⭐⭐⭐⭐</td>
                             </tr>
                             <tr>
                                 <td><strong>Pandoc</strong></td>
@@ -402,6 +409,7 @@ output = pypandoc.convert_file('input.md', 'pdf',
                                 <td>依赖引擎</td>
                                 <td>依赖引擎</td>
                                 <td>✅ 活跃</td>
+                                <td>⭐⭐⭐⭐</td>
                             </tr>
                             <tr>
                                 <td><strong>Puppeteer</strong></td>
@@ -409,13 +417,23 @@ output = pypandoc.convert_file('input.md', 'pdf',
                                 <td>优秀</td>
                                 <td>✅</td>
                                 <td>✅ 活跃</td>
+                                <td>⭐⭐⭐⭐⭐</td>
                             </tr>
                             <tr>
                                 <td><strong>Playwright</strong></td>
-                                <td>Node.js</td>
+                                <td>Node.js/Python</td>
                                 <td>优秀</td>
                                 <td>✅</td>
                                 <td>✅ 活跃</td>
+                                <td>⭐⭐⭐⭐⭐</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pyppeteer</strong></td>
+                                <td>Python</td>
+                                <td>优秀</td>
+                                <td>✅</td>
+                                <td>⚠️ 缓慢</td>
+                                <td>⭐⭐⭐</td>
                             </tr>
                         </tbody>
                     </table>
@@ -557,6 +575,77 @@ asyncio.run(generate_pdf())</code></pre>
                         <li><strong>对比 Puppeteer</strong> - Puppeteer 仅支持 Chromium，但更轻量；Playwright 支持多浏览器更灵活</li>
                     </ul>
                 </div>
+
+                <div class="code-block" style="margin-top: 1.5rem;">
+                    <h4>Pyppeteer - Python 版 Puppeteer</h4>
+<pre><code># 安装
+pip install pyppeteer
+
+# 基本使用
+import asyncio
+from pyppeteer import launch
+
+async def generate_pdf():
+    browser = await launch()
+    page = await browser.newPage()
+    await page.goto('https://example.com')
+    await page.pdf({'path': 'output.pdf', 'format': 'A4'})
+    await browser.close()
+
+asyncio.get_event_loop().run_until_complete(generate_pdf())
+
+# 高级配置
+async def generate_advanced_pdf():
+    browser = await launch({
+        'headless': True,
+        'args': ['--no-sandbox']
+    })
+    page = await browser.newPage()
+    
+    await page.setViewport({'width': 1920, 'height': 1080})
+    await page.goto('https://example.com', {
+        'waitUntil': 'networkidle2'
+    })
+    
+    await page.pdf({
+        'path': 'report.pdf',
+        'format': 'A4',
+        'width': '210mm',
+        'height': '297mm',
+        'margin': {
+            'top': '10mm',
+            'right': '10mm',
+            'bottom': '10mm',
+            'left': '10mm'
+        },
+        'printBackground': True,
+        'displayHeaderFooter': True,
+        'headerTemplate': '<div style="font-size:10px;margin-left:20px;">报告标题</div>',
+        'footerTemplate': '<div style="font-size:10px;margin-right:20px;">页码 <span class="pageNumber"></span>/<span class="totalPages"></span></div>',
+        'preferCSSPageSize': True
+    })
+    
+    await browser.close()
+
+asyncio.get_event_loop().run_until_complete(generate_advanced_pdf())
+
+# 截图功能
+await page.screenshot({'path': 'screenshot.png', 'fullPage': True})
+
+# 等待元素后再生成
+await page.waitForSelector('.content-loaded')
+await page.pdf({'path': 'loaded.pdf', 'format': 'A4'})</code></pre>
+                </div>
+
+                <div class="info-box" style="margin-top: 1.5rem;">
+                    <h4>Pyppeteer 特点</h4>
+                    <ul class="feature-list">
+                        <li><strong>优点</strong> - Python 异步 API，Puppeteer 的 Python 移植版，轻量级</li>
+                        <li><strong>缺点</strong> - 社区维护版本，更新较慢；官方推荐 playwright-python</li>
+                        <li><strong>适用场景</strong> - Python 项目，简单 PDF 生成，快速原型</li>
+                        <li><strong>对比 Playwright</strong> - Playwright 是官方继任者，功能更强大；Pyppeteer 更轻量但维护较少</li>
+                    </ul>
+                </div>
             </div>
         </section>
     </main>
@@ -567,6 +656,19 @@ asyncio.run(generate_pdf())</code></pre>
             document.querySelectorAll('.language-section').forEach(s => s.classList.remove('active'));
             document.getElementById(lang + '-section').classList.add('active');
         }
+
+        // 代码块折叠功能
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.code-block h4').forEach(function(header) {
+                header.addEventListener('click', function() {
+                    const pre = this.nextElementSibling;
+                    if (pre && pre.tagName === 'PRE') {
+                        this.classList.toggle('collapsed');
+                        pre.classList.toggle('collapsed');
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
