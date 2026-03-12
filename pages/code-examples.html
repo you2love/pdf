@@ -129,6 +129,176 @@ def create_chart():
     drawing.add(chart)
     return drawing</code></pre>
                 </div>
+                <div class="code-block">
+                    <h4>5. Mermaid-Py 生成流程图</h4>
+<pre><code># 安装
+pip install mermaid-py
+
+# 基本使用
+from mermaid import Mermaid, Graph, SequenceDiagram, ClassDiagram
+
+# 创建流程图
+graph = Graph('TD')
+graph.add_node('A', '开始')
+graph.add_node('B', '处理')
+graph.add_node('C', '结束')
+graph.add_edge('A', 'B')
+graph.add_edge('B', 'C')
+
+# 渲染为 SVG
+mermaid_code = str(graph)
+print(mermaid_code)
+
+# 保存为文件
+with open('diagram.mmd', 'w') as f:
+    f.write(mermaid_code)
+
+# 转换为 PDF（需要 mermaid-cli）
+# mmdc -i diagram.mmd -o diagram.pdf
+
+# 序列图示例
+seq = SequenceDiagram()
+seq.participant('用户')
+seq.participant('系统')
+seq.message('用户', '系统', '请求数据')
+seq.message('系统', '用户', '返回结果')
+
+# 类图示例
+class_diag = ClassDiagram()
+class_diag.add_class('User', ['name', 'email'], ['login()', 'logout()'])
+class_diag.add_class('Order', ['id', 'total'], ['create()', 'cancel()'])
+class_diag.add_relation('User', 'Order', 'places', '1..*')
+
+# 完整 PDF 报告示例
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet
+
+def create_mermaid_pdf():
+    doc = SimpleDocTemplate("mermaid_report.pdf", pagesize=A4)
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # 添加标题
+    elements.append(Paragraph("Mermaid 流程图报告", styles['Title']))
+    elements.append(Paragraph("使用 Mermaid-Py 生成", styles['Normal']))
+    
+    # 添加 Mermaid 图表（需要先生成 SVG/PNG）
+    # 1. 使用 mermaid-cli 转换
+    # 2. 或使用在线 API 渲染
+    
+    # 示例：添加流程图描述
+    elements.append(Paragraph("流程图说明:", styles['Heading2']))
+    elements.append(Paragraph("开始 → 处理 → 结束", styles['Normal']))
+    
+    doc.build(elements)
+
+create_mermaid_pdf()</code></pre>
+                </div>
+
+                <div class="info-box" style="margin-top: 1.5rem;">
+                    <h4>Mermaid-Py 特点</h4>
+                    <ul class="feature-list">
+                        <li><strong>优点</strong> - Python 方式编写 Mermaid 图表，代码即文档，支持流程图/序列图/类图等</li>
+                        <li><strong>缺点</strong> - 需要 mermaid-cli 或在线服务转换为 PDF/图像</li>
+                        <li><strong>适用场景</strong> - 技术文档，架构 diagrams，流程说明</li>
+                        <li><strong>转换工具</strong> - mermaid-cli (mmdc), Mermaid Live Editor, 在线 API</li>
+                    </ul>
+                </div>
+
+                <div class="code-block" style="margin-top: 1.5rem;">
+                    <h4>6. Pyecharts 生成可视化图表</h4>
+<pre><code># 安装
+pip install pyecharts
+
+# 基本使用 - 柱状图
+from pyecharts import options as opts
+from pyecharts.charts import Bar
+
+bar = Bar()
+bar.add_xaxis(["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"])
+bar.add_yaxis("商家 A", [120, 200, 150, 80, 70, 110])
+bar.add_yaxis("商家 B", [80, 150, 110, 100, 90, 130])
+bar.set_global_opts(title_opts=opts.TitleOpts(title="销售数据"))
+
+# 渲染为 HTML
+bar.render("bar_chart.html")
+
+# 渲染为 PNG（需要 snapshot-selenium）
+# pip install snapshot-selenium
+from snapshot_selenium import snapshot
+bar.render_snapshot("bar_chart.png")
+
+# 饼图
+from pyecharts.charts import Pie
+
+pie = Pie()
+pie.add(
+    "销售占比",
+    [
+        ("衬衫", 120),
+        ("羊毛衫", 200),
+        ("雪纺衫", 150),
+        ("裤子", 80),
+        ("高跟鞋", 70),
+        ("袜子", 110)
+    ]
+)
+pie.set_global_opts(title_opts=opts.TitleOpts(title="饼图示例"))
+pie.render("pie_chart.html")
+
+# 折线图
+from pyecharts.charts import Line
+
+line = Line()
+line.add_xaxis(["1 月", "2 月", "3 月", "4 月", "5 月", "6 月"])
+line.add_yaxis("销售额", [220, 182, 191, 234, 290, 330])
+line.set_global_opts(title_opts=opts.TitleOpts(title="月度趋势"))
+line.render("line_chart.html")
+
+# 完整 PDF 报告示例
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet
+from pyecharts.charts import Bar
+import pyecharts.options as opts
+
+def create_pyecharts_pdf():
+    # 1. 创建图表并保存为图片
+    bar = Bar()
+    bar.add_xaxis(["产品 A", "产品 B", "产品 C", "产品 D"])
+    bar.add_yaxis("销量", [120, 200, 150, 80])
+    bar.set_global_opts(title_opts=opts.TitleOpts(title="销售对比"))
+    bar.render_snapshot("chart.png")
+    
+    # 2. 创建 PDF 报告
+    doc = SimpleDocTemplate("pyecharts_report.pdf", pagesize=A4)
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # 添加标题
+    elements.append(Paragraph("Pyecharts 可视化报告", styles['Title']))
+    elements.append(Paragraph("使用 Python 生成 ECharts 图表", styles['Normal']))
+    elements.append(PageBreak())
+    
+    # 添加图表
+    elements.append(Paragraph("销售数据对比", styles['Heading2']))
+    elements.append(Image("chart.png", width=400, height=300))
+    
+    doc.build(elements)
+
+create_pyecharts_pdf()</code></pre>
+                </div>
+
+                <div class="info-box" style="margin-top: 1.5rem;">
+                    <h4>Pyecharts 特点</h4>
+                    <ul class="feature-list">
+                        <li><strong>优点</strong> - 基于百度 ECharts，图表类型丰富（50+），交互性强，支持 HTML/PNG 导出</li>
+                        <li><strong>缺点</strong> - 需要额外安装 snapshot-selenium 才能导出图片</li>
+                        <li><strong>适用场景</strong> - 数据可视化报告，仪表盘，动态图表</li>
+                        <li><strong>图表类型</strong> - 柱状图、折线图、饼图、散点图、地图、雷达图、箱线图等</li>
+                    </ul>
+                </div>
             </div>
 
             <!-- Golang 示例 -->
