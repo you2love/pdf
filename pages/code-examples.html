@@ -241,6 +241,323 @@ doc.end();</code></pre>
                     </tbody>
                 </table>
             </div>
+
+            <!-- HTML 转 PDF 工具 -->
+            <div style="margin-top: 4rem; padding-top: 2rem; border-top: 2px solid var(--border-color);">
+                <h3 style="font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--text-primary);">🌐 HTML 转 PDF 工具</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">将 HTML/CSS 页面转换为 PDF 文档的常用工具</p>
+
+                <div class="code-block">
+                    <h4>wkhtmltopdf - WebKit 内核 PDF 生成器</h4>
+<pre><code># 安装
+# macOS
+brew install wkhtmltopdf
+
+# Ubuntu/Debian
+sudo apt-get install wkhtmltopdf
+
+# 基本使用
+wkhtmltopdf input.html output.pdf
+
+# 命令行示例
+wkhtmltopdf --page-size A4 --margin-top 20mm \
+  --encoding UTF-8 https://example.com output.pdf
+
+# Python 集成 (pdfkit)
+pip install pdfkit
+
+import pdfkit
+pdfkit.from_url('https://example.com', 'output.pdf')
+pdfkit.from_file('input.html', 'output.pdf')
+pdfkit.from_string('<h1>Hello</h1>', 'output.pdf')
+
+# 配置选项
+config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
+pdfkit.from_string(html, 'output.pdf', configuration=config)</code></pre>
+                </div>
+
+                <div class="info-box" style="margin-top: 1.5rem;">
+                    <h4>wkhtmltopdf 特点</h4>
+                    <ul class="feature-list">
+                        <li><strong>优点</strong> - 基于 WebKit 引擎，CSS 支持好，使用简单，跨平台</li>
+                        <li><strong>缺点</strong> - 已停止维护，不支持 CSS Grid/Flexbox 等新特性</li>
+                        <li><strong>适用场景</strong> - 简单 HTML 页面转换，快速原型</li>
+                    </ul>
+                </div>
+
+                <div class="code-block" style="margin-top: 1.5rem;">
+                    <h4>WeasyPrint - Python CSS 渲染引擎</h4>
+<pre><code># 安装
+pip install weasyprint
+
+# 命令行使用
+weasyprint input.html output.pdf
+weasyprint https://example.com output.pdf
+
+# Python API
+from weasyprint import HTML, CSS
+
+# 从 HTML 字符串
+HTML(string='<h1>Hello World</h1>').write_pdf('output.pdf')
+
+# 从文件
+HTML('input.html').write_pdf('output.pdf')
+
+# 自定义 CSS
+HTML('input.html').write_pdf('output.pdf',
+    stylesheets=[CSS('style.css')])
+
+# 高级配置
+from weasyprint import HTML, CSS, default_url_fetcher
+
+html = HTML(string=html_content, base_url='.')
+html.write_pdf('output.pdf',
+    stylesheets=[CSS(string='@page { size: A4; }')],
+    url_fetcher=default_url_fetcher,
+    optimize_size=('fonts', 'images'))</code></pre>
+                </div>
+
+                <div class="info-box" style="margin-top: 1.5rem;">
+                    <h4>WeasyPrint 特点</h4>
+                    <ul class="feature-list">
+                        <li><strong>优点</strong> - 纯 Python 实现，支持 CSS Paged Media，持续维护</li>
+                        <li><strong>缺点</strong> - JavaScript 不支持，复杂布局渲染可能不一致</li>
+                        <li><strong>适用场景</strong> - 报告生成，打印样式文档，书籍排版</li>
+                    </ul>
+                </div>
+
+                <div class="code-block" style="margin-top: 1.5rem;">
+                    <h4>Pandoc - 万能文档转换器</h4>
+<pre><code># 安装
+# macOS
+brew install pandoc
+
+# Ubuntu/Debian
+sudo apt-get install pandoc
+
+# 基本使用
+pandoc input.md -o output.pdf
+pandoc input.html -o output.pdf
+
+# 指定 PDF 引擎
+pandoc input.md -o output.pdf --pdf-engine=wkhtmltopdf
+pandoc input.md -o output.pdf --pdf-engine=weasyprint
+pandoc input.md -o output.pdf --pdf-engine=xelatex
+
+# Markdown 转 PDF（推荐）
+pandoc document.md -o document.pdf \
+  --pdf-engine=xelatex \
+  --variable mainfont="SimSun" \
+  --toc --toc-depth=3
+
+# 批量转换
+pandoc *.md -o combined.pdf
+
+# Python 集成 (pypandoc)
+pip install pypandoc
+import pypandoc
+output = pypandoc.convert_file('input.md', 'pdf',
+    extra_args=['--pdf-engine=xelatex'])</code></pre>
+                </div>
+
+                <div class="info-box" style="margin-top: 1.5rem;">
+                    <h4>Pandoc 特点</h4>
+                    <ul class="feature-list">
+                        <li><strong>优点</strong> - 支持 50+ 格式，Markdown 友好，可切换多种 PDF 引擎</li>
+                        <li><strong>缺点</strong> - 需要额外安装 LaTeX 或 PDF 引擎，配置复杂</li>
+                        <li><strong>适用场景</strong> - 学术文档，技术文档，多格式转换</li>
+                    </ul>
+                </div>
+
+                <!-- 工具对比表 -->
+                <div class="table-wrapper" style="margin-top: 2rem;">
+                    <table class="detail-table">
+                        <thead>
+                            <tr>
+                                <th width="20%">工具</th>
+                                <th width="20%">语言</th>
+                                <th width="20%">CSS 支持</th>
+                                <th width="20%">JS 支持</th>
+                                <th width="20%">维护状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>wkhtmltopdf</strong></td>
+                                <td>C++</td>
+                                <td>中等</td>
+                                <td>✅</td>
+                                <td>⚠️ 已停止</td>
+                            </tr>
+                            <tr>
+                                <td><strong>WeasyPrint</strong></td>
+                                <td>Python</td>
+                                <td>良好</td>
+                                <td>❌</td>
+                                <td>✅ 活跃</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pandoc</strong></td>
+                                <td>Haskell</td>
+                                <td>依赖引擎</td>
+                                <td>依赖引擎</td>
+                                <td>✅ 活跃</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Puppeteer</strong></td>
+                                <td>Node.js</td>
+                                <td>优秀</td>
+                                <td>✅</td>
+                                <td>✅ 活跃</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Playwright</strong></td>
+                                <td>Node.js</td>
+                                <td>优秀</td>
+                                <td>✅</td>
+                                <td>✅ 活跃</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="code-block" style="margin-top: 1.5rem;">
+                    <h4>Puppeteer - Node.js 无头浏览器</h4>
+<pre><code>// 安装
+npm install puppeteer
+
+// 基本使用
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto('https://example.com', {
+    waitUntil: 'networkidle2'
+  });
+  await page.pdf({
+    path: 'output.pdf',
+    format: 'A4',
+    printBackground: true,
+    margin: { top: '20mm', bottom: '20mm' }
+  });
+  await browser.close();
+})();
+
+// 高级配置
+await page.pdf({
+  path: 'report.pdf',
+  format: 'A4',
+  width: '210mm',
+  height: '297mm',
+  margin: { top: '10mm', right: '10mm', bottom: '10mm', left: '10mm' },
+  printBackground: true,
+  displayHeaderFooter: true,
+  headerTemplate: '<div>报告标题</div>',
+  footerTemplate: '<span class="pageNumber"></span>/<span class="totalPages"></span>',
+  preferCSSPageSize: true
+});</code></pre>
+                </div>
+
+                <div class="code-block" style="margin-top: 1.5rem;">
+                    <h4>Playwright - 跨浏览器自动化框架</h4>
+<pre><code>// 安装（Node.js）
+npm install playwright
+
+// 基本使用
+const { chromium } = require('playwright');
+
+(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  await page.goto('https://example.com', {
+    waitUntil: 'networkidle'
+  });
+  await page.pdf({
+    path: 'output.pdf',
+    format: 'A4',
+    printBackground: true
+  });
+  await browser.close();
+})();
+
+// 多浏览器支持（Chromium/Firefox/WebKit）
+const { firefox, webkit } = require('playwright');
+
+// Firefox
+const ffBrowser = await firefox.launch();
+const ffPage = await ffBrowser.newPage();
+await ffPage.goto('https://example.com');
+await ffPage.pdf({ path: 'firefox.pdf', format: 'A4' });
+await ffBrowser.close();
+
+// WebKit
+const wkBrowser = await webkit.launch();
+const wkPage = await wkBrowser.newPage();
+await wkPage.goto('https://example.com');
+await wkPage.pdf({ path: 'webkit.pdf', format: 'A4' });
+await wkBrowser.close();
+
+// 高级配置
+await page.pdf({
+  path: 'report.pdf',
+  format: 'A4',
+  width: '210mm',
+  height: '297mm',
+  margin: {
+    top: '10mm',
+    right: '10mm',
+    bottom: '10mm',
+    left: '10mm'
+  },
+  printBackground: true,
+  displayHeaderFooter: true,
+  headerTemplate: '<div style="font-size:10px;">报告标题</div>',
+  footerTemplate: '<div style="font-size:10px;">页码 <span class="pageNumber"></span>/<span class="totalPages"></span></div>',
+  preferCSSPageSize: true,
+  landscape: false  // 横向模式设为 true
+});
+
+// Python 版本
+# 安装
+pip install playwright
+playwright install  # 安装浏览器
+
+# Python 代码
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    browser = p.chromium.launch()
+    page = browser.new_page()
+    page.goto('https://example.com')
+    page.pdf(path='output.pdf', format='A4')
+    browser.close()
+
+# Python 异步版本
+import asyncio
+from playwright.async_api import async_playwright
+
+async def generate_pdf():
+    async with async_playwright() as p:
+        browser = await p.chromium.launch()
+        page = await browser.new_page()
+        await page.goto('https://example.com')
+        await page.pdf(path='output.pdf', format='A4')
+        await browser.close()
+
+asyncio.run(generate_pdf())</code></pre>
+                </div>
+
+                <div class="info-box" style="margin-top: 1.5rem;">
+                    <h4>Playwright 特点</h4>
+                    <ul class="feature-list">
+                        <li><strong>优点</strong> - 支持多浏览器（Chromium/Firefox/WebKit），持续维护，功能强大</li>
+                        <li><strong>缺点</strong> - 需要下载浏览器，资源占用较大</li>
+                        <li><strong>适用场景</strong> - 复杂网页 PDF 生成，跨浏览器测试，自动化任务</li>
+                        <li><strong>对比 Puppeteer</strong> - Puppeteer 仅支持 Chromium，但更轻量；Playwright 支持多浏览器更灵活</li>
+                    </ul>
+                </div>
+            </div>
         </section>
     </main>
     <script>
