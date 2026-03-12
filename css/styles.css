@@ -1,10 +1,10 @@
 /* ===================================
-   PDF Learn - 2026 现代 CSS 样式
+   PDF Learn - 现代 CSS 样式
    使用最新 CSS 特性：容器查询、层叠层、新选择器等
    =================================== */
 
 /* ===================================
-   CSS 层叠层（Cascade Layers）- 2026 标准
+   CSS 层叠层（Cascade Layers）
    =================================== */
 @layer reset, base, layout, components, utilities;
 
@@ -1414,7 +1414,7 @@
   font-weight: 600;
 }
 
-/* 2026 更新 - 简化样式 */
+/* 简化样式 */
 body {
   margin: 0;
   padding: 0;

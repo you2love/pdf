@@ -6,7 +6,7 @@
     <meta name="description" content="PDF 工作流程 - 创建和解析流程详解">
     <title>PDF 工作流程 | PDF Learn</title>
     <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
-    <link rel="stylesheet" href="../css/styles.css?v=2026031202">
+    <link rel="stylesheet" href="../css/styles.css?v=2026031203">
     <style>
       :root { --bg-primary: #ffffff !important; --bg-secondary: #f6f8fa !important; --bg-alt: #eaecef !important; --text-primary: #24292e !important; --text-secondary: #586069 !important; --border-color: #e1e4e8 !important; --primary-color: #0066cc; }
       html, body { background-color: #ffffff !important; margin: 0; padding: 0; }
@@ -135,46 +135,6 @@ graph TD
                     </div>
                 </div>
                 <div class="flowchart-detail" id="flowchartDetail"><p>点击步骤查看详情</p></div>
-            </div>
-
-            <div class="content-grid">
-                <div class="card">
-                    <h3>📝 创建流程要点</h3>
-                    <ul class="feature-list">
-                        <li><strong>页面参数</strong> - 设置 MediaBox、CropBox、页面尺寸</li>
-                        <li><strong>资源定义</strong> - 预先定义字体、颜色空间、XObject</li>
-                        <li><strong>内容流编写</strong> - 使用 PDF 操作符（BT、Tj、cm 等）</li>
-                        <li><strong>对象组装</strong> - 构建 Pages 树和 Catalog 对象</li>
-                        <li><strong>增量更新</strong> - 可追加修改而不重写整个文件</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>🔍 解析流程要点</h3>
-                    <ul class="feature-list">
-                        <li><strong>文件验证</strong> - 检查%PDF 头标识</li>
-                        <li><strong>XRef 解析</strong> - 建立对象偏移量索引</li>
-                        <li><strong>延迟加载</strong> - 按需加载页面，降低内存</li>
-                        <li><strong>错误恢复</strong> - 跳过损坏对象继续解析</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>⚡ 性能优化</h3>
-                    <ul class="feature-list">
-                        <li><strong>对象流</strong> - 将多个小对象压缩到一个流中</li>
-                        <li><strong>XRef 流</strong> - PDF 1.5+ 使用流格式替代表格式</li>
-                        <li><strong>线性化</strong> - Web 优化，支持逐页加载</li>
-                        <li><strong>对象缓存</strong> - 缓存已解析对象避免重复解析</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>🛡️ 安全处理</h3>
-                    <ul class="feature-list">
-                        <li><strong>密码验证</strong> - 用户密码和所有者密码</li>
-                        <li><strong>权限检查</strong> - 打印、复制、修改权限控制</li>
-                        <li><strong>数字签名</strong> - 验证文档完整性和来源</li>
-                        <li><strong>加密解密</strong> - RC4/AES 加密算法支持</li>
-                    </ul>
-                </div>
             </div>
         </section>
     </main>
