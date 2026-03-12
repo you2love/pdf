@@ -1371,3 +1371,58 @@
     padding: 0.5rem;
   }
 }
+
+/* ===================================
+   页脚样式
+   =================================== */
+.site-footer {
+  background-color: var(--bg-primary);
+  border-top: 1px solid var(--border-color);
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.site-footer p {
+  color: var(--text-secondary);
+  margin: 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+.footer-links {
+  margin-top: 1rem;
+}
+
+.footer-links a {
+  color: var(--primary-color);
+  margin: 0 0.5rem;
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+/* 页面内容区域 */
+.page-content {
+  padding-top: 100px;
+  min-height: calc(100vh - 200px);
+}
+
+/* 导航激活状态 */
+.nav-menu a.active {
+  color: var(--primary-color) !important;
+  font-weight: 600;
+}
+
+/* 2026 更新 - 简化样式 */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.98) !important;
+}

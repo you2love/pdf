@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI 与 PDF 集成 - LayoutLM、OCR、表格提取、智能问答">
+    <title>AI 与 PDF | PDF Learn</title>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="stylesheet" href="../css/styles.css?v=2026031202">
+    <style>
+      :root { --bg-primary: #ffffff !important; --bg-secondary: #f6f8fa !important; --bg-alt: #eaecef !important; --text-primary: #24292e !important; --text-secondary: #586069 !important; --border-color: #e1e4e8 !important; --primary-color: #0066cc; }
+      html, body { background-color: #ffffff !important; margin: 0; padding: 0; }
+      .navbar { background-color: rgba(255, 255, 255, 0.98) !important; border-bottom: 1px solid #e1e4e8 !important; position: sticky; top: 0; z-index: 1000; }
+      .navbar .logo, .nav-menu a { color: #24292e !important; }
+      .nav-menu a:hover, .nav-menu a.active { color: var(--primary-color) !important; }
+      .main-container { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem; }
+      .section { padding: 2rem 0; }
+      .section-title { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 700; margin-bottom: 1.5rem; color: var(--text-primary); }
+      .section-description { color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2rem; }
+      .mermaid-wrapper { background: var(--bg-elevated); border-radius: var(--radius-lg); padding: 1.5rem; margin: 2rem 0; border: 1px solid var(--border-color); }
+      .mermaid { display: flex; justify-content: center; }
+      .diagram-title { text-align: center; font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary); }
+      .ai-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+      .ai-feature { background: var(--bg-elevated); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); }
+      .ai-feature:hover { box-shadow: var(--shadow-lg); }
+      .ai-feature h3 { font-size: 1.15rem; margin-bottom: 0.75rem; color: var(--text-primary); }
+      .ai-feature p { color: var(--text-secondary); margin-bottom: 1rem; }
+      .feature-list { list-style: none; padding: 0; }
+      .feature-list li { padding: 0.4rem 0 0.4rem 1.75rem; position: relative; color: var(--text-secondary); }
+      .feature-list li::before { content: '✓'; position: absolute; left: 0; color: var(--primary-color); font-weight: 700; }
+      .chart-wrapper { background: var(--bg-elevated); border-radius: var(--radius-lg); padding: 1.5rem; margin: 2rem 0; border: 1px solid var(--border-color); }
+      .code-block { background: #1d1f23; border-radius: var(--radius-md); margin: 2rem 0; overflow: hidden; border: 1px solid var(--border-color); }
+      .code-block h3 { padding: 0.75rem 1.25rem; background: #2d3136; font-size: 0.95rem; font-weight: 600; color: #e2e8f0; margin: 0; }
+      .code-block pre { margin: 0; padding: 1.25rem; overflow-x: auto; }
+      .code-block code { color: #e2e8f0; background: none; padding: 0; font-size: 0.85rem; line-height: 1.6; font-family: 'SF Mono', monospace; }
+      .info-box { background: var(--bg-secondary); border-left: 4px solid var(--primary-color); padding: 1.25rem 1.5rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 2rem 0; }
+      .model-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem; }
+      .model-card { background: var(--bg-elevated); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); }
+      .model-card h4 { font-size: 0.95rem; margin: 0 0 0.5rem 0; color: var(--text-primary); }
+      .model-card p { font-size: 0.85rem; color: var(--text-secondary); margin: 0; }
+      .tag { display: inline-block; padding: 0.125rem 0.5rem; border-radius: var(--radius-full); font-size: 0.7rem; font-weight: 600; margin-right: 0.25rem; }
+      .tag-hf { background: #ffd21e; color: #000; }
+      .tag-ms { background: #0078d4; color: #fff; }
+      .tag-nv { background: #10b981; color: #fff; }
+      .nav-back { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary-color); text-decoration: none; margin-bottom: 1.5rem; font-weight: 500; }
+      .nav-back:hover { text-decoration: underline; }
+    </style>
+    <script src="../lib/mermaid.min.js"></script>
+    <script type="module">window.mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose', flowchart: { curve: 'basis' } });</script>
+    <script src="../lib/chart.umd.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem;">
+            <div class="nav-brand"><a href="../index.html" style="text-decoration: none;"><span class="logo" style="font-size: 1.5rem; font-weight: 800;">PDF<span style="color: var(--primary-color);">Learn</span></span></a></div>
+            <ul class="nav-menu" style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+                <li><a href="intro.html">简介</a></li><li><a href="structure.html">结构</a></li><li><a href="instance-analysis.html">实例</a></li><li><a href="workflow.html">流程</a></li><li><a href="ai-integration.html" class="active">AI</a></li><li><a href="code-examples.html">代码</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main class="main-container">
+        <a href="../index.html" class="nav-back">← 返回首页</a>
+        <section id="ai-integration" class="section">
+            <h2 class="section-title">AI 与 PDF 集成</h2>
+            <p class="section-description">探索 AI 技术在 PDF 处理中的应用，包括文档理解、OCR、表格提取和智能问答</p>
+
+            <div class="mermaid-wrapper">
+                <h3 class="diagram-title">AI 智能文档处理流程（2026）</h3>
+                <div class="mermaid">
+graph TB
+    subgraph S1[输入层]
+        A[PDF 文档]
+    end
+    subgraph S2[预处理层]
+        B[页面渲染]
+        C[文本提取]
+        D[图像提取]
+    end
+    subgraph S3[AI 处理层]
+        E[LayoutLMv3<br/>布局分析]
+        F[Table Transformer<br/>表格检测]
+        G[OCR 引擎<br/>文字识别]
+        H[LLM<br/>语义理解]
+    end
+    subgraph S4[输出层]
+        I[结构化数据<br/>JSON/CSV]
+        J[智能摘要<br/>关键信息]
+        K[知识图谱<br/>实体关系]
+        L[问答系统<br/>自然语言]
+    end
+    A --> B & C & D
+    B --> E & G
+    C --> E & H
+    D --> G
+    E --> F & H
+    F --> I
+    G --> I
+    H --> J & K & L
+    style A fill:#10b981,color:#fff
+    style I fill:#3b82f6,color:#fff
+    style J fill:#3b82f6,color:#fff
+    style K fill:#3b82f6,color:#fff
+    style L fill:#3b82f6,color:#fff
+                </div>
+            </div>
+
+            <div class="ai-content">
+                <div class="ai-feature">
+                    <h3>🤖 文档理解模型</h3>
+                    <p>基于深度学习的文档理解模型，同时处理文本和布局信息：</p>
+                    <ul class="feature-list">
+                        <li>LayoutLMv3 - 多模态预训练模型</li>
+                        <li>Donut - 无 OCR 文档理解</li>
+                        <li>UDOP - 统一文档处理</li>
+                        <li>DiT - 文档图像 Transformer</li>
+                    </ul>
+                </div>
+                <div class="ai-feature">
+                    <h3>📊 表格提取</h3>
+                    <p>自动检测和提取 PDF 中的表格结构：</p>
+                    <ul class="feature-list">
+                        <li>Table Transformer - 微软表格检测</li>
+                        <li>CascadeTabNet - 级联网络表格识别</li>
+                        <li>Camelot - 规则-based 提取</li>
+                        <li>pdfplumber - 精确单元格定位</li>
+                    </ul>
+                </div>
+                <div class="ai-feature">
+                    <h3>👁️ OCR 识别</h3>
+                    <p>光学字符识别，处理扫描版 PDF：</p>
+                    <ul class="feature-list">
+                        <li>Tesseract 5.0+ - 开源 OCR 引擎</li>
+                        <li>PaddleOCR - 百度超轻量 OCR</li>
+                        <li>EasyOCR - 多语言支持</li>
+                        <li>Azure/Google Cloud OCR</li>
+                    </ul>
+                </div>
+                <div class="ai-feature">
+                    <h3>💬 智能问答</h3>
+                    <p>基于 LLM 的 PDF 内容问答：</p>
+                    <ul class="feature-list">
+                        <li>RAG 检索增强生成</li>
+                        <li>向量数据库检索</li>
+                        <li>上下文理解回答</li>
+                        <li>引用来源标注</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>🔥 2026 年热门 AI PDF 模型</h3>
+                <div class="model-grid">
+                    <div class="model-card">
+                        <h4>LayoutLMv3</h4>
+                        <p><span class="tag tag-ms">Microsoft</span>预训练文档理解</p>
+                    </div>
+                    <div class="model-card">
+                        <h4>Table Transformer</h4>
+                        <p><span class="tag tag-ms">Microsoft</span>表格结构识别</p>
+                    </div>
+                    <div class="model-card">
+                        <h4>Nougat</h4>
+                        <p><span class="tag tag-hf">HuggingFace</span>学术文档转换</p>
+                    </div>
+                    <div class="model-card">
+                        <h4>GotOCR</h4>
+                        <p><span class="tag tag-nv">NVIDIA</span>通用 OCR 识别</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-wrapper">
+                <h3 style="text-align: center; margin-bottom: 1rem; color: var(--text-primary);">AI PDF 处理能力准确率对比（2026）</h3>
+                <canvas id="aiCapabilityChart" height="80"></canvas>
+            </div>
+
+            <div class="code-block">
+                <h3>AI PDF 处理示例代码（Python）</h3>
+<pre><code>import pypdf
+from transformers import pipeline, LayoutLMv3Processor
+import pdf2image
+import pytesseract
+
+# 使用 AI 提取 PDF 内容
+def extract_pdf_with_ai(pdf_path):
+    # 1. 提取文本
+    reader = pypdf.PdfReader(pdf_path)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text()
+
+    # 2. 使用 LLM 进行摘要
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+    summary = summarizer(text[:1024], max_length=150)
+
+    # 3. OCR 处理扫描页面
+    images = pdf2image.convert_from_path(pdf_path)
+    ocr_text = pytesseract.image_to_string(images[0], lang='chi_sim+eng')
+
+    # 4. 使用 LayoutLMv3 进行布局分析
+    processor = LayoutLMv3Processor.from_pretrained("microsoft/layoutlmv3-base")
+    # 需要进一步处理获取布局信息
+
+    return {
+        "text": text,
+        "summary": summary[0]['summary_text'],
+        "ocr_text": ocr_text
+    }
+
+# 使用示例
+result = extract_pdf_with_ai("document.pdf")
+print(result["summary"])</code></pre>
+            </div>
+
+            <div class="info-box">
+                <h3>📚 推荐工具和库</h3>
+                <div class="model-grid">
+                    <div class="model-card">
+                        <h4>PyMuPDF (fitz)</h4>
+                        <p>高性能 PDF 处理库</p>
+                    </div>
+                    <div class="model-card">
+                        <h4>pdfplumber</h4>
+                        <p>精确表格和文本提取</p>
+                    </div>
+                    <div class="model-card">
+                        <h4>LangChain</h4>
+                        <p>LLM 应用开发框架</p>
+                    </div>
+                    <div class="model-card">
+                        <h4>LlamaIndex</h4>
+                        <p>文档检索增强生成</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('aiCapabilityChart');
+            if (ctx && typeof Chart !== 'undefined') {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['文本提取', '表格识别', 'OCR 精度', '布局分析', '语义理解', '自动摘要'],
+                        datasets: [{
+                            label: '准确率 (%)',
+                            data: [98, 92, 95, 90, 88, 91],
+                            backgroundColor: '#0066cc',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: { color: '#e1e4e8' },
+                                ticks: { color: '#586069', callback: v => v + '%' }
+                            },
+                            y: { grid: { display: false }, ticks: { color: '#586069' } }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PDF 简介 - PDF 2.1 新特性、应用场景、ISO 32000 标准">
+    <title>PDF 简介 | PDF Learn</title>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="stylesheet" href="../css/styles.css?v=2026031202">
+    <style>
+      :root {
+        --bg-primary: #ffffff !important;
+        --bg-secondary: #f6f8fa !important;
+        --bg-alt: #eaecef !important;
+        --text-primary: #24292e !important;
+        --text-secondary: #586069 !important;
+        --border-color: #e1e4e8 !important;
+        --primary-color: #0066cc;
+      }
+      html, body { background-color: #ffffff !important; margin: 0; padding: 0; }
+      .navbar {
+        background-color: rgba(255, 255, 255, 0.98) !important;
+        border-bottom: 1px solid #e1e4e8 !important;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      .navbar .logo, .nav-menu a { color: #24292e !important; }
+      .nav-menu a:hover, .nav-menu a.active { color: var(--primary-color) !important; }
+      .main-container { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem; }
+      .section { padding: 2rem 0; }
+      .section-title { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 700; margin-bottom: 1.5rem; color: var(--text-primary); }
+      .section-description { color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2rem; }
+      .mermaid-wrapper { background: var(--bg-elevated); border-radius: var(--radius-lg); padding: 1.5rem; margin: 2rem 0; border: 1px solid var(--border-color); }
+      .mermaid { display: flex; justify-content: center; }
+      .content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+      .card { background: var(--bg-elevated); border-radius: var(--radius-md); padding: 1.5rem; border: 1px solid var(--border-color); transition: all var(--transition-base); }
+      .card:hover { box-shadow: var(--shadow-lg); border-color: var(--primary-color); }
+      .card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--text-primary); }
+      .feature-list { list-style: none; padding: 0; }
+      .feature-list li { padding: 0.5rem 0 0.5rem 1.75rem; position: relative; color: var(--text-secondary); }
+      .feature-list li::before { content: '✓'; position: absolute; left: 0; color: var(--primary-color); font-weight: 700; }
+      .info-box { background: var(--bg-secondary); border-left: 4px solid var(--primary-color); padding: 1.25rem 1.5rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 2rem 0; }
+      .chart-wrapper { background: var(--bg-elevated); border-radius: var(--radius-lg); padding: 1.5rem; margin: 2rem 0; border: 1px solid var(--border-color); }
+      .table-wrapper { margin: 2rem 0; overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
+      .detail-table { width: 100%; border-collapse: collapse; }
+      .detail-table th, .detail-table td { padding: 1rem 1.5rem; text-align: left; border: 1px solid var(--border-color); }
+      .detail-table th { background: var(--bg-alt); font-weight: 600; color: var(--text-primary); }
+      .detail-table td { color: var(--text-secondary); }
+      .detail-table tr:hover { background: var(--bg-secondary); }
+      .nav-back { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary-color); text-decoration: none; margin-bottom: 1.5rem; font-weight: 500; }
+      .nav-back:hover { text-decoration: underline; }
+    </style>
+    <script src="../lib/mermaid.min.js"></script>
+    <script type="module">
+      window.mermaid.initialize({
+        startOnLoad: true, theme: 'default', securityLevel: 'loose',
+        flowchart: { curve: 'basis', useMaxWidth: true }
+      });
+    </script>
+    <script src="../lib/chart.umd.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem;">
+            <div class="nav-brand">
+                <a href="../index.html" style="text-decoration: none;">
+                    <span class="logo" style="font-size: 1.5rem; font-weight: 800;">PDF<span style="color: var(--primary-color);">Learn</span></span>
+                </a>
+            </div>
+            <ul class="nav-menu" style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+                <li><a href="intro.html" class="active">简介</a></li>
+                <li><a href="structure.html">结构</a></li>
+                <li><a href="instance-analysis.html">实例</a></li>
+                <li><a href="workflow.html">流程</a></li>
+                <li><a href="ai-integration.html">AI</a></li>
+                <li><a href="code-examples.html">代码</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <a href="../index.html" class="nav-back">← 返回首页</a>
+        
+        <section id="intro" class="section">
+            <h2 class="section-title">什么是 PDF？</h2>
+            <p class="section-description">PDF（Portable Document Format）是由 Adobe 开发的跨平台文档格式，现已成为 ISO 国际标准（ISO 32000）。</p>
+
+            <div class="info-box">
+                <h3>📌 PDF 2.1 新特性（ISO 32000-2:2024）</h3>
+                <p>PDF 2.1 于 2024 年发布，主要更新包括：</p>
+                <ul class="feature-list">
+                    <li><strong>增强的安全性</strong> - 支持 AES-256 加密和基于证书的加密</li>
+                    <li><strong>改进的无障碍支持</strong> - 更好的标签结构和阅读顺序定义</li>
+                    <li><strong>3D 内容增强</strong> - 支持 U3D 和 PRC 格式的 3D 模型嵌入</li>
+                    <li><strong>数字签名改进</strong> - 支持 PAdES 高级电子签名标准</li>
+                    <li><strong>元数据扩展</strong> - 基于 XMP 的丰富元数据支持</li>
+                </ul>
+            </div>
+
+            <!-- Mermaid 流程图：PDF 生态系统 -->
+            <div class="mermaid-wrapper">
+                <div class="mermaid">
+            graph TB
+                subgraph A[PDF 生态系统]
+                    A1[Adobe Acrobat] --> A2[PDF 阅读器/编辑器]
+                    A3[第三方工具] --> A2
+                    A4[在线服务] --> A2
+                    A5[开源库] --> A2
+                end
+                subgraph B[应用场景]
+                    B1[文档分发]
+                    B2[电子表单]
+                    B3[数字签名]
+                    B4[报告生成]
+                    B5[电子出版]
+                    B6[档案管理]
+                end
+                subgraph C[ISO 标准体系]
+                    C1[ISO 32000-1<br/>PDF 1.7]
+                    C2[ISO 32000-2<br/>PDF 2.0/2.1]
+                    C3[PDF/A<br/>归档]
+                    C4[PDF/X<br/>印刷]
+                    C5[PDF/UA<br/>无障碍]
+                    C6[PDF/E<br/>工程]
+                end
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <h3>📄 核心特点</h3>
+                    <ul class="feature-list">
+                        <li><strong>平台无关</strong> - 在任何操作系统上保持一致的显示效果</li>
+                        <li><strong>格式固定</strong> - 字体、图像、布局精确保持</li>
+                        <li><strong>自包含</strong> - 可嵌入字体、图像、多媒体等资源</li>
+                        <li><strong>高效压缩</strong> - 使用 Flate、JPEG、JBIG2 等压缩算法</li>
+                        <li><strong>安全性</strong> - 支持密码保护、权限控制和数字签名</li>
+                        <li><strong>可交互</strong> - 支持表单、注释、超链接等交互元素</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>🔧 应用场景</h3>
+                    <ul class="feature-list">
+                        <li><strong>文档分发</strong> - 报告、手册、合同、发票等商业文档</li>
+                        <li><strong>电子表单</strong> - 可填写的交互式表单（XFA/AcroForm）</li>
+                        <li><strong>数字签名</strong> - 具有法律效力的电子签名和印章</li>
+                        <li><strong>电子出版</strong> - 电子书、杂志、期刊、报纸</li>
+                        <li><strong>档案管理</strong> - PDF/A 用于长期归档保存</li>
+                        <li><strong>印刷出版</strong> - PDF/X 用于专业印刷流程</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>📚 PDF 变体标准</h3>
+                    <ul class="feature-list">
+                        <li><strong>PDF/A (ISO 19005)</strong> - 归档用 PDF，禁止动态内容</li>
+                        <li><strong>PDF/X (ISO 15930)</strong> - 印刷交换用 PDF，色彩管理严格</li>
+                        <li><strong>PDF/UA (ISO 14289)</strong> - 无障碍 PDF，支持辅助技术</li>
+                        <li><strong>PDF/E (ISO 24517)</strong> - 工程文档，支持 3D 模型</li>
+                        <li><strong>PDF/VT</strong> - 可变和事务性数据印刷</li>
+                        <li><strong>PDF/HD</strong> - 高动态范围文档</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>📊 版本演进</h3>
+                    <ul class="feature-list">
+                        <li><strong>1993 - PDF 1.0</strong> - Adobe 首次发布</li>
+                        <li><strong>2001 - PDF 1.4</strong> - 引入透明度支持</li>
+                        <li><strong>2008 - PDF 1.7</strong> - 成为 ISO 32000-1 标准</li>
+                        <li><strong>2017 - PDF 2.0</strong> - ISO 32000-2，移除过时特性</li>
+                        <li><strong>2024 - PDF 2.1</strong> - 最新标准，增强安全性和无障碍</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- PDF 版本特性对比表 -->
+            <div class="table-wrapper">
+                <table class="detail-table">
+                    <thead>
+                        <tr>
+                            <th width="15%">版本</th>
+                            <th width="20%">发布年份</th>
+                            <th width="35%">主要特性</th>
+                            <th width="30%">标准化状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>PDF 1.7</strong></td>
+                            <td>2006</td>
+                            <td>透明度、图层、嵌入式文件、3D 内容</td>
+                            <td>ISO 32000-1:2008</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PDF 2.0</strong></td>
+                            <td>2017</td>
+                            <td>移除过时特性、增强安全性、改进标签</td>
+                            <td>ISO 32000-2:2017</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PDF 2.1</strong></td>
+                            <td>2024</td>
+                            <td>AES-256 加密、PAdES 签名、无障碍增强</td>
+                            <td>ISO 32000-2:2024</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 版本特性图表 -->
+            <div class="chart-wrapper">
+                <h3 style="text-align: center; margin-bottom: 1rem; color: var(--text-primary);">PDF 版本特性增长趋势</h3>
+                <canvas id="versionChart" height="80"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('versionChart');
+            if (ctx && typeof Chart !== 'undefined') {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['PDF 1.0\n(1993)', 'PDF 1.4\n(2001)', 'PDF 1.7\n(2006)', 'PDF 2.0\n(2017)', 'PDF 2.1\n(2024)'],
+                        datasets: [{
+                            label: '特性数量',
+                            data: [50, 150, 350, 500, 600],
+                            backgroundColor: ['#94a3b8', '#64748b', '#475569', '#334155', '#0066cc'],
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return '特性数：' + context.parsed.y;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#e1e4e8' },
+                                ticks: { color: '#586069' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#586069' }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

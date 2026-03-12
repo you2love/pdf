@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PDF 工作流程 - 创建和解析流程详解">
+    <title>PDF 工作流程 | PDF Learn</title>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="stylesheet" href="../css/styles.css?v=2026031202">
+    <style>
+      :root { --bg-primary: #ffffff !important; --bg-secondary: #f6f8fa !important; --bg-alt: #eaecef !important; --text-primary: #24292e !important; --text-secondary: #586069 !important; --border-color: #e1e4e8 !important; --primary-color: #0066cc; }
+      html, body { background-color: #ffffff !important; margin: 0; padding: 0; }
+      .navbar { background-color: rgba(255, 255, 255, 0.98) !important; border-bottom: 1px solid #e1e4e8 !important; position: sticky; top: 0; z-index: 1000; }
+      .navbar .logo, .nav-menu a { color: #24292e !important; }
+      .nav-menu a:hover, .nav-menu a.active { color: var(--primary-color) !important; }
+      .main-container { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem; }
+      .section { padding: 2rem 0; }
+      .section-alt { background: var(--bg-secondary); margin: 0 -1.5rem; padding: 2rem 1.5rem; }
+      .section-title { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 700; margin-bottom: 1.5rem; color: var(--text-primary); }
+      .mermaid-wrapper { background: var(--bg-elevated); border-radius: var(--radius-lg); padding: 1.5rem; margin: 2rem 0; border: 1px solid var(--border-color); }
+      .mermaid { display: flex; justify-content: center; }
+      .diagram-title { text-align: center; font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary); }
+      .content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+      .card { background: var(--bg-elevated); border-radius: var(--radius-md); padding: 1.5rem; border: 1px solid var(--border-color); }
+      .card:hover { box-shadow: var(--shadow-lg); }
+      .card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--text-primary); }
+      .feature-list { list-style: none; padding: 0; }
+      .feature-list li { padding: 0.5rem 0 0.5rem 1.75rem; position: relative; color: var(--text-secondary); }
+      .feature-list li::before { content: '✓'; position: absolute; left: 0; color: var(--primary-color); font-weight: 700; }
+      .interactive-flowchart { background: var(--bg-elevated); border-radius: var(--radius-lg); padding: 1.5rem; margin: 2rem 0; border: 1px solid var(--border-color); overflow-x: auto; }
+      .flowchart-steps { display: flex; gap: 0.5rem; min-width: max-content; }
+      .flowchart-step { display: flex; flex-direction: column; align-items: center; padding: 1rem 1.25rem; background: var(--bg-secondary); border-radius: var(--radius-sm); cursor: pointer; border: 1px solid var(--border-color); min-width: 100px; }
+      .flowchart-step:hover, .flowchart-step.active { background: var(--primary-color); }
+      .flowchart-step:hover .step-number, .flowchart-step.active .step-number { background: #fff; color: var(--primary-color); }
+      .flowchart-step:hover .step-content h4, .flowchart-step.active .step-content h4, .flowchart-step:hover .step-content p, .flowchart-step.active .step-content p { color: #fff; }
+      .step-number { width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--primary-color); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+      .step-content { text-align: center; margin-top: 0.5rem; }
+      .step-content h4 { font-size: 0.9rem; margin: 0.25rem 0; color: var(--text-primary); }
+      .step-content p { font-size: 0.75rem; color: var(--text-secondary); margin: 0; }
+      .flowchart-connector { display: flex; align-items: center; font-size: 1.25rem; }
+      .flowchart-detail { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; margin-top: 1.5rem; }
+      .flowchart-detail h4 { color: var(--primary-color); margin: 0 0 0.5rem 0; }
+      .flowchart-detail p { color: var(--text-secondary); margin: 0; }
+      .nav-back { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary-color); text-decoration: none; margin-bottom: 1.5rem; font-weight: 500; }
+      .nav-back:hover { text-decoration: underline; }
+    </style>
+    <script src="../lib/mermaid.min.js"></script>
+    <script type="module">window.mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose', flowchart: { curve: 'basis' } });</script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem;">
+            <div class="nav-brand"><a href="../index.html" style="text-decoration: none;"><span class="logo" style="font-size: 1.5rem; font-weight: 800;">PDF<span style="color: var(--primary-color);">Learn</span></span></a></div>
+            <ul class="nav-menu" style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+                <li><a href="intro.html">简介</a></li><li><a href="structure.html">结构</a></li><li><a href="instance-analysis.html">实例</a></li><li><a href="workflow.html" class="active">流程</a></li><li><a href="ai-integration.html">AI</a></li><li><a href="code-examples.html">代码</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main class="main-container">
+        <a href="../index.html" class="nav-back">← 返回首页</a>
+        <section id="workflow" class="section section-alt">
+            <h2 class="section-title">PDF 工作流程</h2>
+
+            <div class="mermaid-wrapper">
+                <h3 class="diagram-title">PDF 创建流程</h3>
+                <div class="mermaid">
+graph LR
+    subgraph S1[创建阶段]
+        A[开始] --> B[设置页面参数]
+        B --> C[定义资源]
+        C --> D[编写内容流]
+    end
+    subgraph S2[组装阶段]
+        D --> E[创建页面对象]
+        E --> F[构建 Pages 树]
+        F --> G[创建 Catalog]
+    end
+    subgraph S3[输出阶段]
+        G --> H[生成 XRef 表]
+        H --> I[写入 Trailer]
+        I --> J[完成 PDF]
+    end
+    style A fill:#10b981,color:#fff
+    style J fill:#3b82f6,color:#fff
+                </div>
+            </div>
+
+            <div class="mermaid-wrapper">
+                <h3 class="diagram-title">PDF 解析流程</h3>
+                <div class="mermaid">
+graph TD
+    Start[打开文件] --> CheckHeader{检查文件头}
+    CheckHeader -->|有效 | FindTrailer[定位文件尾]
+    CheckHeader -->|无效 | Error[错误：非 PDF]
+    FindTrailer --> ParseXRef[解析 XRef 表]
+    ParseXRef --> GetRoot[获取 Catalog]
+    GetRoot --> TraversePages[遍历 Pages 树]
+    TraversePages --> ForEachPage{还有页面？}
+    ForEachPage -->|是 | ParseContent[解析内容流]
+    ParseContent --> RenderContent[渲染内容]
+    RenderContent --> TraversePages
+    ForEachPage -->|否 | Complete[完成]
+    style Start fill:#10b981,color:#fff
+    style Complete fill:#3b82f6,color:#fff
+    style Error fill:#ef4444,color:#fff
+                </div>
+            </div>
+
+            <div class="interactive-flowchart">
+                <h3 class="diagram-title">交互式 PDF 操作流程</h3>
+                <div class="flowchart-steps">
+                    <div class="flowchart-step" onclick="showDetail(0)">
+                        <div class="step-number">1</div>
+                        <div class="step-content"><h4>读取文件头</h4><p>验证版本</p></div>
+                    </div>
+                    <div class="flowchart-connector">→</div>
+                    <div class="flowchart-step" onclick="showDetail(1)">
+                        <div class="step-number">2</div>
+                        <div class="step-content"><h4>定位文件尾</h4><p>查找 startxref</p></div>
+                    </div>
+                    <div class="flowchart-connector">→</div>
+                    <div class="flowchart-step" onclick="showDetail(2)">
+                        <div class="step-number">3</div>
+                        <div class="step-content"><h4>解析 XRef</h4><p>构建索引</p></div>
+                    </div>
+                    <div class="flowchart-connector">→</div>
+                    <div class="flowchart-step" onclick="showDetail(3)">
+                        <div class="step-number">4</div>
+                        <div class="step-content"><h4>加载 Catalog</h4><p>获取根对象</p></div>
+                    </div>
+                    <div class="flowchart-connector">→</div>
+                    <div class="flowchart-step" onclick="showDetail(4)">
+                        <div class="step-number">5</div>
+                        <div class="step-content"><h4>遍历 Pages</h4><p>加载页面</p></div>
+                    </div>
+                </div>
+                <div class="flowchart-detail" id="flowchartDetail"><p>点击步骤查看详情</p></div>
+            </div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <h3>📝 创建流程要点</h3>
+                    <ul class="feature-list">
+                        <li><strong>页面参数</strong> - 设置 MediaBox、CropBox、页面尺寸</li>
+                        <li><strong>资源定义</strong> - 预先定义字体、颜色空间、XObject</li>
+                        <li><strong>内容流编写</strong> - 使用 PDF 操作符（BT、Tj、cm 等）</li>
+                        <li><strong>对象组装</strong> - 构建 Pages 树和 Catalog 对象</li>
+                        <li><strong>增量更新</strong> - 可追加修改而不重写整个文件</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>🔍 解析流程要点</h3>
+                    <ul class="feature-list">
+                        <li><strong>文件验证</strong> - 检查%PDF 头标识</li>
+                        <li><strong>XRef 解析</strong> - 建立对象偏移量索引</li>
+                        <li><strong>延迟加载</strong> - 按需加载页面，降低内存</li>
+                        <li><strong>错误恢复</strong> - 跳过损坏对象继续解析</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>⚡ 性能优化</h3>
+                    <ul class="feature-list">
+                        <li><strong>对象流</strong> - 将多个小对象压缩到一个流中</li>
+                        <li><strong>XRef 流</strong> - PDF 1.5+ 使用流格式替代表格式</li>
+                        <li><strong>线性化</strong> - Web 优化，支持逐页加载</li>
+                        <li><strong>对象缓存</strong> - 缓存已解析对象避免重复解析</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>🛡️ 安全处理</h3>
+                    <ul class="feature-list">
+                        <li><strong>密码验证</strong> - 用户密码和所有者密码</li>
+                        <li><strong>权限检查</strong> - 打印、复制、修改权限控制</li>
+                        <li><strong>数字签名</strong> - 验证文档完整性和来源</li>
+                        <li><strong>加密解密</strong> - RC4/AES 加密算法支持</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        const details = [
+            {title: '读取文件头', content: '验证 PDF 版本标识（如 %PDF-2.0），确认文件格式正确。文件头必须是文件的第一行，后面可跟二进制注释。'},
+            {title: '定位文件尾', content: '从文件末尾回溯查找 startxref 标记，获取交叉引用表的字节偏移量。这是 PDF 解析的入口点。'},
+            {title: '解析 XRef 表', content: '读取交叉引用表，构建对象位置索引。XRef 表记录所有对象的字节偏移量和状态（空闲/使用中）。'},
+            {title: '加载 Catalog', content: '获取文档根对象（Catalog），这是 PDF 文档的入口点。Catalog 包含指向 Pages 树的引用。'},
+            {title: '遍历 Pages', content: '从 Pages 树根开始，递归遍历所有页面节点。每个 Page 对象包含页面尺寸、内容流和资源字典。'}
+        ];
+        function showDetail(index) {
+            const d = details[index];
+            document.getElementById('flowchartDetail').innerHTML = '<h4>' + d.title + '</h4><p>' + d.content + '</p>';
+            document.querySelectorAll('.flowchart-step').forEach((s, i) => {
+                s.classList.toggle('active', i === index);
+            });
+        }
+    </script>
+</body>
+</html>

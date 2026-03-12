@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PDF 文件实例分析 - 完整 PDF 文件逐段解析">
+    <title>PDF 实例分析 | PDF Learn</title>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="stylesheet" href="../css/styles.css?v=2026031202">
+    <style>
+      :root { --bg-primary: #ffffff !important; --bg-secondary: #f6f8fa !important; --bg-alt: #eaecef !important; --text-primary: #24292e !important; --text-secondary: #586069 !important; --border-color: #e1e4e8 !important; --primary-color: #0066cc; }
+      html, body { background-color: #ffffff !important; margin: 0; padding: 0; }
+      .navbar { background-color: rgba(255, 255, 255, 0.98) !important; border-bottom: 1px solid #e1e4e8 !important; position: sticky; top: 0; z-index: 1000; }
+      .navbar .logo, .nav-menu a { color: #24292e !important; }
+      .nav-menu a:hover, .nav-menu a.active { color: var(--primary-color) !important; }
+      .main-container { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem; }
+      .section { padding: 2rem 0; }
+      .section-title { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 700; margin-bottom: 1.5rem; color: var(--text-primary); }
+      .section-description { color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2rem; }
+      .mermaid-wrapper { background: var(--bg-elevated); border-radius: var(--radius-lg); padding: 1.5rem; margin: 2rem 0; border: 1px solid var(--border-color); }
+      .mermaid { display: flex; justify-content: center; }
+      .diagram-title { text-align: center; font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary); }
+      .info-box { background: var(--bg-secondary); border-left: 4px solid var(--primary-color); padding: 1.25rem 1.5rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 2rem 0; }
+      .code-block { background: #1d1f23; border-radius: var(--radius-md); margin: 1.5rem 0; overflow: hidden; border: 1px solid var(--border-color); }
+      .code-block h4 { padding: 0.75rem 1.25rem; background: #2d3136; font-size: 0.9rem; font-weight: 600; color: #e2e8f0; margin: 0; }
+      .code-block pre { margin: 0; padding: 1.25rem; overflow-x: auto; }
+      .code-block code { color: #e2e8f0; background: none; padding: 0; font-size: 0.8rem; line-height: 1.6; font-family: 'SF Mono', monospace; }
+      .analysis-section { background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; margin: 1.5rem 0; }
+      .analysis-section h4 { color: var(--primary-color); margin: 0 0 1rem 0; font-size: 1.1rem; }
+      .feature-list { list-style: none; padding: 0; }
+      .feature-list li { padding: 0.4rem 0 0.4rem 1.75rem; position: relative; color: var(--text-secondary); }
+      .feature-list li::before { content: '✓'; position: absolute; left: 0; color: var(--primary-color); font-weight: 700; }
+      .nav-back { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary-color); text-decoration: none; margin-bottom: 1.5rem; font-weight: 500; }
+      .nav-back:hover { text-decoration: underline; }
+    </style>
+    <script src="../lib/mermaid.min.js"></script>
+    <script type="module">window.mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose', flowchart: { curve: 'basis' } });</script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem;">
+            <div class="nav-brand"><a href="../index.html" style="text-decoration: none;"><span class="logo" style="font-size: 1.5rem; font-weight: 800;">PDF<span style="color: var(--primary-color);">Learn</span></span></a></div>
+            <ul class="nav-menu" style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+                <li><a href="intro.html">简介</a></li><li><a href="structure.html">结构</a></li><li><a href="instance-analysis.html" class="active">实例</a></li><li><a href="workflow.html">流程</a></li><li><a href="ai-integration.html">AI</a></li><li><a href="code-examples.html">代码</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main class="main-container">
+        <a href="../index.html" class="nav-back">← 返回首页</a>
+        <section id="instance-analysis" class="section">
+            <h2 class="section-title">PDF 文件实例分析</h2>
+            <p class="section-description">通过分析一个最小 PDF 文件，深入理解 PDF 格式的工作原理</p>
+
+            <div class="mermaid-wrapper">
+                <h3 class="diagram-title">最小 PDF 文件结构</h3>
+                <div class="mermaid">
+graph LR
+    Root((PDF))
+    Root --> H[文件头<br/>%PDF-1.4]
+    Root --> O1[对象 1<br/>Catalog]
+    Root --> O2[对象 2<br/>Pages]
+    Root --> O3[对象 3<br/>Page]
+    Root --> O4[对象 4<br/>Contents]
+    Root --> O5[对象 5<br/>Font]
+    Root --> X[XRef<br/>索引表]
+    Root --> T[Trailer<br/>+ EOF]
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>完整的 PDF 文件示例</h3>
+                <p>以下是一个可正常打开的 1 页 PDF 文件，包含"Hello, World!"文本：</p>
+            </div>
+
+            <div class="code-block">
+                <h4>PDF 文件完整代码</h4>
+<pre><code>%PDF-1.4
+%âãÏÓ
+
+1 0 obj
+&lt;&lt;/Type/Catalog/Pages 2 0 R&gt;&gt;
+endobj
+
+2 0 obj
+&lt;&lt;/Type/Pages/Kids[3 0 R]/Count 1&gt;&gt;
+endobj
+
+3 0 obj
+&lt;&lt;/Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]/Contents 4 0 R/Resources&lt;&lt;/Font&lt;&lt;/F1 5 0 R&gt;&gt;&gt;&gt;&gt;
+endobj
+
+4 0 obj
+&lt;&lt;/Length 44&gt;&gt;
+stream
+BT/F1 12 Tf 100 700 Td(Hello, World!)Tj ET
+endstream
+endobj
+
+5 0 obj
+&lt;&lt;/Type/Font/Subtype/Type1/BaseFont/Helvetica&gt;&gt;
+endobj
+
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000052 00000 n 
+0000000101 00000 n 
+0000000198 00000 n 
+0000000293 00000 n 
+trailer
+&lt;&lt;/Size 6/Root 1 0 R&gt;&gt;
+startxref
+370
+%%EOF</code></pre>
+            </div>
+
+            <div class="analysis-section">
+                <h4>1️⃣ 文件头（第 1-2 行）</h4>
+                <div class="code-block"><h4>代码</h4><pre><code>%PDF-1.4
+%âãÏÓ</code></pre></div>
+                <ul class="feature-list">
+                    <li><strong>%PDF-1.4</strong> - PDF 版本声明，表示这是 PDF 1.4 格式</li>
+                    <li><strong>%âãÏÓ</strong> - 二进制注释（字节 0xE2 0xE3 0xCF 0xD3），确保文件以二进制模式处理</li>
+                </ul>
+            </div>
+
+            <div class="analysis-section">
+                <h4>2️⃣ 对象 1：Catalog 根对象（第 4-6 行）</h4>
+                <div class="code-block"><h4>代码</h4><pre><code>1 0 obj
+&lt;&lt;/Type/Catalog/Pages 2 0 R&gt;&gt;
+endobj</code></pre></div>
+                <ul class="feature-list">
+                    <li><strong>1 0 obj</strong> - 对象号 1，生成号 0</li>
+                    <li><strong>/Type /Catalog</strong> - 指定为文档目录对象</li>
+                    <li><strong>/Pages 2 0 R</strong> - 引用对象 2（Pages 树）</li>
+                </ul>
+            </div>
+
+            <div class="analysis-section">
+                <h4>3️⃣ 对象 2：Pages 页面树（第 8-10 行）</h4>
+                <div class="code-block"><h4>代码</h4><pre><code>2 0 obj
+&lt;&lt;/Type/Pages/Kids[3 0 R]/Count 1&gt;&gt;
+endobj</code></pre></div>
+                <ul class="feature-list">
+                    <li><strong>/Kids [3 0 R]</strong> - 子页面数组，包含对象 3</li>
+                    <li><strong>/Count 1</strong> - 总页数为 1</li>
+                </ul>
+            </div>
+
+            <div class="analysis-section">
+                <h4>4️⃣ 对象 3：Page 页面对象（第 12-14 行）</h4>
+                <div class="code-block"><h4>代码</h4><pre><code>3 0 obj
+&lt;&lt;/Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]/Contents 4 0 R/Resources&lt;&lt;/Font&lt;&lt;/F1 5 0 R&gt;&gt;&gt;&gt;&gt;
+endobj</code></pre></div>
+                <ul class="feature-list">
+                    <li><strong>/MediaBox [0 0 612 792]</strong> - 页面尺寸（8.5×11 英寸）</li>
+                    <li><strong>/Contents 4 0 R</strong> - 内容流引用对象 4</li>
+                    <li><strong>/Resources</strong> - 资源字典，包含字体 F1（对象 5）</li>
+                </ul>
+            </div>
+
+            <div class="analysis-section">
+                <h4>5️⃣ 对象 4：内容流（第 16-21 行）</h4>
+                <div class="code-block"><h4>代码</h4><pre><code>4 0 obj
+&lt;&lt;/Length 44&gt;&gt;
+stream
+BT/F1 12 Tf 100 700 Td(Hello, World!)Tj ET
+endstream
+endobj</code></pre></div>
+                <ul class="feature-list">
+                    <li><strong>BT/ET</strong> - Begin Text/End Text 文本块标记</li>
+                    <li><strong>/F1 12 Tf</strong> - 使用 F1 字体，12 点大小</li>
+                    <li><strong>100 700 Td</strong> - 移动到坐标 (100, 700)</li>
+                    <li><strong>(Hello, World!) Tj</strong> - 显示文本</li>
+                </ul>
+            </div>
+
+            <div class="analysis-section">
+                <h4>6️⃣ 对象 5：字体定义（第 23-25 行）</h4>
+                <div class="code-block"><h4>代码</h4><pre><code>5 0 obj
+&lt;&lt;/Type/Font/Subtype/Type1/BaseFont/Helvetica&gt;&gt;
+endobj</code></pre></div>
+                <ul class="feature-list">
+                    <li><strong>/Subtype /Type1</strong> - Type1 字体（标准 14 字体之一）</li>
+                    <li><strong>/BaseFont /Helvetica</strong> - Helvetica 字体，无需嵌入</li>
+                </ul>
+            </div>
+
+            <div class="analysis-section">
+                <h4>7️⃣ 交叉引用表和文件尾（第 27-38 行）</h4>
+                <div class="code-block"><h4>代码</h4><pre><code>xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+...
+trailer
+&lt;&lt;/Size 6/Root 1 0 R&gt;&gt;
+startxref
+370
+%%EOF</code></pre></div>
+                <ul class="feature-list">
+                    <li><strong>xref</strong> - 交叉引用表，记录对象偏移量</li>
+                    <li><strong>startxref 370</strong> - XRef 表起始位置（370 字节处）</li>
+                    <li><strong>%%EOF</strong> - 文件结束标记</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

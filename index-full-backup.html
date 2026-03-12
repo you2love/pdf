@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PDF 文件格式完全学习指南">
+    <title>PDF 格式完全指南</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="css/styles.css?v=2026031201">
+    <style>
+      /* 强制浅色模式 - 覆盖所有 CSS 变量 */
+      :root {
+        --bg-primary: #ffffff !important;
+        --bg-secondary: #f6f8fa !important;
+        --bg-alt: #eaecef !important;
+        --bg-elevated: #ffffff !important;
+        --bg-code: #1d1f23 !important;
+        --text-primary: #24292e !important;
+        --text-secondary: #586069 !important;
+        --border-color: #e1e4e8 !important;
+      }
+      html, body {
+        background-color: #ffffff !important;
+      }
+      .navbar {
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        border-bottom: 1px solid #e1e4e8 !important;
+      }
+      .navbar .logo, .nav-menu a {
+        color: #24292e !important;
+      }
+      .section-alt {
+        background-color: #f6f8fa !important;
+      }
+    </style>
+    <!-- Mermaid 图表库 -->
+    <script src="lib/mermaid.min.js"></script>
+    <script type="module">
+      window.mermaid.initialize({
+        startOnLoad: true,
+        theme: 'default',
+        securityLevel: 'loose',
+        flowchart: { curve: 'basis', useMaxWidth: true },
+        sequence: { useMaxWidth: true, wrap: true }
+      });
+    </script>
+    <!-- Chart.js 图表库 -->
+    <script src="lib/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="logo">PDF<span class="highlight">Learn</span></span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#intro">简介</a></li>
+                <li><a href="#structure">结构</a></li>
+                <li><a href="#instance-analysis">实例</a></li>
+                <li><a href="#workflow">流程</a></li>
+                <li><a href="#ai-integration">AI</a></li>
+                <li><a href="#code-examples">代码</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 简介部分 -->
+    <section id="intro" class="section">
+        <div class="container">
+            <h2 class="section-title">什么是 PDF？</h2>
+            
+            <!-- Mermaid 流程图：PDF 生态系统 -->
+            <div class="mermaid-wrapper">
+                <div class="mermaid">
+                graph TB
+                    subgraph A[PDF 生态系统]
+                        A1[Adobe Acrobat] --> A2[PDF 阅读器]
+                        A3[第三方工具] --> A2
+                        A4[在线服务] --> A2
+                    end
+                    subgraph B[应用场景]
+                        B1[文档分发]
+                        B2[电子表单]
+                        B3[数字签名]
+                        B4[报告生成]
+                        B5[电子出版]
+                    end
+                    subgraph C[技术栈]
+                        C1[ISO 32000 标准]
+                        C2[PDF 2.0 规范]
+                        C3[PDF/A 归档]
+                        C4[PDF/X 印刷]
+                        C5[PDF/UA 无障碍]
+                    end
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 结构部分 -->
+    <section id="structure" class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">PDF 内部结构</h2>
+            
+            <!-- Mermaid 序列图：PDF 解析流程 -->
+            <div class="mermaid-wrapper">
+                <h3 class="diagram-title">PDF 文件解析序列图</h3>
+                <div class="mermaid">
+                sequenceDiagram
+                    autonumber
+                    participant Reader as PDF 阅读器
+                    participant Header as 文件头
+                    participant Body as 文档主体
+                    participant XRef as 交叉引用表
+                    participant Trailer as 文件尾
+
+                    Reader->>Header: 读取版本标识
+                    Note over Reader,Header: 确认 PDF 版本
+
+                    Reader->>Trailer: 定位文件尾
+                    Note over Reader,Trailer: 回溯查找 startxref
+
+                    Reader->>XRef: 解析交叉引用表
+                    Note over Reader,XRef: 获取所有对象位置
+
+                    Reader->>Body: 读取 Catalog 对象
+                    Note over Reader,Body: 文档根对象
+
+                    Reader->>Body: 遍历 Pages 树
+                    Note over Reader,Body: 加载所有页面
+
+                    Reader->>Body: 解析页面内容
+                    Note over Reader,Body: 渲染文本和图像
+
+                    Reader->>Reader: 完成文档显示
+                </div>
+            </div>
+
+            <div class="structure-container">
+                <div class="structure-diagram">
+                    <div class="box header">
+                        <strong>文件头</strong>
+                        <p>%PDF-2.0</p>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="box body">
+                        <strong>文档主体</strong>
+                        <p>对象集合</p>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="box xref">
+                        <strong>交叉引用表</strong>
+                        <p>对象位置索引</p>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="box trailer">
+                        <strong>文件尾</strong>
+                        <p>%%EOF</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mermaid 类图：PDF 对象层次结构 -->
+            <div class="mermaid-wrapper">
+                <h3 class="diagram-title">PDF 对象层次结构</h3>
+                <div class="mermaid">
+                graph TD
+                    Catalog[Catalog<br/>文档根对象] --> Pages[Pages<br/>页面树]
+                    Pages --> Page[Page<br/>单页对象]
+                    Page --> Content[ContentStream<br/>内容流]
+                    Page --> Resources[Resources<br/>资源字典]
+                    Resources --> Font[Font<br/>字体]
+                    Resources --> XObject[XObject<br/>外部对象]
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <h3>对象类型</h3>
+                    <ul class="list">
+                        <li><strong>Boolean</strong> - 布尔值（true/false）</li>
+                        <li><strong>Number</strong> - 整数和实数</li>
+                        <li><strong>String</strong> - 文本字符串</li>
+                        <li><strong>Name</strong> - 对象标识符</li>
+                        <li><strong>Array</strong> - 有序集合</li>
+                        <li><strong>Dictionary</strong> - 键值对集合</li>
+                        <li><strong>Stream</strong> - 二进制数据流</li>
+                        <li><strong>Null</strong> - 空对象</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>文档结构</h3>
+                    <ul class="list">
+                        <li><strong>Catalog</strong> - 文档根对象</li>
+                        <li><strong>Pages</strong> - 页面树</li>
+                        <li><strong>Page</strong> - 单页内容</li>
+                        <li><strong>Contents</strong> - 内容流</li>
+                        <li><strong>Resources</strong> - 资源字典</li>
+                        <li><strong>Annotations</strong> - 注释对象</li>
+                        <li><strong>Actions</strong> - 动作定义</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <h3>PDF 对象示例</h3>
+<pre><code>10 0 obj
+&lt;&lt;
+  /Type /Catalog
+  /Pages 20 0 obj
+  /ViewerPreferences &lt;&lt;
+    /DisplayDocTitle true
+  &gt;&gt;
+  /OpenAction [30 0 R /Fit]
+&gt;&gt;
+endobj</code></pre>
+            </div>
+
+            <!-- 详细结构表格 -->
+            <div class="table-wrapper">
+                <h3 class="table-title">PDF 文件结构详解</h3>
+                <table class="detail-table">
+                    <thead>
+                        <tr>
+                            <th width="20%">组成部分</th>
+                            <th width="30%">说明</th>
+                            <th width="25%">格式示例</th>
+                            <th width="25%">作用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>文件头</strong><br><small>File Header</small></td>
+                            <td>标识 PDF 版本，确保正确解析</td>
+                            <td><code>%PDF-2.0<br>%âãÏÓ</code></td>
+                            <td>版本声明和二进制标记</td>
+                        </tr>
+                        <tr>
+                            <td><strong>文档主体</strong><br><small>Document Body</small></td>
+                            <td>包含所有 PDF 对象，每个对象有唯一编号</td>
+                            <td><code>1 0 obj<br>&lt;&lt;...&gt;&gt;<br>endobj</code></td>
+                            <td>存储实际内容数据</td>
+                        </tr>
+                        <tr>
+                            <td><strong>交叉引用表</strong><br><small>XRef Table</small></td>
+                            <td>记录对象字节偏移量，实现快速访问</td>
+                            <td><code>xref<br>0 5<br>0000000000 65535 f</code></td>
+                            <td>对象位置索引</td>
+                        </tr>
+                        <tr>
+                            <td><strong>文件尾</strong><br><small>Trailer</small></td>
+                            <td>包含根对象引用和交叉引用表位置</td>
+                            <td><code>trailer<br>&lt;&lt;/Root 1 0 R&gt;&gt;<br>startxref<br>%%EOF</code></td>
+                            <td>解析入口点和结束标记</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- PDF 实例分析部分 -->
+    <section id="instance-analysis" class="section">
+        <div class="container">
+            <h2 class="section-title">PDF 文件实例分析</h2>
+            <p class="section-description">通过分析一个真实的 PDF 文件，深入理解 PDF 格式的工作原理</p>
+
+            <!-- Mermaid 流程图：实例结构 -->
+            <div class="mermaid-wrapper">
+                <h3 class="diagram-title">最小 PDF 文件结构思维导图</h3>
+                <div class="mermaid">
+graph LR
+    Root((最小 PDF))
+    Root --> H[文件头<br/>PDF 版本 + 二进制注释]
+    Root --> O1[对象 1<br/>Catalog 根对象]
+    Root --> O2[对象 2<br/>Pages 页面树]
+    Root --> O3[对象 3<br/>Page 单页]
+    Root --> O4[对象 4<br/>Content 内容]
+    Root --> O5[对象 5<br/>Font 字体]
+    Root --> XRef[交叉引用表<br/>对象索引]
+    Root --> Trailer[文件尾<br/>Root+EOF]
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>完整的 PDF 文件示例</h3>
+                <p>以下是一个包含基本内容的最小化 PDF 文件，包含 1 页文本内容：</p>
+            </div>
+
+            <div class="code-block">
+                <h3>PDF 文件完整代码</h3>
+<pre><code>%PDF-1.4
+%âãÏÓ
+
+1 0 obj
+&lt;&lt;
+  /Type /Catalog
+  /Pages 2 0 R
+&gt;&gt;
+endobj
+
+2 0 obj
+&lt;&lt;
+  /Type /Pages
+  /Kids [3 0 R]
+  /Count 1
+&gt;&gt;
+endobj
+
+3 0 obj
+&lt;&lt;
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 612 792]
+  /Contents 4 0 R
+  /Resources &lt;&lt;
+    /Font &lt;&lt;
+      /F1 5 0 R
+    &gt;&gt;
+  &gt;&gt;
+&gt;&gt;
+endobj
+
+4 0 obj
+&lt;&lt;
+  /Length 44
+&gt;&gt;
+stream
+BT
+  /F1 12 Tf
+  100 700 Td
+  (Hello, World!) Tj
+ET
+endstream
+endobj
+
+5 0 obj
+&lt;&lt;
+  /Type /Font
+  /Subtype /Type1
+  /BaseFont /Helvetica
+&gt;&gt;
+endobj
+
+xref
+0 6
+0000000000 65535 f
+0000000009 00000 n
+0000000058 00000 n
+0000000115 00000 n
+0000000214 00000 n
+0000000309 00000 n
+trailer
+&lt;&lt;
+  /Size 6
+  /Root 1 0 R
+&gt;&gt;
+startxref
+0000000382
+%%EOF</code></pre>
+            </div>
+
+            <div class="instance-analysis">
+                <h3>逐段解析</h3>
+
+                <div class="analysis-section">
+                    <h4>1️⃣ 文件头（Lines 1-2）</h4>
+                    <div class="code-block">
+<pre><code>%PDF-1.4
+%âãÏÓ</code></pre>
+                    </div>
+                    <ul class="feature-list">
+                        <li><strong>%PDF-1.4</strong> - 声明这是 PDF 1.4 版本的文件</li>
+                        <li><strong>%âãÏÓ</strong> - 二进制注释（UTF-8 BOM），确保文件以二进制模式打开</li>
+                        <li>这行注释让文本编辑器也能正确处理二进制内容</li>
+                    </ul>
+                </div>
+
+                <div class="analysis-section">
+                    <h4>2️⃣ 对象 1：文档目录（Lines 4-10）</h4>
+                    <div class="code-block">
+<pre><code>1 0 obj
+&lt;&lt;
+  /Type /Catalog
+  /Pages 2 0 R
+&gt;&gt;
+endobj</code></pre>
+                    </div>
+                    <ul class="feature-list">
+                        <li><strong>1 0 obj</strong> - 对象编号 1，生成号 0（原始版本）</li>
+                        <li><strong>/Type /Catalog</strong> - 指定这是文档目录对象</li>
+                        <li><strong>/Pages 2 0 R</strong> - 引用对象 2（页面树的根节点）</li>
+                        <li>这是 PDF 文档的根对象，所有内容都可以从这里访问</li>
+                    </ul>
+                </div>
+
+                <div class="analysis-section">
+                    <h4>3️⃣ 对象 2：页面树（Lines 12-19）</h4>
+                    <div class="code-block">
+<pre><code>2 0 obj
+&lt;&lt;
+  /Type /Pages
+  /Kids [3 0 R]
+  /Count 1
+&gt;&gt;
+endobj</code></pre>
+                    </div>
+                    <ul class="feature-list">
+                        <li><strong>/Type /Pages</strong> - 页面树节点对象</li>
+                        <li><strong>/Kids [3 0 R]</strong> - 子页面数组，这里只有一个页面（对象 3）</li>
+                        <li><strong>/Count 1</strong> - 总页数为 1</li>
+                        <li>对于多页文档，/Kids 会包含多个页面引用</li>
+                    </ul>
+                </div>
+
+                <div class="analysis-section">
+                    <h4>4️⃣ 对象 3：页面描述（Lines 21-34）</h4>
+                    <div class="code-block">
+<pre><code>3 0 obj
+&lt;&lt;
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 612 792]
+  /Contents 4 0 R
+  /Resources &lt;&lt;
+    /Font &lt;&lt;
+      /F1 5 0 R
+    &gt;&gt;
+  &gt;&gt;
+&gt;&gt;
+endobj</code></pre>
+                    </div>
+                    <ul class="feature-list">
+                        <li><strong>/Type /Page</strong> - 单个页面对象</li>
+                        <li><strong>/Parent 2 0 R</strong> - 指向父级页面树节点</li>
+                        <li><strong>/MediaBox [0 0 612 792]</strong> - 页面尺寸（8.5x11 英寸，单位是点 point）</li>
+                        <li><strong>/Contents 4 0 R</strong> - 页面内容流（对象 4）</li>
+                        <li><strong>/Resources</strong> - 页面使用的资源，这里引用字体对象 5</li>
+                    </ul>
+                </div>
+
+                <div class="analysis-section">
+                    <h4>5️⃣ 对象 4：内容流（Lines 36-46）</h4>
+                    <div class="code-block">
+<pre><code>4 0 obj
+&lt;&lt;
+  /Length 44
+&gt;&gt;
+stream
+BT
+  /F1 12 Tf
+  100 700 Td
+  (Hello, World!) Tj
+ET
+endstream
+endobj</code></pre>
+                    </div>
+                    <ul class="feature-list">
+                        <li><strong>/Length 44</strong> - 流数据的字节长度</li>
+                        <li><strong>stream/endstream</strong> - 标记二进制流数据的开始和结束</li>
+                        <li><strong>BT/ET</strong> - 文本块（Begin Text/End Text）的开始和结束</li>
+                        <li><strong>/F1 12 Tf</strong> - 设置字体为 F1（引用对象 5），字号为 12 点</li>
+                        <li><strong>100 700 Td</strong> - 移动文本位置到坐标 (100, 700)</li>
+                        <li><strong>(Hello, World!) Tj</strong> - 显示文本"Hello, World!"</li>
+                        <li>这是 PDF 内容操作语言，类似于 PostScript</li>
+                    </ul>
+                </div>
+
+                <div class="analysis-section">
+                    <h4>6️⃣ 对象 5：字体定义（Lines 48-54）</h4>
+                    <div class="code-block">
+<pre><code>5 0 obj
+&lt;&lt;
+  /Type /Font
+  /Subtype /Type1
+  /BaseFont /Helvetica
+&gt;&gt;
+endobj</code></pre>
+                    </div>
+                    <ul class="feature-list">
+                        <li><strong>/Type /Font</strong> - 字体对象</li>
+                        <li><strong>/Subtype /Type1</strong> - 字体类型为 Type1（标准 PostScript 字体）</li>
+                        <li><strong>/BaseFont /Helvetica</strong> - 使用 Helvetica 字体（标准 14 种字体之一）</li>
+                        <li>标准字体不需要嵌入，使用系统字体渲染</li>
+                    </ul>
+                </div>
+
+                <div class="analysis-section">
+                    <h4>7️⃣ 交叉引用表（Lines 56-65）</h4>
+                    <div class="code-block">
+<pre><code>xref
+0 6
+0000000000 65535 f
+0000000009 00000 n
+0000000058 00000 n
+0000000115 00000 n
+0000000214 00000 n
+0000000309 00000 n
+trailer</code></pre>
+                    </div>
+                    <ul class="feature-list">
+                        <li><strong>xref</strong> - 交叉引用表开始标记</li>
+                        <li><strong>0 6</strong> - 从对象 0 开始，共 6 个对象（对象 0-5）</li>
+                        <li><strong>第 1 行（对象 0）</strong> - 偏移 0，生成号 65535，f（free，永远空闲）</li>
+                        <li><strong>第 2 行（对象 1）</strong> - 偏移 9 字节，生成号 0，n（normal，有效对象）</li>
+                        <li><strong>每行格式</strong> - "10 位偏移量 5 位生成号 状态字符"</li>
+                        <li>允许 PDF 阅读器快速定位任何对象而不需扫描整个文件</li>
+                    </ul>
+                </div>
+
+                <div class="analysis-section">
+                    <h4>8️⃣ 文件尾（Lines 66-73）</h4>
+                    <div class="code-block">
+<pre><code>trailer
+&lt;&lt;
+  /Size 6
+  /Root 1 0 R
+&gt;&gt;
+startxref
+0000000382
+%%EOF</code></pre>
+                    </div>
+                    <ul class="feature-list">
+                        <li><strong>/Size 6</strong> - 文档中对象总数（包括对象 0）</li>
+                        <li><strong>/Root 1 0 R</strong> - 文档目录对象引用，PDF 解析的入口点</li>
+                        <li><strong>startxref</strong> - 交叉引用表开始的字节偏移量（382 字节处）</li>
+                        <li><strong>%%EOF</strong> - 文件结束标记，PDF 阅读器读取到此停止</li>
+                        <li>如果文件损坏，可以尝试从%%EOF 处回溯找到 startxref</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>实例分析总结</h3>
+                <p>这个最小的 PDF 文件展示了 PDF 格式的核心结构：</p>
+                <ul class="feature-list">
+                    <li><strong>对象模型</strong> - 所有内容都表示为独立的对象，通过引用关联</li>
+                    <li><strong>层次结构</strong> - Catalog → Pages → Page → Content 的树状结构</li>
+                    <li><strong>随机访问</strong> - 通过交叉引用表可以快速定位任何对象</li>
+                    <li><strong>内容流</strong> - 使用类似 PostScript 的语言描述页面内容</li>
+                    <li><strong>资源管理</strong> - 字体、图像等资源集中定义，可复用</li>
+                </ul>
+                <p>实际生产环境的 PDF 文件会包含更多对象：嵌入字体、图像、元数据、书签、注释等，但基本结构完全相同。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工作流程部分 -->
+    <section id="workflow" class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">PDF 工作流程</h2>
+            
+            <!-- Mermaid 流程图：PDF 创建流程 -->
+            <div class="mermaid-wrapper">
+                <h3 class="diagram-title">PDF 文档创建工作流程</h3>
+                <div class="mermaid">
+graph LR
+    subgraph S1[创建阶段]
+        A[开始] --> B[设置页面参数]
+        B --> C[定义资源]
+        C --> D[编写内容流]
+    end
+    subgraph S2[组装阶段]
+        D --> E[创建页面对象]
+        E --> F[构建页面树]
+        F --> G[创建 Catalog]
+    end
+    subgraph S3[输出阶段]
+        G --> H[生成交叉引用表]
+        H --> I[写入文件尾]
+        I --> J[完成 PDF]
+    end
+    style A fill:#4CAF50,color:#fff
+    style J fill:#2196F3,color:#fff
+                </div>
+            </div>
+
+            <!-- Mermaid 流程图：PDF 解析流程 -->
+            <div class="mermaid-wrapper">
+                <h3 class="diagram-title">PDF 文档解析工作流程</h3>
+                <div class="mermaid">
+graph TD
+    Start[打开文件] --> CheckHeader{检查文件头}
+    CheckHeader -->|有效 | FindTrailer[定位文件尾]
+    CheckHeader -->|无效 | Error[错误：非 PDF 文件]
+    FindTrailer --> ParseXRef[解析交叉引用表]
+    ParseXRef --> GetRoot[获取 Catalog 对象]
+    GetRoot --> TraversePages[遍历 Pages 树]
+    TraversePages --> ForEachPage{还有页面}
+    ForEachPage -->|是 | ParseContent[解析页面内容]
+    ParseContent --> RenderContent[渲染内容]
+    RenderContent --> TraversePages
+    ForEachPage -->|否 | Complete[解析完成]
+    style Start fill:#4CAF50,color:#fff
+    style Complete fill:#2196F3,color:#fff
+    style Error fill:#f44336,color:#fff
+                </div>
+            </div>
+
+            <!-- 交互式流程图 -->
+            <div class="interactive-flowchart" style="overflow-x: auto; width: 100%;">
+                <h3 class="diagram-title">交互式 PDF 操作流程图</h3>
+                <div class="flowchart-steps" style="display: flex !important; flex-direction: row !important; gap: 0.5rem !important; overflow-x: auto !important; padding: 0.5rem !important; width: max-content !important;">
+                    <div class="flowchart-step" data-step="1" style="display: flex !important; flex-direction: column !important; align-items: center !important; min-width: 100px !important; flex: none !important;">
+                        <div class="step-number">1</div>
+                        <div class="step-content" style="text-align: center; margin-top: 0.5rem;">
+                            <h4>读取文件头</h4>
+                            <p>验证 PDF 版本标识</p>
+                        </div>
+                    </div>
+                    <div class="flowchart-connector" style="display: flex !important; align-items: center !important; font-size: 1.25rem !important; flex: none !important;">→</div>
+                    <div class="flowchart-step" data-step="2" style="display: flex !important; flex-direction: column !important; align-items: center !important; min-width: 100px !important; flex: none !important;">
+                        <div class="step-number">2</div>
+                        <div class="step-content" style="text-align: center; margin-top: 0.5rem;">
+                            <h4>定位文件尾</h4>
+                            <p>查找 startxref 位置</p>
+                        </div>
+                    </div>
+                    <div class="flowchart-connector" style="display: flex !important; align-items: center !important; font-size: 1.25rem !important; flex: none !important;">→</div>
+                    <div class="flowchart-step" data-step="3" style="display: flex !important; flex-direction: column !important; align-items: center !important; min-width: 100px !important; flex: none !important;">
+                        <div class="step-number">3</div>
+                        <div class="step-content" style="text-align: center; margin-top: 0.5rem;">
+                            <h4>解析 XRef</h4>
+                            <p>构建对象位置索引</p>
+                        </div>
+                    </div>
+                    <div class="flowchart-connector" style="display: flex !important; align-items: center !important; font-size: 1.25rem !important; flex: none !important;">→</div>
+                    <div class="flowchart-step" data-step="4" style="display: flex !important; flex-direction: column !important; align-items: center !important; min-width: 100px !important; flex: none !important;">
+                        <div class="step-number">4</div>
+                        <div class="step-content" style="text-align: center; margin-top: 0.5rem;">
+                            <h4>加载 Catalog</h4>
+                            <p>获取文档根对象</p>
+                        </div>
+                    </div>
+                    <div class="flowchart-connector" style="display: flex !important; align-items: center !important; font-size: 1.25rem !important; flex: none !important;">→</div>
+                    <div class="flowchart-step" data-step="5" style="display: flex !important; flex-direction: column !important; align-items: center !important; min-width: 100px !important; flex: none !important;">
+                        <div class="step-number">5</div>
+                        <div class="step-content" style="text-align: center; margin-top: 0.5rem;">
+                            <h4>遍历 Pages</h4>
+                            <p>加载所有页面内容</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flowchart-detail" id="flowchartDetail">
+                    <p>点击任意步骤查看详情</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI 集成部分 -->
+    <section id="ai-integration" class="section">
+        <div class="container">
+            <h2 class="section-title">AI 与 PDF 集成</h2>
+            
+            <!-- Mermaid 流程图：AI 处理流程 -->
+            <div class="mermaid-wrapper">
+                <h3 class="diagram-title">AI 智能文档处理流程</h3>
+                <div class="mermaid">
+graph TB
+    subgraph S1[输入层]
+        A[PDF 文档]
+    end
+    subgraph S2[预处理层]
+        B[页面提取]
+        C[图像渲染]
+        D[文本提取]
+    end
+    subgraph S3[AI 处理层]
+        E[OCR 识别]
+        F[表格检测]
+        G[布局分析]
+        H[语义理解]
+    end
+    subgraph S4[输出层]
+        I[结构化数据]
+        J[智能摘要]
+        K[知识图谱]
+        L[问答系统]
+    end
+    A --> B
+    A --> C
+    A --> D
+    B --> E
+    C --> E
+    D --> E
+    E --> F
+    F --> G
+    G --> H
+    H --> I
+    H --> J
+    H --> K
+    H --> L
+    style A fill:#4CAF50,color:#fff
+    style I fill:#2196F3,color:#fff
+    style J fill:#2196F3,color:#fff
+    style K fill:#2196F3,color:#fff
+    style L fill:#2196F3,color:#fff
+                </div>
+            </div>
+
+            <div class="ai-content">
+                <div class="ai-feature">
+                    <h3>🤖 智能文档分析</h3>
+                    <p>利用大语言模型（LLM）和计算机视觉技术，自动提取、分类和理解 PDF 内容。包括：</p>
+                    <ul class="feature-list">
+                        <li>OCR 文本识别和多语言支持</li>
+                        <li>表格结构识别和数据提取</li>
+                        <li>文档主题和情感分析</li>
+                        <li>关键信息自动摘要</li>
+                        <li>智能问答和内容检索</li>
+                    </ul>
+                </div>
+
+                <div class="ai-feature">
+                    <h3>✨ 自动化工作流</h3>
+                    <p>AI 驱动的自动化文档处理流程：</p>
+                    <ul class="feature-list">
+                        <li>智能表单填写和验证</li>
+                        <li>自动文档分类和归档</li>
+                        <li>合规性检查和风险评估</li>
+                        <li>智能文档翻译（保持格式）</li>
+                        <li>自动生成 PDF 报告和文档</li>
+                    </ul>
+                </div>
+
+                <div class="ai-feature">
+                    <h3>📊 增强的数据处理</h3>
+                    <p>AI 赋能的 PDF 数据处理能力：</p>
+                    <ul class="feature-list">
+                        <li>从复杂表格中提取结构化数据</li>
+                        <li>图像内文字识别和提取</li>
+                        <li>手写内容识别和数字化</li>
+                        <li>图表数据自动解析</li>
+                        <li>文档相似度检测和去重</li>
+                    </ul>
+                </div>
+
+                <div class="ai-feature">
+                    <h3>🌐 云原生架构</h3>
+                    <p>最新的 PDF 处理采用云原生设计：</p>
+                    <ul class="feature-list">
+                        <li>无服务器架构（Serverless）支持</li>
+                        <li>边缘计算和分布式处理</li>
+                        <li>API 优先的设计理念</li>
+                        <li>容器化部署和微服务架构</li>
+                        <li>实时协作和同步编辑</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- AI 能力柱状图 -->
+            <div class="chart-wrapper">
+                <h3 class="diagram-title">AI PDF 处理能力对比</h3>
+                <canvas id="aiCapabilityChart"></canvas>
+            </div>
+
+            <div class="code-block">
+                <h3>AI PDF 处理示例代码（Python）</h3>
+<pre><code>import pypdf
+from transformers import pipeline
+import pdf2image
+import pytesseract
+
+# 使用 AI 提取 PDF 内容
+def extract_pdf_with_ai(pdf_path):
+    # 1. 提取文本
+    reader = pypdf.PdfReader(pdf_path)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text()
+
+    # 2. 使用 LLM 进行摘要
+    summarizer = pipeline("summarization")
+    summary = summarizer(text, max_length=150)
+
+    # 3. OCR 处理扫描页面
+    images = pdf2image.convert_from_path(pdf_path)
+    ocr_text = pytesseract.image_to_string(images[0])
+
+    return {
+        "text": text,
+        "summary": summary[0]['summary_text'],
+        "ocr_text": ocr_text
+    }
+
+# 使用示例
+result = extract_pdf_with_ai("document.pdf")
+print(result["summary"])</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- 编程示例部分 -->
+    <section id="code-examples" class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">PDF 编程示例</h2>
+            <p class="section-description">使用不同编程语言解析和操作 PDF 文件</p>
+
+            <!-- 语言选择器 -->
+            <div class="language-selector">
+                <button class="lang-btn active" data-lang="python">🐍 Python</button>
+                <button class="lang-btn" data-lang="golang">🔵 Golang</button>
+                <button class="lang-btn" data-lang="javascript">⚡ JavaScript</button>
+            </div>
+
+            <!-- Python 示例 -->
+            <div class="language-section active" id="python-section">
+                <h3 class="language-title">🐍 Python PDF 解析</h3>
+
+                <div class="code-block">
+                    <h4>1. 基础文本提取</h4>
+<pre><code>from pypdf import PdfReader
+
+def extract_text_from_pdf(pdf_path):
+    """
+    从 PDF 中提取所有文本内容
+    """
+    reader = PdfReader(pdf_path)
+    full_text = ""
+
+    for page in reader.pages:
+        page_text = page.extract_text()
+        full_text += f"--- Page {page.page_number + 1} ---\n"
+        full_text += page_text + "\n\n"
+
+    return full_text
+
+# 使用示例
+text = extract_text_from_pdf("document.pdf")
+print(text)</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <h4>2. 获取 PDF 元数据</h4>
+<pre><code>from pypdf import PdfReader
+
+def get_pdf_metadata(pdf_path):
+    """
+    获取 PDF 文档的元数据信息
+    """
+    reader = PdfReader(pdf_path)
+    metadata = reader.metadata
+
+    print(f"标题：{metadata.get('/Title', 'N/A')}")
+    print(f"作者：{metadata.get('/Author', 'N/A')}")
+    print(f"创建者：{metadata.get('/Creator', 'N/A')}")
+    print(f"创建日期：{metadata.get('/CreationDate', 'N/A')}")
+    print(f"修改日期：{metadata.get('/ModDate', 'N/A')}")
+    print(f"主题：{metadata.get('/Subject', 'N/A')}")
+    print(f"关键词：{metadata.get('/Keywords', 'N/A')}")
+
+    return metadata
+
+# 使用示例
+metadata = get_pdf_metadata("document.pdf")</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <h4>3. 按页分割 PDF</h4>
+<pre><code>from pypdf import PdfReader, PdfWriter
+
+def split_pdf_by_pages(pdf_path, output_prefix):
+    """
+    将 PDF 的每一页保存为单独的文件
+    """
+    reader = PdfReader(pdf_path)
+
+    for page_num in range(len(reader.pages)):
+        writer = PdfWriter()
+        writer.add_page(reader.pages[page_num])
+
+        output_filename = f"{output_prefix}_page_{page_num + 1}.pdf"
+        with open(output_filename, "wb") as output_file:
+            writer.write(output_file)
+
+        print(f"已保存：{output_filename}")
+
+# 使用示例
+split_pdf_by_pages("document.pdf", "output")</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <h4>4. 合并多个 PDF</h4>
+<pre><code>from pypdf import PdfMerger
+
+def merge_pdfs(input_files, output_file):
+    """
+    合并多个 PDF 文件为一个
+    """
+    merger = PdfMerger()
+
+    for pdf_file in input_files:
+        merger.append(pdf_file)
+        print(f"已添加：{pdf_file}")
+
+    merger.write(output_file)
+    merger.close()
+
+    print(f"合并完成，输出文件：{output_file}")
+
+# 使用示例
+input_pdfs = ["file1.pdf", "file2.pdf", "file3.pdf"]
+merge_pdfs(input_pdfs, "merged_output.pdf")</code></pre>
+                </div>
+            </div>
+
+            <!-- Golang 示例 -->
+            <div class="language-section" id="golang-section">
+                <h3 class="language-title">🔵 Golang PDF 解析</h3>
+
+                <div class="code-block">
+                    <h4>1. 安装依赖</h4>
+<pre><code># 基础 PDF 解析库
+go get github.com/unidoc/unipdf/v3
+
+# 文本提取
+go get github.com/ledongthuc/pdf
+
+# PDF 生成
+go get github.com/jung-kurt/gofpdf</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <h4>2. 基础文本提取（使用 unipdf）</h4>
+<pre><code>package main
+
+import (
+    "fmt"
+    "log"
+
+    "github.com/unidoc/unipdf/v3/common/license"
+    "github.com/unidoc/unipdf/v3/extractor"
+    "github.com/unidoc/unipdf/v3/model"
+)
+
+func init() {
+    // 设置 UniDoc 许可证
+    license.SetMeteredKey("your-license-key")
+}
+
+func extractText(pdfPath string) error {
+    f, err := model.NewPdfReaderFromFile(pdfPath, nil)
+    if err != nil {
+        return fmt.Errorf("无法打开 PDF: %v", err)
+    }
+
+    numPages, err := f.GetNumPages()
+    if err != nil {
+        return fmt.Errorf("获取页数失败：%v", err)
+    }
+
+    fmt.Printf("PDF 共 %d 页\n", numPages)
+
+    for i := 1; i <= numPages; i++ {
+        page, err := f.GetPage(i)
+        if err != nil {
+            return fmt.Errorf("获取第%d页失败：%v", i, err)
+        }
+
+        ex, err := extractor.New(page)
+        if err != nil {
+            return fmt.Errorf("创建提取器失败：%v", err)
+        }
+
+        text, err := ex.ExtractText()
+        if err != nil {
+            return fmt.Errorf("提取文本失败：%v", err)
+        }
+
+        fmt.Printf("\n--- 第 %d 页 ---\n", i)
+        fmt.Println(text)
+    }
+
+    return nil
+}
+
+func main() {
+    err := extractText("document.pdf")
+    if err != nil {
+        log.Fatal(err)
+    }
+}</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <h4>Golang PDF 库推荐</h4>
+                    <ul class="feature-list">
+                        <li><strong>UniDoc (unipdf)</strong> - 功能最全面的 PDF 库，支持读写、解析、渲染</li>
+                        <li><strong>gofpdf</strong> - 轻量级 PDF 生成库，API 简单易用</li>
+                        <li><strong>pdf</strong> (ledongthuc/pdf) - 专注于文本提取，性能优秀</li>
+                        <li><strong>gosrs</strong> - PDF 渲染和转换工具</li>
+                        <li><strong>sigctx</strong> - PDF 数字签名支持</li>
+                        <li><strong>skia-pdf</strong> - 基于 Skia 的 PDF 渲染库</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- JavaScript 示例 -->
+            <div class="language-section" id="javascript-section">
+                <h3 class="language-title">⚡ JavaScript PDF 解析</h3>
+
+                <div class="code-block">
+                    <h4>1. 使用 pdf.js 提取文本</h4>
+<pre><code>import * as pdfjsLib from 'pdfjs-dist';
+
+// 设置 worker（本地路径）
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  './lib/pdf.worker.min.mjs';
+
+async function extractTextFromPdf(url) {
+  const loadingTask = pdfjsLib.getDocument(url);
+  const pdf = await loadingTask.promise;
+
+  const fullText = [];
+
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const textContent = await page.getTextContent();
+    const pageText = textContent.items
+      .map(item => item.str)
+      .join(' ');
+
+    fullText.push(`--- Page ${i} ---\n${pageText}`);
+  }
+
+  return fullText.join('\n\n');
+}
+
+// 使用示例
+extractTextFromPdf('document.pdf')
+  .then(text => console.log(text));</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <h4>2. 使用 pdf-lib 创建 PDF</h4>
+<pre><code>import { PDFDocument, rgb } from 'pdf-lib';
+
+async function createPdf() {
+  // 创建新文档
+  const pdfDoc = await PDFDocument.create();
+
+  // 添加页面
+  const page = pdfDoc.addPage([600, 400]);
+
+  // 绘制文本
+  page.drawText('Hello, PDF!', {
+    x: 50,
+    y: 350,
+    size: 30,
+    color: rgb(0.15, 0.15, 0.15),
+  });
+
+  page.drawText('Created with pdf-lib!', {
+    x: 50,
+    y: 300,
+    size: 20,
+    color: rgb(0, 0.53, 0.74),
+  });
+
+  // 保存为字节数组
+  const pdfBytes = await pdfDoc.save();
+
+  // 下载或保存
+  const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'created.pdf';
+  link.click();
+}
+
+createPdf();</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <h4>JavaScript PDF 库推荐</h4>
+                    <ul class="feature-list">
+                        <li><strong>pdf.js</strong> - Mozilla 开发的 PDF 渲染器，浏览器原生支持</li>
+                        <li><strong>pdf-lib</strong> - 创建和修改 PDF 的纯 JS 库</li>
+                        <li><strong>jspdf</strong> - 从零生成 PDF 文档</li>
+                        <li><strong>pdfkit</strong> - 流式 PDF 生成库</li>
+                        <li><strong>react-pdf</strong> - React 组件方式的 PDF 渲染</li>
+                        <li><strong>node-pdf</strong> - Node.js 环境的 PDF 处理</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 表格与图表生成示例 -->
+            <div class="table-chart-examples">
+                <h3 class="language-title" style="margin-top: 3rem; border-top: 2px solid var(--border-color); padding-top: 2rem;">📊 表格与图表生成示例</h3>
+                <p class="section-description">展示如何使用不同库在 PDF 中生成专业的表格和图表</p>
+
+                <!-- Python ReportLab 表格 -->
+                <div class="code-block">
+                    <h4>🐍 Python ReportLab - 创建数据表格</h4>
+<pre><code>from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4, letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.lib.enums import TA_CENTER
+
+def create_table_pdf():
+    """使用 ReportLab 创建包含数据表格的 PDF"""
+    doc = SimpleDocTemplate("data_table.pdf", pagesize=A4)
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # 添加标题
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=18,
+        textColor=colors.HexColor('#1a1a2e'),
+        spaceAfter=20,
+        alignment=TA_CENTER
+    )
+    elements.append(Paragraph("2026 年销售数据报表", title_style))
+    elements.append(Spacer(1, 0.3*inch))
+    
+    # 准备表格数据
+    data = [
+        ['产品', 'Q1 销量', 'Q2 销量', 'Q3 销量', 'Q4 销量', '总计'],
+        ['产品 A', '¥12,500', '¥15,800', '¥18,200', '¥22,100', '¥68,600'],
+        ['产品 B', '¥8,900', '¥10,200', '¥12,500', '¥14,800', '¥46,400'],
+        ['产品 C', '¥15,200', '¥18,900', '¥21,500', '¥25,800', '¥81,400'],
+        ['产品 D', '¥6,800', '¥8,500', '¥9,200', '¥11,500', '¥36,000'],
+        ['季度总计', '¥43,400', '¥53,400', '¥61,400', '¥74,200', '¥232,400'],
+    ]
+    
+    # 创建表格对象
+    table = Table(data, colWidths=[1.2*inch, 1*inch, 1*inch, 1*inch, 1*inch, 1*inch])
+    
+    # 应用表格样式
+    table.setStyle(TableStyle([
+        # 背景色
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#4a69bd')),
+        ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#1e3799')),
+        ('BACKGROUND', (0, 1), (-1, 1), colors.HexColor('#f8f9fa')),
+        
+        # 文本颜色
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('TEXTCOLOR', (0, -1), (-1, -1), colors.whitesmoke),
+        ('TEXTCOLOR', (0, 1), (-1, 1), colors.HexColor('#1a1a2e')),
+        
+        # 字体粗细
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 1), (-1, 1), 'Helvetica-Bold'),
+        
+        # 对齐方式
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        
+        # 网格线
+        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#dfe4ea')),
+        ('LINEBELOW', (0, 0), (-1, 0), 2, colors.HexColor('#0c2461')),
+        ('LINEABOVE', (0, -1), (-1, -1), 2, colors.HexColor('#0c2461')),
+        
+        # 行高
+        ('ROWHEIGHT', (0, -1), (-1, -1), 40),
+        ('ROWHEIGHT', (0, 0), (-1, 0), 35),
+        
+        # 交替行背景
+        ('BACKGROUND', (0, 2), (-1, 2), colors.HexColor('#ffffff')),
+        ('BACKGROUND', (0, 3), (-1, 3), colors.HexColor('#f1f2f6')),
+        ('BACKGROUND', (0, 4), (-1, 4), colors.HexColor('#ffffff')),
+    ]))
+    
+    elements.append(table)
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # 添加说明文字
+    note_style = ParagraphStyle(
+        'Note',
+        parent=styles['Normal'],
+        fontSize=10,
+        textColor=colors.HexColor('#747d8c'),
+        alignment=TA_CENTER
+    )
+    elements.append(Paragraph("* 数据单位：人民币 (CNY)", note_style))
+    
+    # 生成 PDF
+    doc.build(elements)
+    print("PDF 表格生成完成：data_table.pdf")
+
+# 使用示例
+create_table_pdf()</code></pre>
+                </div>
+
+                <!-- Python ReportLab 图表 -->
+                <div class="code-block">
+                    <h4>🐍 Python ReportLab - 绘制柱状图表</h4>
+<pre><code>from reportlab.lib.pagesizes import A4, letter
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.graphics.shapes import Drawing, Rect, String
+from reportlab.graphics.charts.barcharts import VerticalBarChart
+from reportlab.graphics.charts.linecharts import HorizontalBarChart
+from reportlab.graphics.charts.piecharts import Pie
+from reportlab.lib.enums import TA_CENTER
+
+def create_chart_pdf():
+    """使用 ReportLab 创建包含图表的 PDF"""
+    doc = SimpleDocTemplate("data_chart.pdf", pagesize=A4)
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # 添加标题
+    title = Paragraph("2026 年数据可视化报告", styles['Heading1'])
+    elements.append(title)
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # ========== 1. 柱状图 ==========
+    elements.append(Paragraph("季度销售趋势", styles['Heading2']))
+    elements.append(Spacer(1, 0.3*inch))
+    
+    # 创建柱状图
+    drawing_bar = Drawing(400, 200)
+    bar_chart = VerticalBarChart()
+    
+    # 设置数据
+    bar_chart.data = [(12500, 15800, 18200, 22100)]
+    bar_chart.width = 350
+    bar_chart.height = 150
+    bar_chart.x = 25
+    bar_chart.y = 10
+    
+    # 设置分类标签
+    bar_chart.categoryAxis.categoryNames = ['Q1', 'Q2', 'Q3', 'Q4']
+    
+    # 设置样式
+    bar_chart.bars.fillColor = colors.HexColor('#4a69bd')
+    bar_chart.bars.strokeColor = colors.HexColor('#1e3799')
+    bar_chart.bars.strokeWidth = 1
+    
+    # 设置数值标签
+    bar_chart.valueAxis.valueMin = 0
+    bar_chart.valueAxis.valueMax = 25000
+    bar_chart.valueAxis.valueStep = 5000
+    
+    drawing_bar.add(bar_chart)
+    elements.append(drawing_bar)
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # ========== 2. 饼图 ==========
+    elements.append(Paragraph("产品销售占比", styles['Heading2']))
+    elements.append(Spacer(1, 0.3*inch))
+    
+    drawing_pie = Drawing(400, 200)
+    pie_chart = Pie()
+    
+    # 设置数据
+    pie_chart.data = [68600, 46400, 81400, 36000]
+    pie_chart.labels = ['产品 A', '产品 B', '产品 C', '产品 D']
+    
+    # 设置样式
+    pie_chart.slices.strokeWidth = 0.5
+    pie_chart.slices.strokeColor = colors.white
+    pie_chart.slices[0].fillColor = colors.HexColor('#4a69bd')
+    pie_chart.slices[1].fillColor = colors.HexColor('#0c2461')
+    pie_chart.slices[2].fillColor = colors.HexColor('#18dc9a')
+    pie_chart.slices[3].fillColor = colors.HexColor('#ff793f')
+    
+    # 设置起始角度
+    pie_chart.startAngle = 90
+    
+    drawing_pie.add(pie_chart)
+    elements.append(drawing_pie)
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # ========== 3. 折线图 ==========
+    elements.append(Paragraph("月度增长趋势", styles['Heading2']))
+    elements.append(Spacer(1, 0.3*inch))
+    
+    from reportlab.graphics.charts.lineplots import LinePlot
+    
+    drawing_line = Drawing(400, 200)
+    line_chart = LinePlot()
+    
+    # 设置数据
+    line_chart.data = [
+        ((1, 10), (2, 15), (3, 13), (4, 17), (5, 22), (6, 25)),
+        ((1, 8), (2, 12), (3, 10), (4, 14), (5, 18), (6, 20))
+    ]
+    line_chart.width = 350
+    line_chart.height = 150
+    line_chart.x = 25
+    line_chart.y = 10
+    
+    # 设置线条样式
+    line_chart.lines[0].strokeColor = colors.HexColor('#4a69bd')
+    line_chart.lines[0].strokeWidth = 2
+    line_chart.lines[1].strokeColor = colors.HexColor('#ff793f')
+    line_chart.lines[1].strokeWidth = 2
+    
+    # 设置坐标轴
+    line_chart.xAxis.valueMin = 0
+    line_chart.xAxis.valueMax = 7
+    line_chart.yAxis.valueMin = 0
+    line_chart.yAxis.valueMax = 30
+    
+    drawing_line.add(line_chart)
+    elements.append(drawing_line)
+    
+    # 生成 PDF
+    doc.build(elements)
+    print("PDF 图表生成完成：data_chart.pdf")
+
+# 使用示例
+create_chart_pdf()</code></pre>
+                </div>
+
+                <!-- Python 表格 + 图表组合 -->
+                <div class="code-block">
+                    <h4>🐍 Python - 表格与图表组合报表</h4>
+<pre><code>from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.graphics.shapes import Drawing
+from reportlab.graphics.charts.barcharts import VerticalBarChart
+from reportlab.graphics.charts.piecharts import Pie
+
+def create_combined_report():
+    """创建包含表格和图表的综合报表"""
+    doc = SimpleDocTemplate("combined_report.pdf", pagesize=A4)
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # === 第 1 页：数据表格 ===
+    title = Paragraph("2026 年度综合业务报表", styles['Heading1'])
+    elements.append(title)
+    elements.append(Spacer(1, 0.3*inch))
+    
+    # 数据表格
+    table_data = [
+        ['部门', '收入', '支出', '利润', '增长率'],
+        ['销售部', '¥500,000', '¥320,000', '¥180,000', '+15%'],
+        ['研发部', '¥350,000', '¥280,000', '¥70,000', '+8%'],
+        ['市场部', '¥420,000', '¥300,000', '¥120,000', '+12%'],
+        ['运营部', '¥380,000', '¥250,000', '¥130,000', '+10%'],
+        ['总计', '¥1,650,000', '¥1,150,000', '¥500,000', '+11.25%'],
+    ]
+    
+    table = Table(table_data, colWidths=[1*inch, 1.2*inch, 1.2*inch, 1.2*inch, 0.8*inch])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2c3e50')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#34495e')),
+        ('TEXTCOLOR', (0, -1), (-1, -1), colors.whitesmoke),
+        ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('GRID', (0, 0), (-1, -1), 1, colors.grey),
+        ('BACKGROUND', (0, 1), (-1, 1), colors.HexColor('#ecf0f1')),
+        ('BACKGROUND', (0, 2), (-1, 2), colors.white),
+        ('BACKGROUND', (0, 3), (-1, 3), colors.HexColor('#ecf0f1')),
+        ('BACKGROUND', (0, 4), (-1, 4), colors.white),
+    ]))
+    
+    elements.append(table)
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # 添加页脚
+    footer = Paragraph("<i>第 1 页 - 数据详情</i>", styles['Normal'])
+    elements.append(footer)
+    
+    # 分页
+    elements.append(PageBreak())
+    
+    # === 第 2 页：数据可视化 ===
+    elements.append(Paragraph("数据可视化分析", styles['Heading1']))
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # 部门收入对比柱状图
+    elements.append(Paragraph("部门收入对比", styles['Heading2']))
+    
+    drawing_bar = Drawing(450, 220)
+    bar_chart = VerticalBarChart()
+    bar_chart.data = [(180000, 70000, 120000, 130000)]
+    bar_chart.width = 400
+    bar_chart.height = 180
+    bar_chart.x = 25
+    bar_chart.y = 10
+    bar_chart.categoryAxis.categoryNames = ['销售部', '研发部', '市场部', '运营部']
+    bar_chart.bars.fillColor = colors.HexColor('#3498db')
+    bar_chart.valueAxis.valueMin = 0
+    bar_chart.valueAxis.valueMax = 200000
+    bar_chart.valueAxis.valueStep = 50000
+    drawing_bar.add(bar_chart)
+    elements.append(drawing_bar)
+    
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # 利润分布饼图
+    elements.append(Paragraph("利润分布", styles['Heading2']))
+    
+    drawing_pie = Drawing(450, 220)
+    pie_chart = Pie()
+    pie_chart.data = [180000, 70000, 120000, 130000]
+    pie_chart.labels = ['销售部', '研发部', '市场部', '运营部']
+    pie_chart.slices[0].fillColor = colors.HexColor('#3498db')
+    pie_chart.slices[1].fillColor = colors.HexColor('#2ecc71')
+    pie_chart.slices[2].fillColor = colors.HexColor('#e74c3c')
+    pie_chart.slices[3].fillColor = colors.HexColor('#f39c12')
+    drawing_pie.add(pie_chart)
+    elements.append(drawing_pie)
+    
+    # 添加页脚
+    elements.append(Spacer(1, 0.3*inch))
+    footer2 = Paragraph("<i>第 2 页 - 可视化分析</i>", styles['Normal'])
+    elements.append(footer2)
+    
+    # 生成 PDF
+    doc.build(elements)
+    print("综合报表生成完成：combined_report.pdf")
+
+# 使用示例
+create_combined_report()</code></pre>
+                </div>
+
+                <!-- JavaScript pdfkit 表格 -->
+                <div class="code-block">
+                    <h4>⚡ JavaScript (pdfkit) - 创建表格</h4>
+<pre><code>const PDFDocument = require('pdfkit');
+const fs = require('fs');
+
+function createTablePDF() {
+  // 创建文档
+  const doc = new PDFDocument({
+    size: 'A4',
+    margins: { top: 50, bottom: 50, left: 50, right: 50 }
+  });
+  
+  // 保存到文件
+  doc.pipe(fs.createWriteStream('table_output.pdf'));
+  
+  // 添加标题
+  doc.fontSize(20)
+     .text('2026 年销售数据报表', { align: 'center' })
+     .moveDown();
+  
+  // 表格数据
+  const tableData = [
+    ['产品', 'Q1 销量', 'Q2 销量', 'Q3 销量', 'Q4 销量', '总计'],
+    ['产品 A', '¥12,500', '¥15,800', '¥18,200', '¥22,100', '¥68,600'],
+    ['产品 B', '¥8,900', '¥10,200', '¥12,500', '¥14,800', '¥46,400'],
+    ['产品 C', '¥15,200', '¥18,900', '¥21,500', '¥25,800', '¥81,400'],
+    ['产品 D', '¥6,800', '¥8,500', '¥9,200', '¥11,500', '¥36,000'],
+  ];
+  
+  // 表格配置
+  const tableTop = 100;
+  const tableLeft = 50;
+  const colWidths = [90, 70, 70, 70, 70, 70];
+  const rowHeight = 30;
+  
+  // 绘制表头
+  doc.fontSize(12).font('Helvetica-Bold');
+  doc.fillColor('#4a69bd');
+  doc.rect(tableLeft, tableTop, colWidths.reduce((a, b) => a + b, 0), rowHeight)
+     .fill();
+  
+  doc.fillColor('#ffffff');
+  tableData[0].forEach((header, i) => {
+    doc.text(header, tableLeft + colWidths.slice(0, i).reduce((a, b) => a + b, 0) + 5, 
+             tableTop + 10, { width: colWidths[i] - 10 });
+  });
+  
+  // 绘制数据行
+  doc.fontSize(10).font('Helvetica');
+  tableData.slice(1).forEach((row, rowIndex) => {
+    const y = tableTop + rowHeight + (rowIndex * rowHeight);
+    
+    // 交替行背景
+    if (rowIndex % 2 === 0) {
+      doc.fillColor('#f8f9fa');
+      doc.rect(tableLeft, y, colWidths.reduce((a, b) => a + b, 0), rowHeight).fill();
+    }
+    
+    // 绘制单元格
+    doc.fillColor('#333333');
+    row.forEach((cell, colIndex) => {
+      doc.text(cell, tableLeft + colWidths.slice(0, colIndex).reduce((a, b) => a + b, 0) + 5, 
+               y + 10, { width: colWidths[colIndex] - 10 });
+    });
+  });
+  
+  // 绘制表格边框
+  doc.strokeColor('#dfe4ea');
+  doc.lineWidth(1);
+  doc.rect(tableLeft, tableTop, colWidths.reduce((a, b) => a + b, 0), 
+           rowHeight * (tableData.length)).stroke();
+  
+  // 完成
+  doc.end();
+  console.log('PDF 表格生成完成：table_output.pdf');
+}
+
+// 使用示例
+createTablePDF();</code></pre>
+                </div>
+
+                <!-- JavaScript Chart.js + pdfkit -->
+                <div class="code-block">
+                    <h4>⚡ JavaScript - 图表集成 (Chart.js + pdfkit)</h4>
+<pre><code>const PDFDocument = require('pdfkit');
+const { createCanvas } = require('canvas');
+const Chart = require('chart.js');
+const fs = require('fs');
+
+async function createChartPDF() {
+  // 1. 使用 Chart.js 创建图表并保存为图像
+  const canvas = createCanvas(600, 400);
+  const ctx = canvas.getContext('2d');
+  
+  // 创建柱状图
+  const barChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+      datasets: [{
+        label: '季度销售额',
+        data: [12500, 15800, 18200, 22100],
+        backgroundColor: [
+          'rgba(74, 105, 189, 0.8)',
+          'rgba(74, 105, 189, 0.8)',
+          'rgba(74, 105, 189, 0.8)',
+          'rgba(74, 105, 189, 0.8)'
+        ],
+        borderColor: 'rgba(30, 55, 153, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: false,
+      plugins: {
+        title: {
+          display: true,
+          text: '2026 年季度销售趋势',
+          font: { size: 18 }
+        },
+        legend: {
+          display: true,
+          position: 'top'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: (value) => '¥' + value.toLocaleString()
+          }
+        }
+      }
+    }
+  });
+  
+  // 等待图表渲染完成
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
+  // 保存图表为 PNG
+  const buffer = canvas.toBuffer('image/png');
+  fs.writeFileSync('chart_temp.png', buffer);
+  
+  // 2. 使用 pdfkit 创建 PDF 并嵌入图表
+  const doc = new PDFDocument({ size: 'A4' });
+  const stream = fs.createWriteStream('chart_output.pdf');
+  doc.pipe(stream);
+  
+  // 添加标题
+  doc.fontSize(20).text('2026 年数据可视化报告', { align: 'center' });
+  doc.moveDown();
+  
+  // 嵌入图表图像
+  doc.image('chart_temp.png', {
+    fit: [500, 300],
+    align: 'center'
+  });
+  
+  doc.moveDown();
+  
+  // 添加数据表格
+  doc.fontSize(14).text('详细数据', { align: 'left' });
+  doc.moveDown(0.5);
+  
+  const data = [
+    ['季度', '销售额', '增长率'],
+    ['Q1', '¥12,500', '+12%'],
+    ['Q2', '¥15,800', '+26%'],
+    ['Q3', '¥18,200', '+15%'],
+    ['Q4', '¥22,100', '+21%'],
+  ];
+  
+  let y = doc.y;
+  const tableLeft = 100;
+  
+  // 表头
+  doc.font('Helvetica-Bold').fontSize(12);
+  doc.fillColor('#4a69bd');
+  doc.rect(tableLeft, y, 300, 25).fill();
+  doc.fillColor('#ffffff');
+  data[0].forEach((header, i) => {
+    doc.text(header, tableLeft + i * 100 + 5, y + 5);
+  });
+  
+  // 数据行
+  y += 25;
+  doc.font('Helvetica').fontSize(10);
+  data.slice(1).forEach((row, i) => {
+    doc.fillColor(i % 2 === 0 ? '#f8f9fa' : '#ffffff');
+    doc.rect(tableLeft, y, 300, 25).fill();
+    doc.fillColor('#333333');
+    row.forEach((cell, j) => {
+      doc.text(cell, tableLeft + j * 100 + 5, y + 5);
+    });
+    y += 25;
+  });
+  
+  // 清理临时文件
+  fs.unlinkSync('chart_temp.png');
+  
+  doc.end();
+  console.log('PDF 图表生成完成：chart_output.pdf');
+}
+
+// 使用示例
+createChartPDF();</code></pre>
+                </div>
+
+                <!-- Java iText 表格和图表 -->
+                <div class="code-block">
+                    <h4>☕ Java (iText 7) - 表格与图表</h4>
+<pre><code>import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.*;
+import com.itextpdf.layout.*;
+import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.properties.*;
+import com.itextpdf.kernel.colors.DeviceRgb;
+
+public class TableChartExample {
+    
+    public static void createTablePDF(String dest) throws IOException {
+        // 创建 PDF 写入器
+        PdfWriter writer = new PdfWriter(dest);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf, PageSize.A4);
+        
+        // 添加标题
+        Paragraph title = new Paragraph("2026 年销售数据报表")
+            .setFontSize(18)
+            .setBold()
+            .setTextAlignment(TextAlignment.CENTER)
+            .setMarginBottom(20);
+        document.add(title);
+        
+        // 创建表格数据
+        String[][] data = {
+            {"产品", "Q1 销量", "Q2 销量", "Q3 销量", "Q4 销量", "总计"},
+            {"产品 A", "¥12,500", "¥15,800", "¥18,200", "¥22,100", "¥68,600"},
+            {"产品 B", "¥8,900", "¥10,200", "¥12,500", "¥14,800", "¥46,400"},
+            {"产品 C", "¥15,200", "¥18,900", "¥21,500", "¥25,800", "¥81,400"},
+            {"产品 D", "¥6,800", "¥8,500", "¥9,200", "¥11,500", "¥36,000"},
+        };
+        
+        // 创建表格
+        Table table = new Table(data[0].length);
+        table.setWidth(UnitValue.createPercentValue(100));
+        
+        // 添加表头
+        for (String header : data[0]) {
+            table.addHeaderCell(new Cell().add(new Paragraph(header))
+                .setBackgroundColor(new DeviceRgb(74, 105, 189))
+                .setFontColor(ColorConstants.WHITE)
+                .setBold()
+                .setTextAlignment(TextAlignment.CENTER));
+        }
+        
+        // 添加数据行
+        for (int i = 1; i < data.length; i++) {
+            for (String cellData : data[i]) {
+                Cell cell = new Cell().add(new Paragraph(cellData))
+                    .setTextAlignment(TextAlignment.CENTER);
+                
+                // 交替行背景
+                if (i % 2 == 1) {
+                    cell.setBackgroundColor(new DeviceRgb(248, 249, 250));
+                }
+                
+                table.addCell(cell);
+            }
+        }
+        
+        document.add(table);
+        document.close();
+        System.out.println("PDF 表格生成完成：" + dest);
+    }
+    
+    public static void createChartPDF(String dest) throws IOException {
+        PdfWriter writer = new PdfWriter(dest);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf, PageSize.A4);
+        
+        // 添加标题
+        Paragraph title = new Paragraph("2026 年数据可视化")
+            .setFontSize(18)
+            .setBold()
+            .setTextAlignment(TextAlignment.CENTER)
+            .setMarginBottom(20);
+        document.add(title);
+        
+        // 创建简单的条形图（使用矩形绘制）
+        float[] values = {12500, 15800, 18200, 22100};
+        String[] labels = {"Q1", "Q2", "Q3", "Q4"};
+        float maxValue = 25000;
+        float chartWidth = 400;
+        float barHeight = 30;
+        float startX = 50;
+        float startY = 150;
+        
+        for (int i = 0; i < values.length; i++) {
+            float barWidth = (values[i] / maxValue) * chartWidth;
+            float y = startY - (i * (barHeight + 10));
+            
+            // 绘制条形
+            Rectangle bar = new Rectangle(startX, y, barWidth, barHeight);
+            PdfCanvas canvas = new PdfCanvas(pdf.getLastPage());
+            canvas.setFillColor(new DeviceRgb(74, 105, 189));
+            canvas.rectangle(bar);
+            canvas.fill();
+            
+            // 添加标签
+            Paragraph label = new Paragraph(labels[i])
+                .setFontSize(10)
+                .setTextAlignment(TextAlignment.LEFT);
+            document.add(label);
+        }
+        
+        document.add(new Paragraph("\n\n"));
+        
+        document.close();
+        System.out.println("PDF 图表生成完成：" + dest);
+    }
+    
+    public static void main(String[] args) throws IOException {
+        createTablePDF("table_example.pdf");
+        createChartPDF("chart_example.pdf");
+    }
+}
+// 编译和运行:
+// javac -cp "itext7-core-7.2.5/*" TableChartExample.java
+// java -cp ".:itext7-core-7.2.5/*" TableChartExample</code></pre>
+                </div>
+
+                <!-- 库选择对比表 -->
+                <div class="info-box" style="margin-top: 2rem;">
+                    <h4>📚 表格与图表生成库对比</h4>
+                    <div class="table-wrapper" style="margin-top: 1rem;">
+                        <table class="decision-table">
+                            <thead>
+                                <tr>
+                                    <th>语言</th>
+                                    <th>推荐库</th>
+                                    <th>适用场景</th>
+                                    <th>特点</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Python</strong></td>
+                                    <td>ReportLab</td>
+                                    <td>专业报表、复杂图表</td>
+                                    <td>功能强大、样式丰富、学习曲线较陡</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Python</strong></td>
+                                    <td>FPDF2</td>
+                                    <td>简单表格、快速生成</td>
+                                    <td>轻量级、API 简单、适合基础需求</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>JavaScript</strong></td>
+                                    <td>pdfkit</td>
+                                    <td>自定义布局、精确控制</td>
+                                    <td>灵活度高、需要手动绘制、适合高级用户</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>JavaScript</strong></td>
+                                    <td>pdf-lib + Chart.js</td>
+                                    <td>Web 应用、动态图表</td>
+                                    <td>浏览器兼容、可结合现有图表库</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Java</strong></td>
+                                    <td>iText 7</td>
+                                    <td>企业应用、复杂报表</td>
+                                    <td>功能全面、商业许可、文档完善</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Java</strong></td>
+                                    <td>Apache PDFBox</td>
+                                    <td>开源项目、基础表格</td>
+                                    <td>Apache 许可、社区活跃、需要手动绘制</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 库选择决策表 -->
+            <div class="table-wrapper">
+                <h3 class="table-title">PDF 库选择决策表</h3>
+                <table class="decision-table">
+                    <thead>
+                        <tr>
+                            <th>需求场景</th>
+                            <th>Python 推荐</th>
+                            <th>Golang 推荐</th>
+                            <th>JavaScript 推荐</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>简单文本提取</strong></td>
+                            <td>pypdf</td>
+                            <td>ledongthuc/pdf</td>
+                            <td>pdf.js</td>
+                        </tr>
+                        <tr>
+                            <td><strong>完整读写操作</strong></td>
+                            <td>pypdf, PyMuPDF</td>
+                            <td>unipdf</td>
+                            <td>pdf-lib</td>
+                        </tr>
+                        <tr>
+                            <td><strong>表格提取</strong></td>
+                            <td>pdfplumber, camelot</td>
+                            <td>unipdf (自定义)</td>
+                            <td>pdf.js + 解析</td>
+                        </tr>
+                        <tr>
+                            <td><strong>从零创建 PDF</strong></td>
+                            <td>reportlab</td>
+                            <td>gofpdf, unipdf</td>
+                            <td>pdf-lib, jspdf</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PDF 渲染到图像</strong></td>
+                            <td>pdf2image, PyMuPDF</td>
+                            <td>unipdf, skia-pdf</td>
+                            <td>pdf.js</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Web 端显示</strong></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>pdf.js, react-pdf</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PDF 编程示例 - Python、JavaScript、Golang 表格图表生成代码">
+    <title>PDF 代码示例 | PDF Learn</title>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="stylesheet" href="../css/styles.css?v=2026031202">
+    <style>
+      :root { --bg-primary: #ffffff !important; --bg-secondary: #f6f8fa !important; --bg-alt: #eaecef !important; --text-primary: #24292e !important; --text-secondary: #586069 !important; --border-color: #e1e4e8 !important; --primary-color: #0066cc; }
+      html, body { background-color: #ffffff !important; margin: 0; padding: 0; }
+      .navbar { background-color: rgba(255, 255, 255, 0.98) !important; border-bottom: 1px solid #e1e4e8 !important; position: sticky; top: 0; z-index: 1000; }
+      .navbar .logo, .nav-menu a { color: #24292e !important; }
+      .nav-menu a:hover, .nav-menu a.active { color: var(--primary-color) !important; }
+      .main-container { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem; }
+      .section { padding: 2rem 0; }
+      .section-alt { background: var(--bg-secondary); margin: 0 -1.5rem; padding: 2rem 1.5rem; }
+      .section-title { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 700; margin-bottom: 1.5rem; color: var(--text-primary); }
+      .section-description { color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2rem; }
+      .language-selector { display: flex; gap: 1rem; margin: 2rem 0; flex-wrap: wrap; }
+      .lang-btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-full); font-weight: 600; background: var(--bg-alt); color: var(--text-primary); border: 1px solid var(--border-color); cursor: pointer; transition: all var(--transition-base); }
+      .lang-btn:hover { background: var(--bg-secondary); }
+      .lang-btn.active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+      .language-section { display: none; }
+      .language-section.active { display: block; }
+      .code-block { background: #1d1f23; border-radius: var(--radius-md); margin: 1.5rem 0; overflow: hidden; border: 1px solid var(--border-color); }
+      .code-block h4 { padding: 0.75rem 1.25rem; background: #2d3136; font-size: 0.9rem; font-weight: 600; color: #e2e8f0; margin: 0; }
+      .code-block pre { margin: 0; padding: 1.25rem; overflow-x: auto; }
+      .code-block code { color: #e2e8f0; background: none; padding: 0; font-size: 0.8rem; line-height: 1.6; font-family: 'SF Mono', monospace; }
+      .info-box { background: var(--bg-secondary); border-left: 4px solid var(--primary-color); padding: 1.25rem 1.5rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 2rem 0; }
+      .table-wrapper { margin: 2rem 0; overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
+      .detail-table { width: 100%; border-collapse: collapse; }
+      .detail-table th, .detail-table td { padding: 1rem 1.5rem; text-align: left; border: 1px solid var(--border-color); }
+      .detail-table th { background: var(--bg-alt); font-weight: 600; color: var(--text-primary); }
+      .detail-table td { color: var(--text-secondary); }
+      .detail-table tr:hover { background: var(--bg-secondary); }
+      .nav-back { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary-color); text-decoration: none; margin-bottom: 1.5rem; font-weight: 500; }
+      .nav-back:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem;">
+            <div class="nav-brand"><a href="../index.html" style="text-decoration: none;"><span class="logo" style="font-size: 1.5rem; font-weight: 800;">PDF<span style="color: var(--primary-color);">Learn</span></span></a></div>
+            <ul class="nav-menu" style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+                <li><a href="intro.html">简介</a></li><li><a href="structure.html">结构</a></li><li><a href="instance-analysis.html">实例</a></li><li><a href="workflow.html">流程</a></li><li><a href="ai-integration.html">AI</a></li><li><a href="code-examples.html" class="active">代码</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main class="main-container">
+        <a href="../index.html" class="nav-back">← 返回首页</a>
+        <section id="code-examples" class="section section-alt">
+            <h2 class="section-title">PDF 编程示例</h2>
+            <p class="section-description">使用不同编程语言解析和操作 PDF 文件</p>
+
+            <div class="language-selector">
+                <button class="lang-btn active" onclick="switchLang('python')">🐍 Python</button>
+                <button class="lang-btn" onclick="switchLang('golang')">🔵 Golang</button>
+                <button class="lang-btn" onclick="switchLang('javascript')">⚡ JavaScript</button>
+            </div>
+
+            <!-- Python 示例 -->
+            <div class="language-section active" id="python-section">
+                <div class="code-block">
+                    <h4>1. 基础文本提取（pypdf）</h4>
+<pre><code>from pypdf import PdfReader
+
+def extract_text(pdf_path):
+    reader = PdfReader(pdf_path)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text()
+    return text
+
+text = extract_text("document.pdf")
+print(text)</code></pre>
+                </div>
+                <div class="code-block">
+                    <h4>2. 合并多个 PDF</h4>
+<pre><code>from pypdf import PdfMerger
+
+def merge_pdfs(files, output):
+    merger = PdfMerger()
+    for f in files:
+        merger.append(f)
+    merger.write(output)
+    merger.close()
+
+merge_pdfs(["a.pdf", "b.pdf"], "merged.pdf")</code></pre>
+                </div>
+                <div class="code-block">
+                    <h4>3. ReportLab 创建表格</h4>
+<pre><code>from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+
+def create_table_pdf():
+    doc = SimpleDocTemplate("table.pdf")
+    data = [
+        ['产品', 'Q1', 'Q2', 'Q3', 'Q4'],
+        ['产品 A', '12500', '15800', '18200', '22100'],
+        ['产品 B', '8900', '10200', '12500', '14800'],
+    ]
+    table = Table(data)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.blue),
+        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 1, colors.grey),
+    ]))
+    doc.build([table])
+
+create_table_pdf()</code></pre>
+                </div>
+                <div class="code-block">
+                    <h4>4. ReportLab 绘制图表</h4>
+<pre><code>from reportlab.graphics.shapes import Drawing
+from reportlab.graphics.charts.barcharts import VerticalBarChart
+
+def create_chart():
+    drawing = Drawing(400, 200)
+    chart = VerticalBarChart()
+    chart.data = [(12500, 15800, 18200, 22100)]
+    chart.categoryAxis.categoryNames = ['Q1', 'Q2', 'Q3', 'Q4']
+    chart.bars.fillColor = colors.blue
+    drawing.add(chart)
+    return drawing</code></pre>
+                </div>
+            </div>
+
+            <!-- Golang 示例 -->
+            <div class="language-section" id="golang-section">
+                <div class="code-block">
+                    <h4>1. 安装依赖</h4>
+<pre><code>go get github.com/unidoc/unipdf/v3
+go get github.com/jung-kurt/gofpdf</code></pre>
+                </div>
+                <div class="code-block">
+                    <h4>2. 文本提取（unipdf）</h4>
+<pre><code>package main
+
+import (
+    "fmt"
+    "github.com/unidoc/unipdf/v3/model"
+)
+
+func extractText(path string) error {
+    f, err := model.NewPdfReaderFromFile(path, nil)
+    if err != nil { return err }
+    
+    numPages, _ := f.GetNumPages()
+    for i := 1; i <= numPages; i++ {
+        page, _ := f.GetPage(i)
+        ex, _ := extractor.New(page)
+        text, _ := ex.ExtractText()
+        fmt.Println(text)
+    }
+    return nil
+}</code></pre>
+                </div>
+                <div class="code-block">
+                    <h4>3. gofpdf 创建 PDF</h4>
+<pre><code>package main
+
+import "github.com/jung-kurt/gofpdf"
+
+func createPDF() {
+    pdf := gofpdf.New("P", "mm", "A4", "")
+    pdf.AddPage()
+    pdf.SetFont("Arial", "B", 16)
+    pdf.Cell(40, 10, "Hello World!")
+    pdf.OutputFileAndClose("hello.pdf")
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- JavaScript 示例 -->
+            <div class="language-section" id="javascript-section">
+                <div class="code-block">
+                    <h4>1. pdf.js 提取文本</h4>
+<pre><code>import * as pdfjsLib from 'pdfjs-dist';
+
+async function extractText(url) {
+    const pdf = await pdfjsLib.getDocument(url).promise;
+    let text = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        text += content.items.map(item => item.str).join(' ');
+    }
+    return text;
+}</code></pre>
+                </div>
+                <div class="code-block">
+                    <h4>2. pdf-lib 创建 PDF</h4>
+<pre><code>import { PDFDocument, rgb } from 'pdf-lib';
+
+async function createPDF() {
+    const doc = await PDFDocument.create();
+    const page = doc.addPage([600, 400]);
+    page.drawText('Hello, PDF!', {
+        x: 50, y: 350, size: 30,
+        color: rgb(0, 0.4, 0.8)
+    });
+    const bytes = await doc.save();
+    // 保存或下载 bytes
+}</code></pre>
+                </div>
+                <div class="code-block">
+                    <h4>3. pdfkit 创建表格</h4>
+<pre><code>const PDFDocument = require('pdfkit');
+const doc = new PDFDocument();
+doc.pipe(require('fs').createWriteStream('table.pdf'));
+
+const data = [['产品', 'Q1', 'Q2'], ['A', '100', '150']];
+let y = 50, x = 50;
+
+// 表头
+doc.font('Helvetica-Bold').fontSize(12);
+data[0].forEach((h, i) => doc.text(h, x + i * 100, y));
+
+// 数据行
+doc.font('Helvetica').fontSize(10);
+data[1].forEach((d, i) => doc.text(d, x + i * 100, y + 20));
+
+doc.end();</code></pre>
+                </div>
+            </div>
+
+            <!-- 库选择表 -->
+            <div class="table-wrapper">
+                <table class="detail-table">
+                    <thead>
+                        <tr><th>需求场景</th><th>Python</th><th>Golang</th><th>JavaScript</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>文本提取</strong></td><td>pypdf</td><td>unipdf</td><td>pdf.js</td></tr>
+                        <tr><td><strong>创建 PDF</strong></td><td>reportlab</td><td>gofpdf</td><td>pdf-lib</td></tr>
+                        <tr><td><strong>表格生成</strong></td><td>reportlab</td><td>unipdf</td><td>pdfkit</td></tr>
+                        <tr><td><strong>图表绘制</strong></td><td>reportlab</td><td>自定义</td><td>Chart.js+pdfkit</td></tr>
+                        <tr><td><strong>Web 显示</strong></td><td>-</td><td>-</td><td>pdf.js</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script>
+        function switchLang(lang) {
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.language-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(lang + '-section').classList.add('active');
+        }
+    </script>
+</body>
+</html>
