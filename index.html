@@ -6,7 +6,7 @@
     <meta name="description" content="PDF 文件格式完全学习指南">
     <title>PDF 格式完全指南</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
-    <link rel="stylesheet" href="css/styles.css?v=2026022602">
+    <link rel="stylesheet" href="css/styles.css?v=2026031201">
     <style>
       /* 强制浅色模式 - 覆盖所有 CSS 变量 */
       :root {
@@ -1012,19 +1012,19 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 async function extractTextFromPdf(url) {
   const loadingTask = pdfjsLib.getDocument(url);
   const pdf = await loadingTask.promise;
-  
+
   const fullText = [];
-  
+
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const textContent = await page.getTextContent();
     const pageText = textContent.items
       .map(item => item.str)
       .join(' ');
-    
+
     fullText.push(`--- Page ${i} ---\n${pageText}`);
   }
-  
+
   return fullText.join('\n\n');
 }
 
@@ -1040,10 +1040,10 @@ extractTextFromPdf('document.pdf')
 async function createPdf() {
   // 创建新文档
   const pdfDoc = await PDFDocument.create();
-  
+
   // 添加页面
   const page = pdfDoc.addPage([600, 400]);
-  
+
   // 绘制文本
   page.drawText('Hello, PDF!', {
     x: 50,
@@ -1051,17 +1051,17 @@ async function createPdf() {
     size: 30,
     color: rgb(0.15, 0.15, 0.15),
   });
-  
+
   page.drawText('Created with pdf-lib!', {
     x: 50,
     y: 300,
     size: 20,
     color: rgb(0, 0.53, 0.74),
   });
-  
+
   // 保存为字节数组
   const pdfBytes = await pdfDoc.save();
-  
+
   // 下载或保存
   const blob = new Blob([pdfBytes], { type: 'application/pdf' });
   const link = document.createElement('a');
@@ -1083,6 +1083,735 @@ createPdf();</code></pre>
                         <li><strong>react-pdf</strong> - React 组件方式的 PDF 渲染</li>
                         <li><strong>node-pdf</strong> - Node.js 环境的 PDF 处理</li>
                     </ul>
+                </div>
+            </div>
+
+            <!-- 表格与图表生成示例 -->
+            <div class="table-chart-examples">
+                <h3 class="language-title" style="margin-top: 3rem; border-top: 2px solid var(--border-color); padding-top: 2rem;">📊 表格与图表生成示例</h3>
+                <p class="section-description">展示如何使用不同库在 PDF 中生成专业的表格和图表</p>
+
+                <!-- Python ReportLab 表格 -->
+                <div class="code-block">
+                    <h4>🐍 Python ReportLab - 创建数据表格</h4>
+<pre><code>from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4, letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.lib.enums import TA_CENTER
+
+def create_table_pdf():
+    """使用 ReportLab 创建包含数据表格的 PDF"""
+    doc = SimpleDocTemplate("data_table.pdf", pagesize=A4)
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # 添加标题
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=18,
+        textColor=colors.HexColor('#1a1a2e'),
+        spaceAfter=20,
+        alignment=TA_CENTER
+    )
+    elements.append(Paragraph("2026 年销售数据报表", title_style))
+    elements.append(Spacer(1, 0.3*inch))
+    
+    # 准备表格数据
+    data = [
+        ['产品', 'Q1 销量', 'Q2 销量', 'Q3 销量', 'Q4 销量', '总计'],
+        ['产品 A', '¥12,500', '¥15,800', '¥18,200', '¥22,100', '¥68,600'],
+        ['产品 B', '¥8,900', '¥10,200', '¥12,500', '¥14,800', '¥46,400'],
+        ['产品 C', '¥15,200', '¥18,900', '¥21,500', '¥25,800', '¥81,400'],
+        ['产品 D', '¥6,800', '¥8,500', '¥9,200', '¥11,500', '¥36,000'],
+        ['季度总计', '¥43,400', '¥53,400', '¥61,400', '¥74,200', '¥232,400'],
+    ]
+    
+    # 创建表格对象
+    table = Table(data, colWidths=[1.2*inch, 1*inch, 1*inch, 1*inch, 1*inch, 1*inch])
+    
+    # 应用表格样式
+    table.setStyle(TableStyle([
+        # 背景色
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#4a69bd')),
+        ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#1e3799')),
+        ('BACKGROUND', (0, 1), (-1, 1), colors.HexColor('#f8f9fa')),
+        
+        # 文本颜色
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('TEXTCOLOR', (0, -1), (-1, -1), colors.whitesmoke),
+        ('TEXTCOLOR', (0, 1), (-1, 1), colors.HexColor('#1a1a2e')),
+        
+        # 字体粗细
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 1), (-1, 1), 'Helvetica-Bold'),
+        
+        # 对齐方式
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        
+        # 网格线
+        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#dfe4ea')),
+        ('LINEBELOW', (0, 0), (-1, 0), 2, colors.HexColor('#0c2461')),
+        ('LINEABOVE', (0, -1), (-1, -1), 2, colors.HexColor('#0c2461')),
+        
+        # 行高
+        ('ROWHEIGHT', (0, -1), (-1, -1), 40),
+        ('ROWHEIGHT', (0, 0), (-1, 0), 35),
+        
+        # 交替行背景
+        ('BACKGROUND', (0, 2), (-1, 2), colors.HexColor('#ffffff')),
+        ('BACKGROUND', (0, 3), (-1, 3), colors.HexColor('#f1f2f6')),
+        ('BACKGROUND', (0, 4), (-1, 4), colors.HexColor('#ffffff')),
+    ]))
+    
+    elements.append(table)
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # 添加说明文字
+    note_style = ParagraphStyle(
+        'Note',
+        parent=styles['Normal'],
+        fontSize=10,
+        textColor=colors.HexColor('#747d8c'),
+        alignment=TA_CENTER
+    )
+    elements.append(Paragraph("* 数据单位：人民币 (CNY)", note_style))
+    
+    # 生成 PDF
+    doc.build(elements)
+    print("PDF 表格生成完成：data_table.pdf")
+
+# 使用示例
+create_table_pdf()</code></pre>
+                </div>
+
+                <!-- Python ReportLab 图表 -->
+                <div class="code-block">
+                    <h4>🐍 Python ReportLab - 绘制柱状图表</h4>
+<pre><code>from reportlab.lib.pagesizes import A4, letter
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.graphics.shapes import Drawing, Rect, String
+from reportlab.graphics.charts.barcharts import VerticalBarChart
+from reportlab.graphics.charts.linecharts import HorizontalBarChart
+from reportlab.graphics.charts.piecharts import Pie
+from reportlab.lib.enums import TA_CENTER
+
+def create_chart_pdf():
+    """使用 ReportLab 创建包含图表的 PDF"""
+    doc = SimpleDocTemplate("data_chart.pdf", pagesize=A4)
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # 添加标题
+    title = Paragraph("2026 年数据可视化报告", styles['Heading1'])
+    elements.append(title)
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # ========== 1. 柱状图 ==========
+    elements.append(Paragraph("季度销售趋势", styles['Heading2']))
+    elements.append(Spacer(1, 0.3*inch))
+    
+    # 创建柱状图
+    drawing_bar = Drawing(400, 200)
+    bar_chart = VerticalBarChart()
+    
+    # 设置数据
+    bar_chart.data = [(12500, 15800, 18200, 22100)]
+    bar_chart.width = 350
+    bar_chart.height = 150
+    bar_chart.x = 25
+    bar_chart.y = 10
+    
+    # 设置分类标签
+    bar_chart.categoryAxis.categoryNames = ['Q1', 'Q2', 'Q3', 'Q4']
+    
+    # 设置样式
+    bar_chart.bars.fillColor = colors.HexColor('#4a69bd')
+    bar_chart.bars.strokeColor = colors.HexColor('#1e3799')
+    bar_chart.bars.strokeWidth = 1
+    
+    # 设置数值标签
+    bar_chart.valueAxis.valueMin = 0
+    bar_chart.valueAxis.valueMax = 25000
+    bar_chart.valueAxis.valueStep = 5000
+    
+    drawing_bar.add(bar_chart)
+    elements.append(drawing_bar)
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # ========== 2. 饼图 ==========
+    elements.append(Paragraph("产品销售占比", styles['Heading2']))
+    elements.append(Spacer(1, 0.3*inch))
+    
+    drawing_pie = Drawing(400, 200)
+    pie_chart = Pie()
+    
+    # 设置数据
+    pie_chart.data = [68600, 46400, 81400, 36000]
+    pie_chart.labels = ['产品 A', '产品 B', '产品 C', '产品 D']
+    
+    # 设置样式
+    pie_chart.slices.strokeWidth = 0.5
+    pie_chart.slices.strokeColor = colors.white
+    pie_chart.slices[0].fillColor = colors.HexColor('#4a69bd')
+    pie_chart.slices[1].fillColor = colors.HexColor('#0c2461')
+    pie_chart.slices[2].fillColor = colors.HexColor('#18dc9a')
+    pie_chart.slices[3].fillColor = colors.HexColor('#ff793f')
+    
+    # 设置起始角度
+    pie_chart.startAngle = 90
+    
+    drawing_pie.add(pie_chart)
+    elements.append(drawing_pie)
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # ========== 3. 折线图 ==========
+    elements.append(Paragraph("月度增长趋势", styles['Heading2']))
+    elements.append(Spacer(1, 0.3*inch))
+    
+    from reportlab.graphics.charts.lineplots import LinePlot
+    
+    drawing_line = Drawing(400, 200)
+    line_chart = LinePlot()
+    
+    # 设置数据
+    line_chart.data = [
+        ((1, 10), (2, 15), (3, 13), (4, 17), (5, 22), (6, 25)),
+        ((1, 8), (2, 12), (3, 10), (4, 14), (5, 18), (6, 20))
+    ]
+    line_chart.width = 350
+    line_chart.height = 150
+    line_chart.x = 25
+    line_chart.y = 10
+    
+    # 设置线条样式
+    line_chart.lines[0].strokeColor = colors.HexColor('#4a69bd')
+    line_chart.lines[0].strokeWidth = 2
+    line_chart.lines[1].strokeColor = colors.HexColor('#ff793f')
+    line_chart.lines[1].strokeWidth = 2
+    
+    # 设置坐标轴
+    line_chart.xAxis.valueMin = 0
+    line_chart.xAxis.valueMax = 7
+    line_chart.yAxis.valueMin = 0
+    line_chart.yAxis.valueMax = 30
+    
+    drawing_line.add(line_chart)
+    elements.append(drawing_line)
+    
+    # 生成 PDF
+    doc.build(elements)
+    print("PDF 图表生成完成：data_chart.pdf")
+
+# 使用示例
+create_chart_pdf()</code></pre>
+                </div>
+
+                <!-- Python 表格 + 图表组合 -->
+                <div class="code-block">
+                    <h4>🐍 Python - 表格与图表组合报表</h4>
+<pre><code>from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.graphics.shapes import Drawing
+from reportlab.graphics.charts.barcharts import VerticalBarChart
+from reportlab.graphics.charts.piecharts import Pie
+
+def create_combined_report():
+    """创建包含表格和图表的综合报表"""
+    doc = SimpleDocTemplate("combined_report.pdf", pagesize=A4)
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # === 第 1 页：数据表格 ===
+    title = Paragraph("2026 年度综合业务报表", styles['Heading1'])
+    elements.append(title)
+    elements.append(Spacer(1, 0.3*inch))
+    
+    # 数据表格
+    table_data = [
+        ['部门', '收入', '支出', '利润', '增长率'],
+        ['销售部', '¥500,000', '¥320,000', '¥180,000', '+15%'],
+        ['研发部', '¥350,000', '¥280,000', '¥70,000', '+8%'],
+        ['市场部', '¥420,000', '¥300,000', '¥120,000', '+12%'],
+        ['运营部', '¥380,000', '¥250,000', '¥130,000', '+10%'],
+        ['总计', '¥1,650,000', '¥1,150,000', '¥500,000', '+11.25%'],
+    ]
+    
+    table = Table(table_data, colWidths=[1*inch, 1.2*inch, 1.2*inch, 1.2*inch, 0.8*inch])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2c3e50')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#34495e')),
+        ('TEXTCOLOR', (0, -1), (-1, -1), colors.whitesmoke),
+        ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('GRID', (0, 0), (-1, -1), 1, colors.grey),
+        ('BACKGROUND', (0, 1), (-1, 1), colors.HexColor('#ecf0f1')),
+        ('BACKGROUND', (0, 2), (-1, 2), colors.white),
+        ('BACKGROUND', (0, 3), (-1, 3), colors.HexColor('#ecf0f1')),
+        ('BACKGROUND', (0, 4), (-1, 4), colors.white),
+    ]))
+    
+    elements.append(table)
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # 添加页脚
+    footer = Paragraph("<i>第 1 页 - 数据详情</i>", styles['Normal'])
+    elements.append(footer)
+    
+    # 分页
+    elements.append(PageBreak())
+    
+    # === 第 2 页：数据可视化 ===
+    elements.append(Paragraph("数据可视化分析", styles['Heading1']))
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # 部门收入对比柱状图
+    elements.append(Paragraph("部门收入对比", styles['Heading2']))
+    
+    drawing_bar = Drawing(450, 220)
+    bar_chart = VerticalBarChart()
+    bar_chart.data = [(180000, 70000, 120000, 130000)]
+    bar_chart.width = 400
+    bar_chart.height = 180
+    bar_chart.x = 25
+    bar_chart.y = 10
+    bar_chart.categoryAxis.categoryNames = ['销售部', '研发部', '市场部', '运营部']
+    bar_chart.bars.fillColor = colors.HexColor('#3498db')
+    bar_chart.valueAxis.valueMin = 0
+    bar_chart.valueAxis.valueMax = 200000
+    bar_chart.valueAxis.valueStep = 50000
+    drawing_bar.add(bar_chart)
+    elements.append(drawing_bar)
+    
+    elements.append(Spacer(1, 0.5*inch))
+    
+    # 利润分布饼图
+    elements.append(Paragraph("利润分布", styles['Heading2']))
+    
+    drawing_pie = Drawing(450, 220)
+    pie_chart = Pie()
+    pie_chart.data = [180000, 70000, 120000, 130000]
+    pie_chart.labels = ['销售部', '研发部', '市场部', '运营部']
+    pie_chart.slices[0].fillColor = colors.HexColor('#3498db')
+    pie_chart.slices[1].fillColor = colors.HexColor('#2ecc71')
+    pie_chart.slices[2].fillColor = colors.HexColor('#e74c3c')
+    pie_chart.slices[3].fillColor = colors.HexColor('#f39c12')
+    drawing_pie.add(pie_chart)
+    elements.append(drawing_pie)
+    
+    # 添加页脚
+    elements.append(Spacer(1, 0.3*inch))
+    footer2 = Paragraph("<i>第 2 页 - 可视化分析</i>", styles['Normal'])
+    elements.append(footer2)
+    
+    # 生成 PDF
+    doc.build(elements)
+    print("综合报表生成完成：combined_report.pdf")
+
+# 使用示例
+create_combined_report()</code></pre>
+                </div>
+
+                <!-- JavaScript pdfkit 表格 -->
+                <div class="code-block">
+                    <h4>⚡ JavaScript (pdfkit) - 创建表格</h4>
+<pre><code>const PDFDocument = require('pdfkit');
+const fs = require('fs');
+
+function createTablePDF() {
+  // 创建文档
+  const doc = new PDFDocument({
+    size: 'A4',
+    margins: { top: 50, bottom: 50, left: 50, right: 50 }
+  });
+  
+  // 保存到文件
+  doc.pipe(fs.createWriteStream('table_output.pdf'));
+  
+  // 添加标题
+  doc.fontSize(20)
+     .text('2026 年销售数据报表', { align: 'center' })
+     .moveDown();
+  
+  // 表格数据
+  const tableData = [
+    ['产品', 'Q1 销量', 'Q2 销量', 'Q3 销量', 'Q4 销量', '总计'],
+    ['产品 A', '¥12,500', '¥15,800', '¥18,200', '¥22,100', '¥68,600'],
+    ['产品 B', '¥8,900', '¥10,200', '¥12,500', '¥14,800', '¥46,400'],
+    ['产品 C', '¥15,200', '¥18,900', '¥21,500', '¥25,800', '¥81,400'],
+    ['产品 D', '¥6,800', '¥8,500', '¥9,200', '¥11,500', '¥36,000'],
+  ];
+  
+  // 表格配置
+  const tableTop = 100;
+  const tableLeft = 50;
+  const colWidths = [90, 70, 70, 70, 70, 70];
+  const rowHeight = 30;
+  
+  // 绘制表头
+  doc.fontSize(12).font('Helvetica-Bold');
+  doc.fillColor('#4a69bd');
+  doc.rect(tableLeft, tableTop, colWidths.reduce((a, b) => a + b, 0), rowHeight)
+     .fill();
+  
+  doc.fillColor('#ffffff');
+  tableData[0].forEach((header, i) => {
+    doc.text(header, tableLeft + colWidths.slice(0, i).reduce((a, b) => a + b, 0) + 5, 
+             tableTop + 10, { width: colWidths[i] - 10 });
+  });
+  
+  // 绘制数据行
+  doc.fontSize(10).font('Helvetica');
+  tableData.slice(1).forEach((row, rowIndex) => {
+    const y = tableTop + rowHeight + (rowIndex * rowHeight);
+    
+    // 交替行背景
+    if (rowIndex % 2 === 0) {
+      doc.fillColor('#f8f9fa');
+      doc.rect(tableLeft, y, colWidths.reduce((a, b) => a + b, 0), rowHeight).fill();
+    }
+    
+    // 绘制单元格
+    doc.fillColor('#333333');
+    row.forEach((cell, colIndex) => {
+      doc.text(cell, tableLeft + colWidths.slice(0, colIndex).reduce((a, b) => a + b, 0) + 5, 
+               y + 10, { width: colWidths[colIndex] - 10 });
+    });
+  });
+  
+  // 绘制表格边框
+  doc.strokeColor('#dfe4ea');
+  doc.lineWidth(1);
+  doc.rect(tableLeft, tableTop, colWidths.reduce((a, b) => a + b, 0), 
+           rowHeight * (tableData.length)).stroke();
+  
+  // 完成
+  doc.end();
+  console.log('PDF 表格生成完成：table_output.pdf');
+}
+
+// 使用示例
+createTablePDF();</code></pre>
+                </div>
+
+                <!-- JavaScript Chart.js + pdfkit -->
+                <div class="code-block">
+                    <h4>⚡ JavaScript - 图表集成 (Chart.js + pdfkit)</h4>
+<pre><code>const PDFDocument = require('pdfkit');
+const { createCanvas } = require('canvas');
+const Chart = require('chart.js');
+const fs = require('fs');
+
+async function createChartPDF() {
+  // 1. 使用 Chart.js 创建图表并保存为图像
+  const canvas = createCanvas(600, 400);
+  const ctx = canvas.getContext('2d');
+  
+  // 创建柱状图
+  const barChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+      datasets: [{
+        label: '季度销售额',
+        data: [12500, 15800, 18200, 22100],
+        backgroundColor: [
+          'rgba(74, 105, 189, 0.8)',
+          'rgba(74, 105, 189, 0.8)',
+          'rgba(74, 105, 189, 0.8)',
+          'rgba(74, 105, 189, 0.8)'
+        ],
+        borderColor: 'rgba(30, 55, 153, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: false,
+      plugins: {
+        title: {
+          display: true,
+          text: '2026 年季度销售趋势',
+          font: { size: 18 }
+        },
+        legend: {
+          display: true,
+          position: 'top'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: (value) => '¥' + value.toLocaleString()
+          }
+        }
+      }
+    }
+  });
+  
+  // 等待图表渲染完成
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
+  // 保存图表为 PNG
+  const buffer = canvas.toBuffer('image/png');
+  fs.writeFileSync('chart_temp.png', buffer);
+  
+  // 2. 使用 pdfkit 创建 PDF 并嵌入图表
+  const doc = new PDFDocument({ size: 'A4' });
+  const stream = fs.createWriteStream('chart_output.pdf');
+  doc.pipe(stream);
+  
+  // 添加标题
+  doc.fontSize(20).text('2026 年数据可视化报告', { align: 'center' });
+  doc.moveDown();
+  
+  // 嵌入图表图像
+  doc.image('chart_temp.png', {
+    fit: [500, 300],
+    align: 'center'
+  });
+  
+  doc.moveDown();
+  
+  // 添加数据表格
+  doc.fontSize(14).text('详细数据', { align: 'left' });
+  doc.moveDown(0.5);
+  
+  const data = [
+    ['季度', '销售额', '增长率'],
+    ['Q1', '¥12,500', '+12%'],
+    ['Q2', '¥15,800', '+26%'],
+    ['Q3', '¥18,200', '+15%'],
+    ['Q4', '¥22,100', '+21%'],
+  ];
+  
+  let y = doc.y;
+  const tableLeft = 100;
+  
+  // 表头
+  doc.font('Helvetica-Bold').fontSize(12);
+  doc.fillColor('#4a69bd');
+  doc.rect(tableLeft, y, 300, 25).fill();
+  doc.fillColor('#ffffff');
+  data[0].forEach((header, i) => {
+    doc.text(header, tableLeft + i * 100 + 5, y + 5);
+  });
+  
+  // 数据行
+  y += 25;
+  doc.font('Helvetica').fontSize(10);
+  data.slice(1).forEach((row, i) => {
+    doc.fillColor(i % 2 === 0 ? '#f8f9fa' : '#ffffff');
+    doc.rect(tableLeft, y, 300, 25).fill();
+    doc.fillColor('#333333');
+    row.forEach((cell, j) => {
+      doc.text(cell, tableLeft + j * 100 + 5, y + 5);
+    });
+    y += 25;
+  });
+  
+  // 清理临时文件
+  fs.unlinkSync('chart_temp.png');
+  
+  doc.end();
+  console.log('PDF 图表生成完成：chart_output.pdf');
+}
+
+// 使用示例
+createChartPDF();</code></pre>
+                </div>
+
+                <!-- Java iText 表格和图表 -->
+                <div class="code-block">
+                    <h4>☕ Java (iText 7) - 表格与图表</h4>
+<pre><code>import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.*;
+import com.itextpdf.layout.*;
+import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.properties.*;
+import com.itextpdf.kernel.colors.DeviceRgb;
+
+public class TableChartExample {
+    
+    public static void createTablePDF(String dest) throws IOException {
+        // 创建 PDF 写入器
+        PdfWriter writer = new PdfWriter(dest);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf, PageSize.A4);
+        
+        // 添加标题
+        Paragraph title = new Paragraph("2026 年销售数据报表")
+            .setFontSize(18)
+            .setBold()
+            .setTextAlignment(TextAlignment.CENTER)
+            .setMarginBottom(20);
+        document.add(title);
+        
+        // 创建表格数据
+        String[][] data = {
+            {"产品", "Q1 销量", "Q2 销量", "Q3 销量", "Q4 销量", "总计"},
+            {"产品 A", "¥12,500", "¥15,800", "¥18,200", "¥22,100", "¥68,600"},
+            {"产品 B", "¥8,900", "¥10,200", "¥12,500", "¥14,800", "¥46,400"},
+            {"产品 C", "¥15,200", "¥18,900", "¥21,500", "¥25,800", "¥81,400"},
+            {"产品 D", "¥6,800", "¥8,500", "¥9,200", "¥11,500", "¥36,000"},
+        };
+        
+        // 创建表格
+        Table table = new Table(data[0].length);
+        table.setWidth(UnitValue.createPercentValue(100));
+        
+        // 添加表头
+        for (String header : data[0]) {
+            table.addHeaderCell(new Cell().add(new Paragraph(header))
+                .setBackgroundColor(new DeviceRgb(74, 105, 189))
+                .setFontColor(ColorConstants.WHITE)
+                .setBold()
+                .setTextAlignment(TextAlignment.CENTER));
+        }
+        
+        // 添加数据行
+        for (int i = 1; i < data.length; i++) {
+            for (String cellData : data[i]) {
+                Cell cell = new Cell().add(new Paragraph(cellData))
+                    .setTextAlignment(TextAlignment.CENTER);
+                
+                // 交替行背景
+                if (i % 2 == 1) {
+                    cell.setBackgroundColor(new DeviceRgb(248, 249, 250));
+                }
+                
+                table.addCell(cell);
+            }
+        }
+        
+        document.add(table);
+        document.close();
+        System.out.println("PDF 表格生成完成：" + dest);
+    }
+    
+    public static void createChartPDF(String dest) throws IOException {
+        PdfWriter writer = new PdfWriter(dest);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf, PageSize.A4);
+        
+        // 添加标题
+        Paragraph title = new Paragraph("2026 年数据可视化")
+            .setFontSize(18)
+            .setBold()
+            .setTextAlignment(TextAlignment.CENTER)
+            .setMarginBottom(20);
+        document.add(title);
+        
+        // 创建简单的条形图（使用矩形绘制）
+        float[] values = {12500, 15800, 18200, 22100};
+        String[] labels = {"Q1", "Q2", "Q3", "Q4"};
+        float maxValue = 25000;
+        float chartWidth = 400;
+        float barHeight = 30;
+        float startX = 50;
+        float startY = 150;
+        
+        for (int i = 0; i < values.length; i++) {
+            float barWidth = (values[i] / maxValue) * chartWidth;
+            float y = startY - (i * (barHeight + 10));
+            
+            // 绘制条形
+            Rectangle bar = new Rectangle(startX, y, barWidth, barHeight);
+            PdfCanvas canvas = new PdfCanvas(pdf.getLastPage());
+            canvas.setFillColor(new DeviceRgb(74, 105, 189));
+            canvas.rectangle(bar);
+            canvas.fill();
+            
+            // 添加标签
+            Paragraph label = new Paragraph(labels[i])
+                .setFontSize(10)
+                .setTextAlignment(TextAlignment.LEFT);
+            document.add(label);
+        }
+        
+        document.add(new Paragraph("\n\n"));
+        
+        document.close();
+        System.out.println("PDF 图表生成完成：" + dest);
+    }
+    
+    public static void main(String[] args) throws IOException {
+        createTablePDF("table_example.pdf");
+        createChartPDF("chart_example.pdf");
+    }
+}
+// 编译和运行:
+// javac -cp "itext7-core-7.2.5/*" TableChartExample.java
+// java -cp ".:itext7-core-7.2.5/*" TableChartExample</code></pre>
+                </div>
+
+                <!-- 库选择对比表 -->
+                <div class="info-box" style="margin-top: 2rem;">
+                    <h4>📚 表格与图表生成库对比</h4>
+                    <div class="table-wrapper" style="margin-top: 1rem;">
+                        <table class="decision-table">
+                            <thead>
+                                <tr>
+                                    <th>语言</th>
+                                    <th>推荐库</th>
+                                    <th>适用场景</th>
+                                    <th>特点</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Python</strong></td>
+                                    <td>ReportLab</td>
+                                    <td>专业报表、复杂图表</td>
+                                    <td>功能强大、样式丰富、学习曲线较陡</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Python</strong></td>
+                                    <td>FPDF2</td>
+                                    <td>简单表格、快速生成</td>
+                                    <td>轻量级、API 简单、适合基础需求</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>JavaScript</strong></td>
+                                    <td>pdfkit</td>
+                                    <td>自定义布局、精确控制</td>
+                                    <td>灵活度高、需要手动绘制、适合高级用户</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>JavaScript</strong></td>
+                                    <td>pdf-lib + Chart.js</td>
+                                    <td>Web 应用、动态图表</td>
+                                    <td>浏览器兼容、可结合现有图表库</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Java</strong></td>
+                                    <td>iText 7</td>
+                                    <td>企业应用、复杂报表</td>
+                                    <td>功能全面、商业许可、文档完善</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Java</strong></td>
+                                    <td>Apache PDFBox</td>
+                                    <td>开源项目、基础表格</td>
+                                    <td>Apache 许可、社区活跃、需要手动绘制</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 

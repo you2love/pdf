@@ -1293,10 +1293,81 @@
     --border-color: #000000;
     --text-secondary: #000000;
   }
-  
+
   .card,
   .info-box,
   .code-block {
     border: 2px solid #000000;
+  }
+}
+
+/* ===================================
+   表格与图表示例区域样式
+   =================================== */
+.table-chart-examples {
+  margin-top: 3rem;
+}
+
+.table-chart-examples .language-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.table-chart-examples .section-description {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* 代码块增强样式 */
+.table-chart-examples .code-block {
+  margin-bottom: 2rem;
+}
+
+.table-chart-examples .code-block h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, var(--bg-alt) 0%, var(--bg-secondary) 100%);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 库对比表格样式 */
+.table-chart-examples .info-box {
+  background-color: var(--bg-secondary);
+  border-left: 4px solid var(--primary-color);
+  border-radius: var(--radius-sm);
+}
+
+.table-chart-examples .info-box h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0;
+}
+
+/* 响应式支持 */
+@media (max-width: 768px) {
+  .table-chart-examples .code-block pre {
+    font-size: 0.75rem;
+    padding: 0.75rem;
+  }
+  
+  .table-chart-examples .decision-table {
+    font-size: 0.85rem;
+  }
+  
+  .table-chart-examples .decision-table th,
+  .table-chart-examples .decision-table td {
+    padding: 0.5rem;
   }
 }
