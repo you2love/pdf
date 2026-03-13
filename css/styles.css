@@ -107,18 +107,23 @@
   --toc-width: 260px;
   --content-max: 1024px;
   --container-max: 1440px;
-  
-  /* 代码高亮主题 (GitHub Dark) */
-  --code-bg: #0d1117;
-  --code-fg: #c9d1d9;
-  --code-comment: #8b949e;
-  --code-keyword: #ff7b72;
-  --code-string: #a5d6ff;
-  --code-number: #79c0ff;
-  --code-function: #d2a8ff;
-  --code-class: #ffa657;
-  --code-variable: #ffa657;
-  --code-operator: #79c0ff;
+
+  /* 代码高亮主题 (One Dark - 更柔和舒适) */
+  --code-bg: #282c34;
+  --code-fg: #abb2bf;
+  --code-comment: #5c6370;
+  --code-keyword: #c678dd;
+  --code-string: #98c379;
+  --code-number: #d19a66;
+  --code-function: #61afef;
+  --code-class: #e5c07b;
+  --code-variable: #e06c75;
+  --code-operator: #56b6c2;
+  --code-tag: #e06c75;
+  --code-attr: #d19a66;
+  --code-punctuation: #abb2bf;
+  --code-deleted: #e06c75;
+  --code-inserted: #98c379;
 }
 
 /* 深色模式 */
@@ -211,21 +216,35 @@ code {
 
 pre {
   font-family: var(--font-mono);
-  font-size: 0.875rem;
-  line-height: 1.6;
-  background: var(--bg-code);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  background: var(--code-bg);
   color: var(--code-fg);
-  padding: var(--space-4);
+  padding: 0;
   border-radius: var(--radius-lg);
   overflow-x: auto;
   border: 1px solid var(--border-dark);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  margin: var(--space-6) 0;
 }
 
 pre code {
+  display: block;
   background: none;
-  padding: 0;
+  padding: var(--space-4) var(--space-5);
   border: none;
   color: inherit;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  white-space: pre;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 代码块内的选中效果 */
+pre ::selection {
+  background: rgba(113, 153, 226, 0.3);
 }
 
 table {
@@ -618,32 +637,37 @@ tr:hover {
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--border-dark);
+  box-shadow: var(--shadow-md);
+  background: var(--code-bg);
 }
 
 .code-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-3) var(--space-4);
-  background: var(--bg-tertiary);
+  padding: var(--space-2) var(--space-4);
+  background: rgba(0, 0, 0, 0.2);
   border-bottom: 1px solid var(--border-dark);
+  min-height: 44px;
 }
 
 .code-title {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--code-comment);
   display: flex;
   align-items: center;
   gap: var(--space-2);
 }
 
 .code-lang {
-  font-size: var(--text-xs);
-  padding: var(--space-1) var(--space-2);
-  background: var(--primary);
-  color: white;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.5rem;
+  background: rgba(97, 175, 239, 0.2);
+  color: var(--code-function);
   border-radius: var(--radius-sm);
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .code-actions {
@@ -654,50 +678,119 @@ tr:hover {
 .code-btn {
   padding: var(--space-1) var(--space-2);
   font-size: var(--text-xs);
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-sm);
-  color: var(--text-secondary);
+  color: var(--code-fg);
   cursor: pointer;
   transition: all var(--transition-fast);
-  
-  &:hover {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    border-color: var(--border-dark);
-  }
+  font-family: var(--font-sans);
+}
+
+.code-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.code-btn.copied {
+  background: var(--code-string);
+  border-color: var(--code-string);
+  color: var(--code-bg);
 }
 
 .code-content {
   position: relative;
-  max-height: 500px;
-  overflow: auto;
-  
-  &.collapsed {
-    max-height: 200px;
-    
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 80px;
-      background: linear-gradient(transparent, var(--bg-code));
-      pointer-events: none;
-    }
-  }
 }
 
-/* 语法高亮 */
-.token.comment { color: var(--code-comment); font-style: italic; }
-.token.keyword { color: var(--code-keyword); }
-.token.string { color: var(--code-string); }
-.token.number { color: var(--code-number); }
-.token.function { color: var(--code-function); }
-.token.class { color: var(--code-class); }
-.token.variable { color: var(--code-variable); }
-.token.operator { color: var(--code-operator); }
+.code-content pre {
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+}
+
+/* 滚动条美化 */
+pre::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+pre::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+pre::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 代码高亮 Token 样式 (One Dark 主题) */
+.token.comment {
+  color: var(--code-comment);
+  font-style: italic;
+}
+
+.token.keyword {
+  color: var(--code-keyword);
+  font-weight: 500;
+}
+
+.token.string {
+  color: var(--code-string);
+}
+
+.token.number {
+  color: var(--code-number);
+}
+
+.token.function {
+  color: var(--code-function);
+}
+
+.token.class {
+  color: var(--code-class);
+}
+
+.token.variable {
+  color: var(--code-variable);
+}
+
+.token.operator {
+  color: var(--code-operator);
+}
+
+.token.tag {
+  color: var(--code-tag);
+}
+
+.token.attr-name {
+  color: var(--code-attr);
+}
+
+.token.punctuation {
+  color: var(--code-punctuation);
+}
+
+.token.boolean,
+.token.constant {
+  color: var(--code-number);
+}
+
+/* 内联代码样式 */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--bg-code-light);
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  vertical-align: baseline;
+}
 
 /* ===================================
    信息框

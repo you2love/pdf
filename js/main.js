@@ -169,20 +169,38 @@ const CodeBlocks = {
   },
   
   simpleHighlight(code) {
-    // 基础高亮规则
+    // 基础高亮规则 (One Dark 主题)
     const rules = [
+      // 注释 (优先匹配，避免与其他规则冲突)
       { pattern: /(\/\/.*$)/gm, replacement: '<span class="token comment">$1</span>' },
       { pattern: /(\/\*[\s\S]*?\*\/)/g, replacement: '<span class="token comment">$1</span>' },
-      { pattern: /\b(const|let|var|function|return|if|else|for|while|class|import|from|export|async|await)\b/g, replacement: '<span class="token keyword">$1</span>' },
+      { pattern: /(#.*$)/gm, replacement: '<span class="token comment">$1</span>' },
+      
+      // 字符串 (在关键字之前匹配)
       { pattern: /(['"`])(.*?)\1/g, replacement: '<span class="token string">$1$2$1</span>' },
-      { pattern: /\b(\d+)\b/g, replacement: '<span class="token number">$1</span>' },
+      
+      // 关键字
+      { pattern: /\b(const|let|var|function|return|if|else|for|while|class|import|from|export|async|await|try|catch|throw|new|this|typeof|instanceof)\b/g, replacement: '<span class="token keyword">$1</span>' },
+      { pattern: /\b(def|import|from|as|with|lambda|yield|raise|except|finally|print|while|for|if|elif|else|class|return)\b/g, replacement: '<span class="token keyword">$1</span>' },
+      
+      // 函数调用
+      { pattern: /\b([a-zA-Z_]\w*)(?=\s*\()/g, replacement: '<span class="token function">$1</span>' },
+      
+      // 数字
+      { pattern: /\b(\d+\.?\d*)\b/g, replacement: '<span class="token number">$1</span>' },
+      
+      // 布尔值和常量
+      { pattern: /\b(true|false|null|undefined|None|True|False)\b/g, replacement: '<span class="token boolean">$1</span>' },
+      
+      // 运算符
+      { pattern: /(=&gt;|=&gt;|===|!==|&lt;=|&gt;=|=&gt;|=&gt;)/g, replacement: '<span class="token operator">$1</span>' },
     ];
-    
+
     let result = code;
     rules.forEach(rule => {
       result = result.replace(rule.pattern, rule.replacement);
     });
-    
+
     return result;
   }
 };
