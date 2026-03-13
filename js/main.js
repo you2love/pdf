@@ -5,7 +5,6 @@
  * 功能列表:
  * - 代码块语法高亮和复制
  * - 目录导航和滚动监听
- * - 搜索功能
  * - 快捷键支持
  * - 学习进度追踪
  * - 主题切换
@@ -264,91 +263,6 @@ const TableOfContents = {
 };
 
 // ===================================
-// 搜索功能
-// ===================================
-const Search = {
-  init() {
-    this.createSearchModal();
-    this.bindKeyboard();
-  },
-  
-  createSearchModal() {
-    const modal = document.createElement('div');
-    modal.className = 'search-modal';
-    modal.innerHTML = `
-      <div class="search-overlay"></div>
-      <div class="search-container">
-        <div class="search-header">
-          <input type="text" class="search-input" placeholder="搜索内容... (按 Esc 关闭)" />
-          <button class="search-close">✕</button>
-        </div>
-        <div class="search-results"></div>
-      </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    this.modal = modal;
-    this.input = $('.search-input', modal);
-    this.results = $('.search-results', modal);
-    
-    this.bindEvents();
-  },
-  
-  bindEvents() {
-    const overlay = $('.search-overlay', this.modal);
-    const close = $('.search-close', this.modal);
-    
-    overlay.addEventListener('click', () => this.hide());
-    close.addEventListener('click', () => this.hide());
-    
-    this.input.addEventListener('input', debounce((e) => {
-      this.search(e.target.value);
-    }, 200));
-    
-    this.input.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') this.hide();
-    });
-  },
-  
-  bindKeyboard() {
-    document.addEventListener('keydown', (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        this.show();
-      }
-    });
-  },
-  
-  show() {
-    this.modal.classList.add('active');
-    this.input.focus();
-  },
-  
-  hide() {
-    this.modal.classList.remove('active');
-    this.input.value = '';
-    this.results.innerHTML = '';
-  },
-  
-  search(query) {
-    if (query.length < 2) {
-      this.results.innerHTML = '';
-      return;
-    }
-    
-    // 这里可以实现搜索逻辑
-    // 目前作为占位符
-    this.results.innerHTML = `
-      <div class="search-placeholder">
-        <p>搜索功能开发中...</p>
-        <p>将支持全文搜索和章节导航</p>
-      </div>
-    `;
-  }
-};
-
-// ===================================
 // 学习进度追踪
 // ===================================
 const ProgressTracker = {
@@ -469,11 +383,10 @@ document.addEventListener('DOMContentLoaded', () => {
   ThemeManager.init();
   CodeBlocks.init();
   TableOfContents.init();
-  Search.init();
   ProgressTracker.init();
   MobileMenu.init();
   ScrollOptimizer.init();
-  
+
   console.log('📚 PDF Learn 已加载');
 });
 
@@ -483,7 +396,6 @@ if (typeof module !== 'undefined' && module.exports) {
     ThemeManager,
     CodeBlocks,
     TableOfContents,
-    Search,
     ProgressTracker
   };
 }
