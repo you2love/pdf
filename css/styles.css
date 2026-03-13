@@ -729,59 +729,81 @@ pre::-webkit-scrollbar-thumb:hover {
 }
 
 /* 代码高亮 Token 样式 (One Dark 主题) - 使用!important 覆盖内联样式 */
-.token,
-code .token,
-pre code span {
+/* 基础样式 - 重置所有内联颜色 */
+pre code span,
+pre code b,
+pre code i,
+pre code em,
+pre code strong {
   color: var(--code-fg) !important;
   background: transparent !important;
+  font-style: normal !important;
+  font-weight: normal !important;
 }
 
-.token.comment,
-code .comment,
+/* 注释 - 通过匹配原有颜色来定位 */
+pre code span[style*="#6a9955"],
+pre code span[style*="#5c6370"],
+pre code span[style*="#8b949e"],
 pre code span.comment {
   color: var(--code-comment) !important;
-  font-style: italic;
+  font-style: italic !important;
 }
 
-.token.keyword,
-code .keyword,
+/* 关键字 - 紫色 */
+pre code span[style*="#569cd6"],
+pre code span[style*="#c678dd"],
+pre code span[style*="#ff7b72"],
+pre code span[style*="#c586c0"],
 pre code span.keyword {
   color: var(--code-keyword) !important;
-  font-weight: 500;
+  font-weight: 500 !important;
 }
 
-.token.string,
-code .string,
+/* 字符串 - 绿色 */
+pre code span[style*="#ce9178"],
+pre code span[style*="#98c379"],
+pre code span[style*="#a5d6ff"],
 pre code span.string {
   color: var(--code-string) !important;
 }
 
-.token.number,
-code .number,
+/* 数字 - 橙色 */
+pre code span[style*="#b5cea8"],
+pre code span[style*="#d19a66"],
+pre code span[style*="#79c0ff"],
+pre code span[style*="#d16969"],
 pre code span.number {
   color: var(--code-number) !important;
 }
 
-.token.function,
-code .function,
+/* 函数 - 蓝色 */
+pre code span[style*="#dcdcaa"],
+pre code span[style*="#61afef"],
+pre code span[style*="#d2a8ff"],
 pre code span.function {
   color: var(--code-function) !important;
 }
 
-.token.class,
-code .class,
+/* 类名 - 黄色 */
+pre code span[style*="#4ec9b0"],
+pre code span[style*="#e5c07b"],
+pre code span[style*="#ffa657"],
 pre code span.class {
   color: var(--code-class) !important;
 }
 
-.token.variable,
-code .variable,
+/* 变量 - 红色 */
+pre code span[style*="#9cdcfe"],
+pre code span[style*="#e06c75"],
+pre code span[style*="#ffa657"],
 pre code span.variable {
   color: var(--code-variable) !important;
 }
 
-.token.operator,
-code .operator,
+/* 运算符 - 青色 */
+pre code span[style*="#56b6c2"],
+pre code span[style*="#79c0ff"],
 pre code span.operator {
   color: var(--code-operator) !important;
 }

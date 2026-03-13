@@ -407,38 +407,42 @@ const ScrollOptimizer = {
 // ===================================
 // 初始化
 // ===================================
-document.addEventListener('DOMContentLoaded', () => {
-  // 清理旧的内联样式（让新 CSS 生效）
-  cleanupInlineStyles();
-  
-  ThemeManager.init();
-  CodeBlocks.init();
-  TableOfContents.init();
-  ProgressTracker.init();
-  MobileMenu.init();
-  ScrollOptimizer.init();
 
-  console.log('📚 PDF Learn 已加载');
-});
-
-// 清理代码块中的旧内联样式
+// 立即清理旧的内联样式（在 DOM 准备好后立即执行）
 function cleanupInlineStyles() {
+  if (!$ || typeof document === 'undefined') return;
+  
   // 颜色到 class 的映射（旧的内联样式颜色）
   const colorMap = {
     '#6a9955': 'comment',
+    '#5c6370': 'comment',
+    '#8b949e': 'comment',
     '#569cd6': 'keyword',
-    '#ce9178': 'string',
-    '#b5cea8': 'number',
-    '#dcdcaa': 'function',
-    '#4ec9b0': 'class',
-    '#9cdcfe': 'variable',
+    '#c678dd': 'keyword',
     '#c586c0': 'keyword',
+    '#ff7b72': 'keyword',
+    '#ce9178': 'string',
+    '#98c379': 'string',
+    '#a5d6ff': 'string',
+    '#b5cea8': 'number',
+    '#d19a66': 'number',
+    '#79c0ff': 'number',
     '#d16969': 'number',
+    '#dcdcaa': 'function',
+    '#61afef': 'function',
+    '#d2a8ff': 'function',
+    '#4ec9b0': 'class',
+    '#e5c07b': 'class',
+    '#ffa657': 'class',
+    '#9cdcfe': 'variable',
+    '#e06c75': 'variable',
+    '#56b6c2': 'operator',
+    '#79c0ff': 'operator'
   };
   
-  $$('pre code span[style]').forEach(span => {
+  document.querySelectorAll('pre code span[style]').forEach(span => {
     const style = span.getAttribute('style') || '';
-    const colorMatch = style.match(/color:\s*(#[0-9a-fA-F]{3,6})/);
+    const colorMatch = style.match(/color:\s*([^;\s]+)/);
     
     if (colorMatch) {
       const color = colorMatch[1].toLowerCase();
@@ -455,10 +459,30 @@ function cleanupInlineStyles() {
     span.removeAttribute('style');
   });
   
-  $$('pre code[style]').forEach(code => {
+  document.querySelectorAll('pre code[style]').forEach(code => {
     code.removeAttribute('style');
   });
+  
+  console.log('✨ 已清理内联样式');
 }
+
+// 在 DOMContentLoaded 之前执行
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', cleanupInlineStyles);
+} else {
+  cleanupInlineStyles();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  ThemeManager.init();
+  CodeBlocks.init();
+  TableOfContents.init();
+  ProgressTracker.init();
+  MobileMenu.init();
+  ScrollOptimizer.init();
+
+  console.log('📚 PDF Learn 已加载');
+});
 
 // 导出模块（供外部使用）
 if (typeof module !== 'undefined' && module.exports) {
