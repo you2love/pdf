@@ -38,6 +38,12 @@
       .code-block .code-btn:hover { background: rgba(255,255,255,0.2); }
       .code-block .code-btn.copied { background: #238636; border-color: #238636; }
       
+      /* 禁用全局 JS 的自动增强 */
+      .code-block pre { margin: 0; padding: 0; overflow-x: auto; max-height: 500px; transition: max-height 0.3s ease; }
+      .code-block pre.collapsed { max-height: 200px; }
+      .code-block code { color: #e2e8f0; background: none; padding: 1.25rem; display: block; font-size: 0.8rem; line-height: 1.6; font-family: 'SF Mono', 'Fira Code', Consolas, monospace; white-space: pre; }
+      .code-block.no-enhance { }
+      
       .info-box { background: var(--bg-secondary); border-left: 4px solid var(--primary-color); padding: 1.25rem 1.5rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 2rem 0; }
       .output-box { background: #0d1117; border: 1px solid var(--border-dark); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; font-family: var(--font-mono); font-size: 0.85rem; }
       .output-box .label { color: var(--code-comment); margin-bottom: var(--space-2); }
@@ -81,7 +87,7 @@
             <p>使用微软 LayoutLMv3 模型从发票 PDF 中提取关键字段：发票号码、日期、金额、购买方等。</p>
 
             <h4>📦 安装依赖</h4>
-            <div class="code-block">
+            <div class="code-block no-enhance">
                 <h4>
                     <span>bash</span>
                     <div class="code-actions">
@@ -93,7 +99,7 @@ pip install accelerate  # 可选，GPU 加速</code></pre>
             </div>
 
             <h4>💻 完整代码</h4>
-            <div class="code-block">
+            <div class="code-block no-enhance">
                 <h4>
                     <span>invoice_extractor.py</span>
                     <div class="code-actions">
@@ -269,14 +275,14 @@ if __name__ == "__main__":
             <p>使用 Table Transformer 检测 PDF 中的表格，并提取为结构化 CSV 数据。</p>
 
             <h4>📦 安装依赖</h4>
-            <div class="code-block">
+            <div class="code-block no-enhance">
                 <h4>bash</h4>
                 <pre><code>pip install transformers torch torchvision
 pip install camelot-py opencv-python</code></pre>
             </div>
 
             <h4>💻 完整代码</h4>
-            <div class="code-block">
+            <div class="code-block no-enhance">
                 <h4>table_extractor.py</h4>
                 <pre><code>"""
 财务报表表格提取 - 使用 Table Transformer + Camelot
@@ -423,7 +429,7 @@ if __name__ == "__main__":
             </div>
 
             <h4>📊 生成的 CSV 内容</h4>
-            <div class="code-block">
+            <div class="code-block no-enhance">
                 <h4>tables/table_1.csv</h4>
                 <pre><code>项目，2023 年，2022 年，2021 年，增长率
 营业收入，125000000,98000000,85000000,27.6%
@@ -442,7 +448,7 @@ if __name__ == "__main__":
             <p>构建检索增强生成（RAG）系统，让 AI 基于 PDF 文档内容回答问题，支持引用来源。</p>
 
             <h4>📦 安装依赖</h4>
-            <div class="code-block">
+            <div class="code-block no-enhance">
                 <h4>bash</h4>
                 <pre><code>pip install langchain langchain-community langchain-chroma
 pip install chromadb sentence-transformers
@@ -450,7 +456,7 @@ pip install openai  # 或使用其他 LLM</code></pre>
             </div>
 
             <h4>💻 完整代码</h4>
-            <div class="code-block">
+            <div class="code-block no-enhance">
                 <h4>rag_qa.py - PDF 智能问答</h4>
                 <pre><code>"""
 PDF 文档 RAG 智能问答系统
@@ -646,7 +652,7 @@ if __name__ == "__main__":
             <p>使用 PaddleOCR 处理扫描版 PDF，支持中英文混合识别和表格结构还原。</p>
 
             <h4>📦 安装依赖</h4>
-            <div class="code-block">
+            <div class="code-block no-enhance">
                 <h4>bash</h4>
                 <pre><code>pip install paddlepaddle  # CPU 版本
 # 或 pip install paddlepaddle-gpu  # GPU 版本
@@ -654,7 +660,7 @@ pip install paddleocr pdf2image</code></pre>
             </div>
 
             <h4>💻 完整代码</h4>
-            <div class="code-block">
+            <div class="code-block no-enhance">
                 <h4>ocr_processor.py - 扫描文档 OCR</h4>
                 <pre><code>"""
 扫描文档 OCR 处理 - 使用 PaddleOCR
@@ -806,7 +812,7 @@ if __name__ == "__main__":
             <p>结合多种 AI 技术，构建批量 PDF 处理流水线，自动分类、提取和归档。</p>
 
             <h4>💻 完整代码</h4>
-            <div class="code-block">
+            <div class="code-block no-enhance">
                 <h4>batch_processor.py - 批量处理流水线</h4>
                 <pre><code>"""
 批量 PDF 文档处理流水线
@@ -1006,7 +1012,7 @@ if __name__ == "__main__":
         <section class="case-study">
             <h3>📊 各方案性能对比</h3>
             
-            <div class="code-block">
+            <div class="code-block no-enhance">
                 <h4>性能测试数据（100 页文档）</h4>
                 <pre><code>┌─────────────────────┬──────────┬───────────┬────────────┐
 │       方案          │  处理时间 │  准确率   │   内存占用  │

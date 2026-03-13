@@ -75,9 +75,15 @@ const CodeBlocks = {
     this.enhanceCodeBlocks();
     this.initSyntaxHighlight();
   },
-  
+
   enhanceCodeBlocks() {
+    // 跳过带有 no-enhance 类的代码块
     $$('pre').forEach(pre => {
+      // 如果父元素有 code-block no-enhance 类，跳过
+      if (pre.closest('.code-block.no-enhance')) {
+        return;
+      }
+      
       const wrapper = document.createElement('div');
       wrapper.className = 'code-wrapper';
       
