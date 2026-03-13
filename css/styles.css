@@ -728,56 +728,62 @@ pre::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* 代码高亮 Token 样式 (One Dark 主题) */
-.token.comment {
-  color: var(--code-comment);
+/* 代码高亮 Token 样式 (One Dark 主题) - 使用!important 覆盖内联样式 */
+.token,
+code .token,
+pre code span {
+  color: var(--code-fg) !important;
+  background: transparent !important;
+}
+
+.token.comment,
+code .comment,
+pre code span.comment {
+  color: var(--code-comment) !important;
   font-style: italic;
 }
 
-.token.keyword {
-  color: var(--code-keyword);
+.token.keyword,
+code .keyword,
+pre code span.keyword {
+  color: var(--code-keyword) !important;
   font-weight: 500;
 }
 
-.token.string {
-  color: var(--code-string);
+.token.string,
+code .string,
+pre code span.string {
+  color: var(--code-string) !important;
 }
 
-.token.number {
-  color: var(--code-number);
+.token.number,
+code .number,
+pre code span.number {
+  color: var(--code-number) !important;
 }
 
-.token.function {
-  color: var(--code-function);
+.token.function,
+code .function,
+pre code span.function {
+  color: var(--code-function) !important;
 }
 
-.token.class {
-  color: var(--code-class);
+.token.class,
+code .class,
+pre code span.class {
+  color: var(--code-class) !important;
 }
 
-.token.variable {
-  color: var(--code-variable);
+.token.variable,
+code .variable,
+pre code span.variable {
+  color: var(--code-variable) !important;
 }
 
-.token.operator {
-  color: var(--code-operator);
-}
-
-.token.tag {
-  color: var(--code-tag);
-}
-
-.token.attr-name {
-  color: var(--code-attr);
-}
-
-.token.punctuation {
-  color: var(--code-punctuation);
-}
-
-.token.boolean,
-.token.constant {
-  color: var(--code-number);
+.token.operator,
+code .operator,
+pre code span.operator {
+  color: var(--code-operator) !important;
 }
 
 /* 内联代码样式 */

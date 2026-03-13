@@ -408,6 +408,9 @@ const ScrollOptimizer = {
 // 初始化
 // ===================================
 document.addEventListener('DOMContentLoaded', () => {
+  // 清理旧的内联样式（让新 CSS 生效）
+  cleanupInlineStyles();
+  
   ThemeManager.init();
   CodeBlocks.init();
   TableOfContents.init();
@@ -417,6 +420,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
   console.log('📚 PDF Learn 已加载');
 });
+
+// 清理代码块中的旧内联样式
+function cleanupInlineStyles() {
+  // 颜色到 class 的映射（旧的内联样式颜色）
+  const colorMap = {
+    '#6a9955': 'comment',
+    '#569cd6': 'keyword',
+    '#ce9178': 'string',
+    '#b5cea8': 'number',
+    '#dcdcaa': 'function',
+    '#4ec9b0': 'class',
+    '#9cdcfe': 'variable',
+    '#c586c0': 'keyword',
+    '#d16969': 'number',
+  };
+  
+  $$('pre code span[style]').forEach(span => {
+    const style = span.getAttribute('style') || '';
+    const colorMatch = style.match(/color:\s*(#[0-9a-fA-F]{3,6})/);
+    
+    if (colorMatch) {
+      const color = colorMatch[1].toLowerCase();
+      // 查找匹配的颜色
+      for (const [oldColor, className] of Object.entries(colorMap)) {
+        if (color === oldColor.toLowerCase()) {
+          span.classList.add('token', className);
+          break;
+        }
+      }
+    }
+    
+    // 移除内联 style 属性
+    span.removeAttribute('style');
+  });
+  
+  $$('pre code[style]').forEach(code => {
+    code.removeAttribute('style');
+  });
+}
 
 // 导出模块（供外部使用）
 if (typeof module !== 'undefined' && module.exports) {
