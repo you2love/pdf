@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PDF 文件格式完全学习指南">
+    <title>PDF Learn - PDF 格式完全指南</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="css/styles.css?v=2026031203">
+    <style>
+      :root {
+        --bg-primary: #ffffff !important;
+        --bg-secondary: #f6f8fa !important;
+        --bg-alt: #eaecef !important;
+        --bg-elevated: #ffffff !important;
+        --text-primary: #24292e !important;
+        --text-secondary: #586069 !important;
+        --border-color: #e1e4e8 !important;
+        --primary-color: #0066cc;
+      }
+      html, body {
+        background-color: #ffffff !important;
+        margin: 0;
+        padding: 0;
+      }
+      .navbar {
+        background-color: rgba(255, 255, 255, 0.98) !important;
+        border-bottom: 1px solid #e1e4e8 !important;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      .navbar .logo, .nav-menu a {
+        color: #24292e !important;
+      }
+      .nav-menu a:hover, .nav-menu a.active {
+        color: var(--primary-color) !important;
+      }
+      
+      /* 主容器 */
+      .main-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+      }
+      
+      /* 页面标题 */
+      .page-header {
+        padding: 2rem 0 3rem;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 3rem;
+      }
+      .page-title {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 0.75rem;
+      }
+      .page-subtitle {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        color: var(--text-secondary);
+        max-width: 700px;
+      }
+      
+      /* 章节网格 */
+      .chapters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 4rem;
+      }
+      .chapter-card {
+        background: var(--bg-elevated);
+        border-radius: var(--radius-lg);
+        padding: 1.75rem;
+        box-shadow: var(--shadow-sm);
+        transition: all var(--transition-base);
+        border: 1px solid var(--border-color);
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+      .chapter-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-color);
+      }
+      .chapter-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      .chapter-icon {
+        font-size: 2.5rem;
+        flex-shrink: 0;
+      }
+      .chapter-number {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.25rem;
+      }
+      .chapter-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+      }
+      .chapter-description {
+        color: var(--text-secondary);
+        line-height: 1.7;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+      }
+      .chapter-meta {
+        display: flex;
+        gap: 1.5rem;
+        font-size: 0.8rem;
+        color: var(--text-tertiary);
+      }
+      .chapter-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem;">
+            <div class="nav-brand">
+                <span class="logo" style="font-size: 1.5rem; font-weight: 800;">PDF<span style="color: var(--primary-color);">Learn</span></span>
+            </div>
+            <ul class="nav-menu" style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+                <li><a href="pages/intro.html">简介</a></li>
+                <li><a href="pages/structure.html">结构</a></li>
+                <li><a href="pages/instance-analysis.html">实例</a></li>
+                <li><a href="pages/workflow.html">流程</a></li>
+                <li><a href="pages/ai-integration.html">AI</a></li>
+                <li><a href="pages/code-examples.html">代码</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主容器 -->
+    <main class="main-container">
+        <!-- 页面标题 -->
+        <header class="page-header">
+            <h1 class="page-title">PDF 格式完全指南</h1>
+            <p class="page-subtitle">深入理解 PDF 文件格式的内部结构、工作原理和编程实践</p>
+        </header>
+
+        <!-- 章节列表 -->
+        <div class="chapters-grid">
+            <a href="pages/intro.html" class="chapter-card">
+                <div class="chapter-header">
+                    <span class="chapter-icon">📄</span>
+                    <div>
+                        <span class="chapter-number">Chapter 01</span>
+                        <h3 class="chapter-title">PDF 简介</h3>
+                    </div>
+                </div>
+                <p class="chapter-description">了解 PDF 的基本概念、PDF 2.1 新特性、应用场景和 ISO 32000 标准体系。</p>
+                <div class="chapter-meta">
+                    <span>📖 6 个小节</span>
+                    <span>⏱️ 约 15 分钟</span>
+                </div>
+            </a>
+            
+            <a href="pages/structure.html" class="chapter-card">
+                <div class="chapter-header">
+                    <span class="chapter-icon">🏗️</span>
+                    <div>
+                        <span class="chapter-number">Chapter 02</span>
+                        <h3 class="chapter-title">PDF 内部结构</h3>
+                    </div>
+                </div>
+                <p class="chapter-description">深入解析 PDF 文件的内部结构，包括对象系统、流编码、交叉引用表等核心概念。</p>
+                <div class="chapter-meta">
+                    <span>📖 8 个小节</span>
+                    <span>⏱️ 约 20 分钟</span>
+                </div>
+            </a>
+            
+            <a href="pages/instance-analysis.html" class="chapter-card">
+                <div class="chapter-header">
+                    <span class="chapter-icon">🔍</span>
+                    <div>
+                        <span class="chapter-number">Chapter 03</span>
+                        <h3 class="chapter-title">实例分析</h3>
+                    </div>
+                </div>
+                <p class="chapter-description">通过完整的最小 PDF 文件实例，逐段解析每个对象的作用和二进制结构。</p>
+                <div class="chapter-meta">
+                    <span>📖 5 个小节</span>
+                    <span>⏱️ 约 25 分钟</span>
+                </div>
+            </a>
+            
+            <a href="pages/workflow.html" class="chapter-card">
+                <div class="chapter-header">
+                    <span class="chapter-icon">⚙️</span>
+                    <div>
+                        <span class="chapter-number">Chapter 04</span>
+                        <h3 class="chapter-title">工作流程</h3>
+                    </div>
+                </div>
+                <p class="chapter-description">学习 PDF 的创建和解析流程，包括增量更新、对象压缩等高级特性。</p>
+                <div class="chapter-meta">
+                    <span>📖 6 个小节</span>
+                    <span>⏱️ 约 18 分钟</span>
+                </div>
+            </a>
+            
+            <a href="pages/ai-integration.html" class="chapter-card">
+                <div class="chapter-header">
+                    <span class="chapter-icon">🤖</span>
+                    <div>
+                        <span class="chapter-number">Chapter 05</span>
+                        <h3 class="chapter-title">AI 与 PDF</h3>
+                    </div>
+                </div>
+                <p class="chapter-description">探索 AI 技术在 PDF 处理中的应用，包括 LayoutLMv3、表格提取、智能问答等。</p>
+                <div class="chapter-meta">
+                    <span>📖 7 个小节</span>
+                    <span>⏱️ 约 22 分钟</span>
+                </div>
+            </a>
+            
+            <a href="pages/code-examples.html" class="chapter-card">
+                <div class="chapter-header">
+                    <span class="chapter-icon">💻</span>
+                    <div>
+                        <span class="chapter-number">Chapter 06</span>
+                        <h3 class="chapter-title">代码示例</h3>
+                    </div>
+                </div>
+                <p class="chapter-description">提供 Python、Golang、JavaScript 等多种语言的 PDF 编程示例，包含表格和图表生成。</p>
+                <div class="chapter-meta">
+                    <span>📖 12 个小节</span>
+                    <span>⏱️ 约 30 分钟</span>
+                </div>
+            </a>
+        </div>
+    </main>
+</body>
+</html>

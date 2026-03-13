@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF 二进制查看器 | PDF Learn</title>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+      .viewer-container {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: var(--space-6);
+        margin-top: var(--space-6);
+      }
+      
+      @media (max-width: 1024px) {
+        .viewer-container {
+          grid-template-columns: 1fr;
+        }
+      }
+      
+      .hex-viewer {
+        background: var(--bg-code);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        overflow-x: auto;
+        max-height: 600px;
+        overflow-y: auto;
+      }
+      
+      .hex-row {
+        display: flex;
+        gap: var(--space-2);
+        padding: var(--space-1) 0;
+        border-bottom: 1px solid var(--border-dark);
+      }
+      
+      .hex-row:last-child {
+        border-bottom: none;
+      }
+      
+      .hex-offset {
+        color: var(--code-comment);
+        min-width: 80px;
+        user-select: none;
+      }
+      
+      .hex-bytes {
+        display: flex;
+        gap: var(--space-1);
+        flex: 1;
+      }
+      
+      .hex-byte {
+        width: 24px;
+        text-align: center;
+        padding: var(--space-1);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+      
+      .hex-byte:hover {
+        background: var(--primary);
+        color: white;
+      }
+      
+      .hex-byte.header {
+        background: var(--primary-50);
+        color: var(--primary);
+        font-weight: 700;
+      }
+      
+      .hex-ascii {
+        color: var(--code-string);
+        min-width: 150px;
+        padding-left: var(--space-4);
+        border-left: 2px solid var(--border-dark);
+      }
+      
+      .panel {
+        background: var(--bg-elevated);
+        border-radius: var(--radius-lg);
+        padding: var(--space-5);
+        border: 1px solid var(--border-light);
+      }
+      
+      .panel-title {
+        font-size: var(--text-lg);
+        font-weight: 600;
+        margin-bottom: var(--space-4);
+        color: var(--primary);
+      }
+      
+      .object-info {
+        margin-bottom: var(--space-4);
+        padding-bottom: var(--space-4);
+        border-bottom: 1px solid var(--border-light);
+      }
+      
+      .object-info:last-child {
+        border-bottom: none;
+      }
+      
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: var(--space-2) 0;
+        font-size: var(--text-sm);
+      }
+      
+      .info-label {
+        color: var(--text-tertiary);
+      }
+      
+      .info-value {
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+      
+      .upload-area {
+        border: 2px dashed var(--border-dark);
+        border-radius: var(--radius-lg);
+        padding: var(--space-8);
+        text-align: center;
+        cursor: pointer;
+        transition: all var(--transition-base);
+        margin-bottom: var(--space-6);
+      }
+      
+      .upload-area:hover {
+        border-color: var(--primary);
+        background: var(--primary-50);
+      }
+      
+      .upload-area.dragover {
+        border-color: var(--primary);
+        background: var(--primary-100);
+      }
+      
+      .sample-files {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-3);
+        margin-top: var(--space-4);
+      }
+      
+      .sample-btn {
+        padding: var(--space-3);
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        text-align: left;
+      }
+      
+      .sample-btn:hover {
+        border-color: var(--primary);
+        background: var(--primary-50);
+      }
+      
+      .structure-tree {
+        list-style: none;
+        padding-left: var(--space-4);
+      }
+      
+      .structure-tree li {
+        position: relative;
+        padding: var(--space-2) 0;
+      }
+      
+      .structure-tree li::before {
+        content: '└─';
+        color: var(--text-tertiary);
+        margin-right: var(--space-2);
+      }
+      
+      .tree-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        
+        &:hover {
+          background: var(--bg-secondary);
+        }
+        
+        &.selected {
+          background: var(--primary-50);
+          color: var(--primary);
+        }
+      }
+      
+      .tree-icon {
+        font-size: 1rem;
+      }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="../index.html" class="nav-brand">PDF<span>Learn</span></a>
+            <ul class="nav-menu">
+                
+                <li><a href="structure.html">结构</a></li>
+                <li><a href="instance-analysis.html">实例</a></li>
+                <li><a href="workflow.html">流程</a></li>
+                <li><a href="ai-integration.html">AI</a></li>
+                <li><a href="code-examples.html">代码</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container" style="padding: var(--space-8) var(--space-6);">
+        <a href="../index.html" class="breadcrumb" style="display: inline-flex; margin-bottom: var(--space-6);">
+          ← 返回首页
+        </a>
+        
+        <header class="page-header">
+            <h1 class="page-title">🔬 PDF 二进制查看器</h1>
+            <p class="page-subtitle">交互式查看 PDF 文件的内部结构，理解对象布局和交叉引用表</p>
+        </header>
+
+        <!-- 上传区域 -->
+        <div class="upload-area" id="uploadArea">
+            <div style="font-size: 3rem; margin-bottom: var(--space-4);">📁</div>
+            <h3 style="margin-bottom: var(--space-2);">拖拽 PDF 文件到此处</h3>
+            <p style="color: var(--text-secondary); margin-bottom: var(--space-4);">或点击选择文件</p>
+            <input type="file" id="fileInput" accept=".pdf" style="display: none;" />
+            <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+              选择文件
+            </button>
+        </div>
+
+        <!-- 示例文件 -->
+        <div class="panel" style="margin-bottom: var(--space-6);">
+            <h3 class="panel-title">或加载示例文件</h3>
+            <div class="sample-files">
+                <button class="sample-btn" onclick="loadSample('minimal')">
+                  <strong>📄 最小 PDF</strong>
+                  <p style="font-size: var(--text-sm); color: var(--text-secondary); margin: 0;">单页，Hello World</p>
+                </button>
+                <button class="sample-btn" onclick="loadSample('two-pages')">
+                  <strong>📑 双页 PDF</strong>
+                  <p style="font-size: var(--text-sm); color: var(--text-secondary); margin: 0;">包含字体和图像</p>
+                </button>
+                <button class="sample-btn" onclick="loadSample('compressed')">
+                  <strong>🗜️ 压缩 PDF</strong>
+                  <p style="font-size: var(--text-sm); color: var(--text-secondary); margin: 0;">使用 FlateDecode</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- 查看器主界面 -->
+        <div class="viewer-container" id="viewerContainer" style="display: none;">
+            <!-- 十六进制查看器 -->
+            <div class="panel">
+                <h3 class="panel-title">十六进制视图</h3>
+                <div class="hex-viewer" id="hexViewer">
+                    <!-- 动态生成 -->
+                </div>
+                
+                <!-- 视图控制 -->
+                <div style="display: flex; gap: var(--space-3); margin-top: var(--space-4); flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="scrollToHeader()">📍 文件头</button>
+                    <button class="btn btn-secondary" onclick="scrollToXRef()">📑 XRef 表</button>
+                    <button class="btn btn-secondary" onclick="scrollToTrailer()">📮 Trailer</button>
+                    <button class="btn btn-secondary" onclick="toggleView('ascii')">🔤 切换 ASCII</button>
+                </div>
+            </div>
+
+            <!-- 侧边信息面板 -->
+            <div class="side-panel">
+                <!-- 文件信息 -->
+                <div class="panel" style="margin-bottom: var(--space-6);">
+                    <h3 class="panel-title">📊 文件信息</h3>
+                    <div id="fileInfo">
+                        <div class="info-row">
+                            <span class="info-label">文件大小</span>
+                            <span class="info-value" id="fileSize">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">PDF 版本</span>
+                            <span class="info-value" id="pdfVersion">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">对象数量</span>
+                            <span class="info-value" id="objectCount">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">页面数量</span>
+                            <span class="info-value" id="pageCount">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 结构树 -->
+                <div class="panel">
+                    <h3 class="panel-title">🌳 文档结构</h3>
+                    <ul class="structure-tree" id="structureTree">
+                        <li>
+                            <div class="tree-item">
+                                <span class="tree-icon">📄</span>
+                                <span>Catalog (Root)</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="tree-item">
+                                <span class="tree-icon">📑</span>
+                                <span>Pages</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="tree-item">
+                                <span class="tree-icon">📝</span>
+                                <span>Page 1</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 说明区域 -->
+        <div class="panel" style="margin-top: var(--space-8);">
+            <h3 class="panel-title">💡 使用说明</h3>
+            <div style="color: var(--text-secondary); line-height: 1.8;">
+                <p><strong>十六进制查看器</strong> - 左侧显示 PDF 文件的原始二进制内容，每行 16 字节。点击任意字节可查看详细信息。</p>
+                <p><strong>颜色说明</strong>：</p>
+                <ul style="padding-left: var(--space-6); margin-bottom: var(--space-4);">
+                    <li><span style="color: var(--primary);">蓝色背景</span> - PDF 文件头（%PDF-）</li>
+                    <li><span style="color: var(--code-keyword);">关键字</span> - obj, endobj, stream 等</li>
+                    <li><span style="color: var(--code-string);">绿色</span> - ASCII 可读文本</li>
+                </ul>
+                <p><strong>快捷键</strong>：</p>
+                <ul style="padding-left: var(--space-6);">
+                    <li><code>Home</code> - 跳转到文件头</li>
+                    <li><code>End</code> - 跳转到文件尾</li>
+                    <li><code>Ctrl+F</code> - 搜索字节序列</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" style="margin-top: var(--space-12);">
+        <div class="container">
+            <p>© 2024 PDF Learn - 二进制查看器</p>
+        </div>
+    </footer>
+
+    <script>
+      // 最小 PDF 示例（二进制）
+      const minimalPDF = new Uint8Array([
+        0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x34, // %PDF-1.4
+        0x0a, 0x25, 0xe2, 0xe3, 0xcf, 0xd3, 0x0a, 0x0a, // %..ÏÓ
+        0x31, 0x20, 0x30, 0x20, 0x6f, 0x62, 0x6a, 0x0a, // 1 0 obj
+        0x3c, 0x3c, 0x2f, 0x54, 0x79, 0x70, 0x65, 0x2f, // <</Type/
+        0x43, 0x61, 0x74, 0x61, 0x6c, 0x6f, 0x67, 0x2f, // Catalog/
+        0x50, 0x61, 0x67, 0x65, 0x73, 0x20, 0x32, 0x20, // Pages 2 
+        0x30, 0x20, 0x52, 0x3e, 0x3e, 0x0a, 0x65, 0x6e, // 0 R>>.en
+        0x64, 0x6f, 0x62, 0x6a, 0x0a, 0x0a,             // dobj.
+        // ... 简化示例
+      ]);
+
+      // 上传处理
+      const uploadArea = document.getElementById('uploadArea');
+      const fileInput = document.getElementById('fileInput');
+      const viewerContainer = document.getElementById('viewerContainer');
+
+      uploadArea.addEventListener('click', () => fileInput.click());
+      
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) loadFile(file);
+      });
+
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+      });
+
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+      });
+
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file) loadFile(file);
+      });
+
+      function loadFile(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const buffer = e.target.result;
+          renderHexView(buffer);
+          parsePDFInfo(buffer);
+          viewerContainer.style.display = 'grid';
+        };
+        reader.readAsArrayBuffer(file);
+      }
+
+      function loadSample(type) {
+        // 加载示例文件逻辑
+        alert('示例文件加载功能开发中... 将展示预定义的 PDF 二进制数据');
+      }
+
+      function renderHexView(buffer) {
+        const viewer = document.getElementById('hexViewer');
+        const bytes = new Uint8Array(buffer);
+        let html = '';
+
+        for (let i = 0; i < bytes.length; i += 16) {
+          const offset = i.toString(16).padStart(8, '0').toUpperCase();
+          
+          // 字节部分
+          let hexPart = '';
+          let asciiPart = '';
+          
+          for (let j = 0; j < 16 && i + j < bytes.length; j++) {
+            const byte = bytes[i + j];
+            const hex = byte.toString(16).padStart(2, '0').toUpperCase();
+            
+            // 检查是否是 PDF 头
+            const isHeader = i === 0 && j < 8;
+            
+            hexPart += `<span class="hex-byte ${isHeader ? 'header' : ''}" data-offset="${i + j}" data-byte="${hex}">${hex}</span>`;
+            
+            // ASCII 部分（可打印字符）
+            asciiPart += (byte >= 32 && byte <= 126) ? String.fromCharCode(byte) : '.';
+          }
+
+          html += `
+            <div class="hex-row">
+              <span class="hex-offset">${offset}</span>
+              <div class="hex-bytes">${hexPart}</div>
+              <span class="hex-ascii">${asciiPart}</span>
+            </div>
+          `;
+        }
+
+        viewer.innerHTML = html;
+
+        // 绑定字节点击事件
+        viewer.querySelectorAll('.hex-byte').forEach(byte => {
+          byte.addEventListener('click', (e) => {
+            const offset = e.target.dataset.offset;
+            const value = e.target.dataset.byte;
+            showByteInfo(offset, value);
+          });
+        });
+      }
+
+      function parsePDFInfo(buffer) {
+        const bytes = new Uint8Array(buffer);
+        const text = new TextDecoder().decode(bytes);
+        
+        // 提取 PDF 版本
+        const versionMatch = text.match(/%PDF-(\d+\.\d+)/);
+        document.getElementById('pdfVersion').textContent = versionMatch ? versionMatch[1] : '未知';
+        
+        // 文件大小
+        document.getElementById('fileSize').textContent = formatFileSize(buffer.byteLength);
+        
+        // 对象数量（简单估算）
+        const objCount = (text.match(/(\d+)\s+\d+\s+obj/g) || []).length;
+        document.getElementById('objectCount').textContent = objCount;
+        
+        // 页面数量（简单查找 /Count）
+        const pageMatch = text.match(/\/Count\s+(\d+)/);
+        document.getElementById('pageCount').textContent = pageMatch ? pageMatch[1] : '未知';
+      }
+
+      function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+      }
+
+      function showByteInfo(offset, value) {
+        console.log(`Offset: ${offset}, Value: ${value}`);
+        // 显示字节详细信息
+      }
+
+      function scrollToHeader() {
+        document.getElementById('hexViewer').scrollTop = 0;
+      }
+
+      function scrollToXRef() {
+        // 查找 xref 位置并滚动
+      }
+
+      function scrollToTrailer() {
+        const viewer = document.getElementById('hexViewer');
+        viewer.scrollTop = viewer.scrollHeight;
+      }
+
+      function toggleView(mode) {
+        // 切换视图模式
+      }
+
+      // 键盘快捷键
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Home') {
+          e.preventDefault();
+          scrollToHeader();
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          scrollToTrailer();
+        }
+      });
+    </script>
+</body>
+</html>

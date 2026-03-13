@@ -1,140 +1,489 @@
 /**
- * PDF Learn - 纯静态网站脚本
- * 仅包含必要的基础交互功能
+ * PDF Learn - 核心 JavaScript 模块
+ * 面向资深程序员的增强功能
+ * 
+ * 功能列表:
+ * - 代码块语法高亮和复制
+ * - 目录导航和滚动监听
+ * - 搜索功能
+ * - 快捷键支持
+ * - 学习进度追踪
+ * - 主题切换
  */
 
 // ===================================
-// 语言代码切换（代码示例页面）
+// 工具函数
 // ===================================
-function switchLang(lang) {
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  document.querySelectorAll('.language-section').forEach(s => s.classList.remove('active'));
-  document.getElementById(lang + '-section').classList.add('active');
-}
+const $ = (selector, context = document) => context.querySelector(selector);
+const $$ = (selector, context = document) => Array.from(context.querySelectorAll(selector));
+
+const debounce = (func, wait) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+};
+
+const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (err) {
+    console.error('复制失败:', err);
+    return false;
+  }
+};
 
 // ===================================
-// 交互式流程图（workflow 页面）
+// 主题管理
 // ===================================
-const flowchartDetails = [
-  {title: '读取文件头', content: '验证 PDF 版本标识（如 %PDF-2.0），确认文件格式正确。文件头必须是文件的第一行，后面可跟二进制注释。'},
-  {title: '定位文件尾', content: '从文件末尾回溯查找 startxref 标记，获取交叉引用表的字节偏移量。这是 PDF 解析的入口点。'},
-  {title: '解析 XRef', content: '读取交叉引用表，构建对象位置索引。XRef 表记录所有对象的字节偏移量和状态（空闲/使用中）。'},
-  {title: '加载 Catalog', content: '获取文档根对象（Catalog），这是 PDF 文档的入口点。Catalog 包含指向 Pages 树的引用。'},
-  {title: '遍历 Pages', content: '从 Pages 树根开始，递归遍历所有页面节点。每个 Page 对象包含页面尺寸、内容流和资源字典。'}
-];
-
-function showDetail(index) {
-  const detailEl = document.getElementById('flowchartDetail');
-  if (!detailEl) return;
+const ThemeManager = {
+  init() {
+    const saved = localStorage.getItem('theme') || 'light';
+    this.setTheme(saved);
+    this.bindEvents();
+  },
   
-  const d = flowchartDetails[index];
-  detailEl.innerHTML = '<h4>' + d.title + '</h4><p>' + d.content + '</p>';
+  setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    this.updateIcon(theme);
+  },
   
-  document.querySelectorAll('.flowchart-step').forEach((s, i) => {
-    s.classList.toggle('active', i === index);
-  });
-}
-
-// ===================================
-// Chart.js 图表初始化
-// ===================================
-function initChart() {
-  const charts = [
-    {id: 'versionChart', init: initVersionChart},
-    {id: 'aiCapabilityChart', init: initAiCapabilityChart}
-  ];
+  toggle() {
+    const current = document.documentElement.getAttribute('data-theme');
+    this.setTheme(current === 'dark' ? 'light' : 'dark');
+  },
   
-  charts.forEach(chart => {
-    const ctx = document.getElementById(chart.id);
-    if (ctx && typeof Chart !== 'undefined') {
-      chart.init(ctx);
+  updateIcon(theme) {
+    const icon = $('.theme-toggle');
+    if (icon) {
+      icon.textContent = theme === 'dark' ? '☀️' : '🌙';
     }
-  });
-}
+  },
+  
+  bindEvents() {
+    $('.theme-toggle')?.addEventListener('click', () => this.toggle());
+  }
+};
 
-function initVersionChart(ctx) {
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['PDF 1.0\n(1993)', 'PDF 1.4\n(2001)', 'PDF 1.7\n(2006)', 'PDF 2.0\n(2017)', 'PDF 2.1\n(2024)'],
-      datasets: [{
-        label: '特性数量',
-        data: [50, 150, 350, 500, 600],
-        backgroundColor: ['#94a3b8', '#64748b', '#475569', '#334155', '#0066cc'],
-        borderRadius: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return '特性数：' + context.parsed.y;
+// ===================================
+// 代码块增强
+// ===================================
+const CodeBlocks = {
+  init() {
+    this.enhanceCodeBlocks();
+    this.initSyntaxHighlight();
+  },
+  
+  enhanceCodeBlocks() {
+    $$('pre').forEach(pre => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-wrapper';
+      
+      // 创建头部
+      const header = document.createElement('div');
+      header.className = 'code-header';
+      
+      const code = pre.querySelector('code');
+      const lang = code?.className.replace('language-', '') || 'text';
+      
+      header.innerHTML = `
+        <div class="code-title">
+          <span class="code-lang">${lang}</span>
+        </div>
+        <div class="code-actions">
+          <button class="code-btn copy-btn" title="复制代码">📋 复制</button>
+          <button class="code-btn expand-btn" title="展开/收起">⬆️ 展开</button>
+        </div>
+      `;
+      
+      // 包装内容
+      const content = document.createElement('div');
+      content.className = 'code-content';
+      
+      pre.parentNode.insertBefore(wrapper, pre);
+      content.appendChild(pre);
+      wrapper.appendChild(header);
+      wrapper.appendChild(content);
+      
+      // 绑定事件
+      const copyBtn = header.querySelector('.copy-btn');
+      const expandBtn = header.querySelector('.expand-btn');
+      
+      copyBtn.addEventListener('click', () => this.copyCode(pre, copyBtn));
+      expandBtn.addEventListener('click', () => this.toggleExpand(content, expandBtn));
+    });
+  },
+  
+  copyCode(pre, btn) {
+    const code = pre.querySelector('code');
+    const text = code?.textContent || pre.textContent;
+    
+    copyToClipboard(text).then(success => {
+      if (success) {
+        const original = btn.textContent;
+        btn.textContent = '✅ 已复制';
+        btn.style.background = 'var(--success)';
+        btn.style.color = 'white';
+        
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.style.background = '';
+          btn.style.color = '';
+        }, 2000);
+      }
+    });
+  },
+  
+  toggleExpand(content, btn) {
+    const isCollapsed = content.classList.contains('collapsed');
+    
+    if (isCollapsed) {
+      content.classList.remove('collapsed');
+      btn.textContent = '⬆️ 收起';
+    } else {
+      content.classList.add('collapsed');
+      btn.textContent = '⬇️ 展开';
+    }
+  },
+  
+  initSyntaxHighlight() {
+    // 简单的语法高亮（如果没有 Prism.js）
+    if (typeof Prism === 'undefined') {
+      $$('code').forEach(code => {
+        const html = code.innerHTML;
+        code.innerHTML = this.simpleHighlight(html);
+      });
+    }
+  },
+  
+  simpleHighlight(code) {
+    // 基础高亮规则
+    const rules = [
+      { pattern: /(\/\/.*$)/gm, replacement: '<span class="token comment">$1</span>' },
+      { pattern: /(\/\*[\s\S]*?\*\/)/g, replacement: '<span class="token comment">$1</span>' },
+      { pattern: /\b(const|let|var|function|return|if|else|for|while|class|import|from|export|async|await)\b/g, replacement: '<span class="token keyword">$1</span>' },
+      { pattern: /(['"`])(.*?)\1/g, replacement: '<span class="token string">$1$2$1</span>' },
+      { pattern: /\b(\d+)\b/g, replacement: '<span class="token number">$1</span>' },
+    ];
+    
+    let result = code;
+    rules.forEach(rule => {
+      result = result.replace(rule.pattern, rule.replacement);
+    });
+    
+    return result;
+  }
+};
+
+// ===================================
+// 目录导航 (TOC)
+// ===================================
+const TableOfContents = {
+  init() {
+    this.generateTOC();
+    this.observeHeadings();
+  },
+  
+  generateTOC() {
+    const toc = $('.toc-list');
+    if (!toc) return;
+    
+    const headings = $$('.content h2, .content h3');
+    if (headings.length === 0) return;
+    
+    toc.innerHTML = '';
+    let currentH2 = null;
+    
+    headings.forEach(heading => {
+      const id = heading.id || this.generateId(heading.textContent);
+      heading.id = id;
+      
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = `#${id}`;
+      a.textContent = heading.textContent;
+      a.dataset.target = id;
+      
+      if (heading.tagName === 'H2') {
+        currentH2 = li;
+        toc.appendChild(li);
+      } else if (currentH2) {
+        let sublist = currentH2.querySelector('.toc-sublist');
+        if (!sublist) {
+          sublist = document.createElement('ul');
+          sublist.className = 'toc-sublist';
+          currentH2.appendChild(sublist);
+        }
+        const subLi = document.createElement('li');
+        subLi.appendChild(a);
+        sublist.appendChild(subLi);
+      } else {
+        li.appendChild(a);
+        toc.appendChild(li);
+      }
+    });
+    
+    // 绑定点击事件
+    $$('a[href^="#"]', toc).forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = $(a.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  },
+  
+  generateId(text) {
+    return text.toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  },
+  
+  observeHeadings() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            $$('a[data-target]').forEach(a => {
+              a.classList.toggle('active', a.dataset.target === entry.target.id);
+            });
+          }
+        });
+      },
+      { rootMargin: '-20% 0px -80% 0px' }
+    );
+    
+    $$('.content h2, .content h3').forEach(h => observer.observe(h));
+  }
+};
+
+// ===================================
+// 搜索功能
+// ===================================
+const Search = {
+  init() {
+    this.createSearchModal();
+    this.bindKeyboard();
+  },
+  
+  createSearchModal() {
+    const modal = document.createElement('div');
+    modal.className = 'search-modal';
+    modal.innerHTML = `
+      <div class="search-overlay"></div>
+      <div class="search-container">
+        <div class="search-header">
+          <input type="text" class="search-input" placeholder="搜索内容... (按 Esc 关闭)" />
+          <button class="search-close">✕</button>
+        </div>
+        <div class="search-results"></div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    this.modal = modal;
+    this.input = $('.search-input', modal);
+    this.results = $('.search-results', modal);
+    
+    this.bindEvents();
+  },
+  
+  bindEvents() {
+    const overlay = $('.search-overlay', this.modal);
+    const close = $('.search-close', this.modal);
+    
+    overlay.addEventListener('click', () => this.hide());
+    close.addEventListener('click', () => this.hide());
+    
+    this.input.addEventListener('input', debounce((e) => {
+      this.search(e.target.value);
+    }, 200));
+    
+    this.input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') this.hide();
+    });
+  },
+  
+  bindKeyboard() {
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        this.show();
+      }
+    });
+  },
+  
+  show() {
+    this.modal.classList.add('active');
+    this.input.focus();
+  },
+  
+  hide() {
+    this.modal.classList.remove('active');
+    this.input.value = '';
+    this.results.innerHTML = '';
+  },
+  
+  search(query) {
+    if (query.length < 2) {
+      this.results.innerHTML = '';
+      return;
+    }
+    
+    // 这里可以实现搜索逻辑
+    // 目前作为占位符
+    this.results.innerHTML = `
+      <div class="search-placeholder">
+        <p>搜索功能开发中...</p>
+        <p>将支持全文搜索和章节导航</p>
+      </div>
+    `;
+  }
+};
+
+// ===================================
+// 学习进度追踪
+// ===================================
+const ProgressTracker = {
+  init() {
+    this.loadProgress();
+    this.observeSections();
+    this.updateUI();
+  },
+  
+  loadProgress() {
+    const saved = localStorage.getItem('reading-progress');
+    this.progress = saved ? JSON.parse(saved) : {};
+  },
+  
+  saveProgress() {
+    localStorage.setItem('reading-progress', JSON.stringify(this.progress));
+  },
+  
+  observeSections() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            const section = entry.target.id;
+            if (section) {
+              this.progress[section] = {
+                visited: true,
+                timestamp: Date.now()
+              };
+              this.saveProgress();
+              this.updateUI();
             }
           }
-        }
+        });
       },
-      scales: {
-        y: {
-          beginAtZero: true,
-          grid: { color: '#e1e4e8' },
-          ticks: { color: '#586069' }
-        },
-        x: {
-          grid: { display: false },
-          ticks: { color: '#586069' }
-        }
-      }
-    }
-  });
-}
-
-function initAiCapabilityChart(ctx) {
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['文本提取', '表格识别', 'OCR 精度', '布局分析', '语义理解', '自动摘要'],
-      datasets: [{
-        label: '准确率 (%)',
-        data: [98, 92, 95, 90, 88, 91],
-        backgroundColor: '#0066cc',
-        borderRadius: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      indexAxis: 'y',
-      plugins: {
-        legend: { display: false },
-        title: { display: false }
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          max: 100,
-          grid: { color: '#e1e4e8' },
-          ticks: { color: '#586069', callback: v => v + '%' }
-        },
-        y: { grid: { display: false }, ticks: { color: '#586069' } }
-      }
-    }
-  });
-}
-
-// ===================================
-// 页面加载完成后初始化
-// ===================================
-document.addEventListener('DOMContentLoaded', function() {
-  // 初始化图表
-  initChart();
+      { threshold: 0.5 }
+    );
+    
+    $$('.content section, .content article').forEach(section => {
+      observer.observe(section);
+    });
+  },
   
-  // 绑定流程图点击事件
-  document.querySelectorAll('.flowchart-step').forEach((step, index) => {
-    step.addEventListener('click', () => showDetail(index));
-  });
+  updateUI() {
+    // 更新进度条
+    const progressBar = $('.progress-fill');
+    if (progressBar) {
+      const total = $$('.content section, .content article').length;
+      const visited = Object.keys(this.progress).filter(k => this.progress[k].visited).length;
+      const percent = total > 0 ? (visited / total) * 100 : 0;
+      progressBar.style.width = `${percent}%`;
+    }
+    
+    // 标记已访问章节
+    $$('.chapter-card').forEach(card => {
+      const href = card.getAttribute('href');
+      if (href && this.progress[href]) {
+        card.classList.add('visited');
+      }
+    });
+  }
+};
+
+// ===================================
+// 移动端菜单
+// ===================================
+const MobileMenu = {
+  init() {
+    const btn = $('.mobile-menu-btn');
+    const menu = $('.nav-menu');
+    
+    if (!btn || !menu) return;
+    
+    btn.addEventListener('click', () => {
+      menu.classList.toggle('active');
+      btn.classList.toggle('active');
+    });
+  }
+};
+
+// ===================================
+// 页面滚动优化
+// ===================================
+const ScrollOptimizer = {
+  init() {
+    this.lastScroll = 0;
+    this.ticking = false;
+    
+    window.addEventListener('scroll', () => {
+      this.lastScroll = window.scrollY;
+      
+      if (!this.ticking) {
+        window.requestAnimationFrame(() => {
+          this.handleScroll();
+          this.ticking = false;
+        });
+        this.ticking = true;
+      }
+    }, { passive: true });
+  },
+  
+  handleScroll() {
+    const navbar = $('.navbar');
+    if (!navbar) return;
+    
+    if (this.lastScroll > 100) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  }
+};
+
+// ===================================
+// 初始化
+// ===================================
+document.addEventListener('DOMContentLoaded', () => {
+  ThemeManager.init();
+  CodeBlocks.init();
+  TableOfContents.init();
+  Search.init();
+  ProgressTracker.init();
+  MobileMenu.init();
+  ScrollOptimizer.init();
+  
+  console.log('📚 PDF Learn 已加载');
 });
+
+// 导出模块（供外部使用）
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    ThemeManager,
+    CodeBlocks,
+    TableOfContents,
+    Search,
+    ProgressTracker
+  };
+}
