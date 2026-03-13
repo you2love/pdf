@@ -158,6 +158,10 @@ const CodeBlocks = {
     // 简单的语法高亮（如果没有 Prism.js）
     if (typeof Prism === 'undefined') {
       $$('code').forEach(code => {
+        // 跳过 no-enhance 代码块
+        if (code.closest('.code-block.no-enhance')) {
+          return;
+        }
         const html = code.innerHTML;
         code.innerHTML = this.simpleHighlight(html);
       });
